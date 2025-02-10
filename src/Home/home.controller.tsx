@@ -8,8 +8,7 @@ export const HOME_CONTROLLER: RouteObject = {
   element: <HomeView />,
   loader: async () => {
     const items = (await invoke(
-      "get_top_level_repository_all",
-      {}
+      "get_top_level_repository_all"
     )) as any;
     const loaderData: HomeLoaderData = {
       repositories: items,

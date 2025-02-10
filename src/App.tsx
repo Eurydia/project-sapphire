@@ -15,6 +15,7 @@ const ROUTER = createHashRouter([
   REPOSITORY_CONTROLLER,
 ]);
 const THEME = createTheme();
+
 export const App = () => {
   return (
     <ThemeProvider theme={THEME}>

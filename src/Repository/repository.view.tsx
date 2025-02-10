@@ -1,9 +1,10 @@
-import { Masonry } from "@mui/lab";
+import { FolderRounded } from "@mui/icons-material";
 import {
-  Card,
-  CardHeader,
   Container,
-  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import { FC } from "react";
 import { useLoaderData } from "react-router";
@@ -14,36 +15,22 @@ export const RepositoryView: FC = () => {
     useLoaderData();
   return (
     <Container maxWidth="md">
-      <Typography>{path}</Typography>
-      <Masonry columns={{ xs: 1, md: 2 }}>
-        {files.map((item, index) => (
-          <Card key={"item" + index}>
-            <CardHeader
-              title={item}
-              subheader="files"
-              slotProps={{
-                title: {
-                  sx: {
-                    width: "100%",
-                    whiteSpace: "break-spaces",
-                    wordBreak: "break-all",
-                  },
-                },
-              }}
-            />
-          </Card>
-        ))}
-      </Masonry>
-      <Masonry columns={{ xs: 1, md: 2 }}>
+      <List subheader={path}>
         {directories.map((item, index) => (
-          <Card key={"item" + index}>
-            <CardHeader
-              title={item}
-              subheader="dir"
-            />
-          </Card>
+          <ListItem key={"item" + index}>
+            <ListItemIcon>
+              <FolderRounded />
+            </ListItemIcon>
+            <ListItemText primary={item} />
+          </ListItem>
         ))}
-      </Masonry>
+      </List>
+      {files.map((item, index) => (
+        <ListItem key={"item" + index}>
+          <ListItemIcon />
+          <ListItemText primary={item} />
+        </ListItem>
+      ))}
     </Container>
   );
 };

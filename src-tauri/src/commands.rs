@@ -1,107 +1,144 @@
 use crate::entities::{
+    app::SapphireAppConfig,
     directory::DirectoryData,
     file::{self, FileData},
     repository::RepositoryStruct,
 };
 use serde::de::EnumAccess;
+use serde_json::map::Entry;
 use std::{
-    arch::x86_64::_mm_test_mix_ones_zeros,
-    fs::{exists, read_dir, read_to_string},
+    fs::{create_dir_all, exists, read_dir, read_to_string},
     os,
     path::{Path, PathBuf},
-    thread::panicking,
 };
-use tauri::{command, Runtime};
+use tauri::{command, Manager, Runtime};
 
 #[tauri::command]
-pub fn get_top_level_repository_all(
-    path: String,
+pub fn get_top_level_repository_all<R: Runtime>(
+    app: tauri::AppHandle<R>,
+    window: tauri::Window<R>,
 ) -> Result<Vec<RepositoryStruct>, String> {
-    let top_level_dir_path = Path::new(&path);
+    let app_config = app
+        .try_state::<SapphireAppConfig>()
+        .expect("App state is not defined");
+    let vault_dir_path_string = app_config
+        .get_base_dir()
+        .expect("Path to the base vault should be set");
+    let vault_dir_path = Path::new(&vault_dir_path_string);
 
-    let mut items: Vec<RepositoryStruct> = Vec::new();
-    match read_dir(top_level_dir_path) {
-        Ok(entries) => {
-            for entry_result in entries {
-                match entry_result {
-                    Ok(entry) => {
-                        let path = entry.path();
-                        match path.is_dir() {
-                            true => {
-                                let config_file_path =
-                                    path.join(".sapphire.config");
-                                match exists(config_file_path) {
-                                    Ok(config_file_exists) => {
-                                        match config_file_exists {
-                                            true => match path
-                                                .into_os_string()
-                                                .into_string()
-                                            {
-                                                Ok(os_str) => {
-                                                    items.push(RepositoryStruct {name:entry.file_name().into_string().expect("Cannot convert file name to string"),path:entry.path().into_os_string().into_string().expect("Cannot convert path to string") }) 
-                                                }
-                                                Err(_) => (),
-                                            },
-                                            false => (),
-                                        }
-                                    }
-                                    Err(_) => (),
-                                }
-                            }
-                            false => (),
-                        }
-                    }
-                    Err(_) => (),
-                }
-            }
+    if !vault_dir_path
+        .try_exists()
+        .expect("Cannot check if vault path exists")
+    {
+        return Err(String::from("Configured vault dir does not exist"));
+    }
+
+    let entries = read_dir(vault_dir_path).expect("Cannot read vault dir");
+    let mut repositories: Vec<RepositoryStruct> = Vec::new();
+    for entry_result in entries {
+        let Ok(entry) = entry_result else {
+            continue;
+        };
+        let repository_path = entry.path();
+        let config_file_path = repository_path.join(".sapphire.metadata");
+        if repository_path.is_dir()
+            && config_file_path
+                .try_exists()
+                .expect("Cannot check if repository metadata exists")
+            && config_file_path.is_file()
+        {
+            let relative_repository_path = repository_path
+                .strip_prefix(vault_dir_path)
+                .expect("Repository path should have vault path as prefix");
+
+            let relative_repository_path_string = relative_repository_path
+                .to_path_buf()
+                .into_os_string()
+                .into_string()
+                .expect("Cannot convert PathBuf into string");
+            repositories.push(RepositoryStruct {
+                name: relative_repository_path_string,
+                path: relative_repository_path_string,
+            })
         }
-        Err(_) => (),
-    };
-
-    Ok(items)
+    }
+    Ok(repositories)
 }
 
 #[tauri::command]
-pub fn get_repository(path: String) -> Result<DirectoryData, String> {
-    let repository_path = Path::new(&path);
+pub fn get_repository<R: Runtime>(
+    app: tauri::AppHandle<R>,
+    window: tauri::Window<R>,
+    path: String,
+) -> Result<DirectoryData, String> {
+    let app_config = app
+        .try_state::<SapphireAppConfig>()
+        .expect("App state should be initialized");
+    let vault_dir_path_string = app_config
+        .get_base_dir()
+        .expect("Path to the base vault should be set");
+    let vault_dir_path = Path::new(&vault_dir_path_string);
+    let repository_path = vault_dir_path.join(path);
     let mut files: Vec<String> = Vec::new();
     let mut directories: Vec<String> = Vec::new();
 
-    for entry_result in read_dir(repository_path).expect("Cannot read dir") {
-        match entry_result {
-            Ok(entry) => {
-                let path = entry.path();
-                if path.is_dir() {
-                    directories.push(
-                        entry
-                            .path()
-                            .into_os_string()
-                            .into_string()
-                            .expect("Cannot convert path to string"),
-                    );
-                } else if path.is_file() {
-                    files.push(
-                        entry
-                            .path()
-                            .into_os_string()
-                            .into_string()
-                            .expect("Cannot convert PathBuf to String"),
-                    );
-                }
-            }
-            Err(_) => continue,
+    let entries =
+        read_dir(repository_path).expect("Cannot read repository path");
+
+    for entry_result in entries {
+        let Ok(entry) = entry_result else {
+            continue;
+        };
+
+        let entry_path = entry.path();
+        let relative_entry_path = entry_path
+            .strip_prefix(vault_dir_path)
+            .expect("Entry should have the vault dir path as suffix");
+        if entry_path.is_dir() {
+            directories.push(
+                relative_entry_path
+                    .into_os_string()
+                    .into_string()
+                    .expect("Cannot convert path to string"),
+            )
+        } else if entry_path.is_file() {
+            files.push(
+                relative_entry_path
+                    .into_os_string()
+                    .into_string()
+                    .expect("Cannot convert path to string"),
+            );
         }
     }
-    Ok(DirectoryData {
+    return Ok(DirectoryData {
         path,
         files,
         directories,
-    })
+    });
 }
 
 #[tauri::command]
-pub fn get_file(path: String) -> Result<FileData, String> {
-    let file_path = Path::new(&path);
+pub fn get_file<R: Runtime>(
+    app: tauri::AppHandle<R>,
+    window: tauri::Window<R>,
+    path: String,
+) -> Result<FileData, String> {
+    let app_config = app
+        .try_state::<SapphireAppConfig>()
+        .expect("App config should be set");
+    let vault_dir_path_string = app_config
+        .get_base_dir()
+        .expect("Path to the base vault should be set");
+    let vault_dir_path = Path::new(&vault_dir_path_string);
+    let file_path = vault_dir_path.join(path);
+
+    if !file_path.try_exists().expect("Target file should exist")
+        || !file_path.is_file()
+    {
+        return Err(String::from(
+            "File does not exist or provided a directory",
+        ));
+    }
 
     let file_name = file_path
         .file_name()
