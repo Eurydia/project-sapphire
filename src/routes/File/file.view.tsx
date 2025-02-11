@@ -19,7 +19,7 @@ import { FileLoaderData } from "./file.entity";
 
 export const FileView: FC = () => {
   const { data }: FileLoaderData = useLoaderData();
-  const { content, name, path, vault_name } = data;
+  const { content, path, vault_name } = data;
 
   const pathSegments = useMemo(() => {
     return path.split("\\");
