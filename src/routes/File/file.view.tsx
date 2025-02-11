@@ -1,25 +1,26 @@
+import { BorderColorRounded } from "@mui/icons-material";
 import {
+  Alert,
   Box,
   Breadcrumbs,
+  Button,
   Container,
   Toolbar,
   Typography,
 } from "@mui/material";
+import { invoke } from "@tauri-apps/api/core";
 import { FC, useMemo } from "react";
-import Markdown from "react-markdown";
 import {
   createSearchParams,
   useLoaderData,
 } from "react-router";
-import rehypeKatex from "rehype-katex";
-import rehypeSanitize from "rehype-sanitize";
-import remarkRehype from "remark-rehype";
 import { StyledLink } from "../../components/StyledLink";
+import { StyledMarkdown } from "../../components/StyledMarkdown";
 import { FileLoaderData } from "./file.entity";
 
 export const FileView: FC = () => {
   const { data }: FileLoaderData = useLoaderData();
-  const { content, path, vault_name } = data;
+  const { content, path, name, vault_name } = data;
 
   const pathSegments = useMemo(() => {
     return path.split("\\");
@@ -50,13 +51,33 @@ export const FileView: FC = () => {
             })}
           </Breadcrumbs>
         </Toolbar>
-        <Typography component="div">
-          <Markdown
-            remarkPlugins={[remarkRehype]}
-            rehypePlugins={[rehypeKatex, rehypeSanitize]}
+        <Toolbar disableGutters>
+          <Button
+            startIcon={<BorderColorRounded />}
+            variant="outlined"
+            disableElevation
+            disableRipple
+            disableFocusRipple
+            disableTouchRipple
+            onClick={() => {
+              invoke("open_directory", {
+                path,
+              });
+            }}
           >
-            {content}
-          </Markdown>
+            Edit
+          </Button>
+        </Toolbar>
+        <Typography component="div">
+          {content.length === 0 && (
+            <Alert
+              severity="info"
+              variant="outlined"
+            >
+              This file is empty.
+            </Alert>
+          )}
+          <StyledMarkdown>{content}</StyledMarkdown>
         </Typography>
       </Box>
     </Container>

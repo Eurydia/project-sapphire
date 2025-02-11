@@ -4,6 +4,7 @@ mod setup;
 use crate::commands::get_directory::get_directory;
 use crate::commands::get_file::get_file;
 use crate::commands::get_vault::get_vault;
+use crate::commands::open_directory::open_directory;
 use crate::setup::setup_app_config;
 use tauri::Manager;
 
@@ -20,7 +21,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             get_file,
             get_directory,
-            get_vault
+            get_vault,
+            open_directory,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
