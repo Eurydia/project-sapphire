@@ -3,9 +3,7 @@ use crate::entities::{
     repository::{RepositoryEntry, VaultData},
 };
 use serde::Serialize;
-use std::{
-    fs::read_dir, os::windows::fs::MetadataExt, path::Path, time::SystemTime,
-};
+use std::{fs::read_dir, path::Path, time::SystemTime};
 use tauri::{Manager, Runtime};
 
 #[tauri::command]
