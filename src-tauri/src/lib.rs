@@ -1,10 +1,12 @@
 mod commands;
 mod entities;
 mod setup;
-use setup::setup_app_config;
+use crate::commands::get_directory::get_directory;
+use crate::commands::get_file::get_file;
+use crate::commands::get_vault::get_vault;
+use crate::setup::setup_app_config;
+use std::os::windows::prelude::*;
 use tauri::Manager;
-
-use crate::commands::{get_file, get_repository, get_top_level_repository_all};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -17,9 +19,9 @@ pub fn run() {
         })
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            get_top_level_repository_all,
             get_file,
-            get_repository
+            get_directory,
+            get_vault
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,9 +1,14 @@
+use serde::Serialize;
 use std::string;
 
-use serde::Serialize;
+#[derive(Serialize)]
+pub struct VaultData {
+    pub repositories: Vec<RepositoryEntry>,
+    pub name: String,
+}
 
 #[derive(Serialize)]
-pub struct RepositoryStruct {
-    pub path: String,
+pub struct RepositoryEntry {
     pub name: String,
+    pub path: String,
 }

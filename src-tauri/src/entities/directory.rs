@@ -2,17 +2,19 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct DirectoryData {
+    pub vault_name: String,
     pub path: String,
-    pub files: Vec<String>,
-    pub directories: Vec<String>,
+    pub files: Vec<FileEntry>,
+    pub directories: Vec<DirectoryEntry>,
+}
+#[derive(Serialize)]
+pub struct DirectoryEntry {
+    pub name: String,
+    pub path: String,
 }
 
-impl Default for DirectoryData {
-    fn default() -> Self {
-        return Self {
-            path: String::default(),
-            files: Vec::default(),
-            directories: Vec::default(),
-        };
-    }
+#[derive(Serialize)]
+pub struct FileEntry {
+    pub name: String,
+    pub path: String,
 }

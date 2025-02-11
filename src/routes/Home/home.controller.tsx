@@ -1,17 +1,15 @@
-import { invoke } from "@tauri-apps/api/core";
 import { RouteObject } from "react-router";
 import { HomeLoaderData } from "./home.entity";
+import { getRepositories as getVaultData } from "./home.service";
 import { HomeView } from "./home.view";
 
 export const HOME_CONTROLLER: RouteObject = {
   path: "/",
   element: <HomeView />,
   loader: async () => {
-    const items = (await invoke(
-      "get_top_level_repository_all"
-    )) as any;
+    const data = await getVaultData();
     const loaderData: HomeLoaderData = {
-      repositories: items,
+      data,
     };
     return loaderData;
   },

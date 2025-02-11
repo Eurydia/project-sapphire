@@ -1,7 +1,10 @@
 use std::{default, fs::OpenOptions};
 
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct SapphireAppConfig {
-    base_dir: Option<String>,
+    pub base_dir: Option<String>,
 }
 
 impl Default for SapphireAppConfig {
@@ -9,11 +12,5 @@ impl Default for SapphireAppConfig {
         SapphireAppConfig {
             base_dir: Option::None,
         }
-    }
-}
-
-impl SapphireAppConfig {
-    pub fn get_base_dir(&self) -> Option<String> {
-        return &self.base_dir;
     }
 }
