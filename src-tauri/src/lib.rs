@@ -5,7 +5,6 @@ use crate::commands::get_directory::get_directory;
 use crate::commands::get_file::get_file;
 use crate::commands::get_vault::get_vault;
 use crate::setup::setup_app_config;
-use std::os::windows::prelude::*;
 use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
