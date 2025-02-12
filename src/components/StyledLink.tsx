@@ -17,6 +17,7 @@ export const StyledLink: FC<StyledLinkProps> = (props) => {
         "textDecoration": "none",
         "&:hover": { textDecorationLine: "underline" },
         "userSelect": "none",
+        "fontFamily": "monospace",
       }}
     >
       {children}

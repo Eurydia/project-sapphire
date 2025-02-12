@@ -1,4 +1,8 @@
-import { lighten, Typography } from "@mui/material";
+import {
+  Divider,
+  lighten,
+  Typography,
+} from "@mui/material";
 import { FC } from "react";
 import Markdown, { Components } from "react-markdown";
 import rehypeDocument from "rehype-document";
@@ -44,6 +48,12 @@ const COMPONENTS: Partial<Components> = {
     >
       {children}
     </Typography>
+  ),
+  hr: ({ className }) => (
+    <Divider
+      flexItem
+      className={className}
+    />
   ),
 };
 
