@@ -1,19 +1,14 @@
-import {
-  CheckBoxOutlineBlankRounded,
-  CheckBoxRounded,
-  FolderRounded,
-} from "@mui/icons-material";
+import { FolderRounded } from "@mui/icons-material";
 import {
   Box,
   Breadcrumbs,
   Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
   Container,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  TextField,
+  Grid2,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -27,10 +22,10 @@ import {
 } from "react-router";
 import { StyledLink } from "../../components/StyledLink";
 import { HomeLoaderData } from "./home.entity";
-import { createVaultCollection } from "./home.service";
 
 export const HomeView: FC = () => {
-  const { data }: HomeLoaderData = useLoaderData();
+  const { data, repositoryLookup }: HomeLoaderData =
+    useLoaderData();
   const { name, repositories, config } = data;
   const [items, setItems] = useState<string[]>([]);
   const [collName, setCollName] = useState("");
@@ -55,22 +50,42 @@ export const HomeView: FC = () => {
             OPEN
           </Button>
         </Toolbar>
-        {Object.entries(config.collections)
+        {/* {Object.entries(config.collections)
           .toSorted(([a], [b]) => a.localeCompare(b))
           .map(([name, repos], index) => (
             <List
               key={"collection" + index}
               subheader={name}
             >
-              {repos.map((repo, reIndex) => (
-                <ListItem
-                  key={
-                    "collection" + index + "repo" + reIndex
-                  }
-                >
-                  <ListItemText>{repo}</ListItemText>
-                </ListItem>
-              ))}
+              {repos.map((repo, reIndex) => {
+                const repoData = repositoryLookup.get(repo);
+                if (repoData === undefined) {
+                  return null;
+                }
+                const params = createSearchParams({
+                  path: repoData.path,
+                });
+                const search = `?${params}`;
+                return (
+                  <ListItem
+                    key={
+                      "collection" +
+                      index +
+                      "repo" +
+                      reIndex
+                    }
+                  >
+                    <ListItemButton
+                      component={Link}
+                      to={{ pathname: "/dir", search }}
+                    >
+                      <ListItemText>
+                        {repoData.name}
+                      </ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
             </List>
           ))}
         <Toolbar>
@@ -125,44 +140,48 @@ export const HomeView: FC = () => {
               </ListItemButton>
             </ListItem>
           ))}
-        </List>
-        <List
-          subheader={
-            <Typography fontFamily="monospace">
-              All repositories
-            </Typography>
-          }
+        </List> */}
+        <Grid2
+          container
+          spacing={2}
+          columns={{ xs: 1, md: 2 }}
+          justifyContent="stretch"
         >
-          {repositories.map((item, index) => {
+          {repositories.map((repo) => {
             const params = createSearchParams({
-              path: item.path,
+              path: repo.path,
             });
             const search = `?${params}`;
+            console.debug(repo.description);
             return (
-              <ListItem
-                key={"item" + index}
-                divider
-                disablePadding
+              <Grid2
+                key={repo.path}
+                size={1}
               >
-                <ListItemButton
-                  disableRipple
-                  disableTouchRipple
-                  component={Link}
-                  to={{ pathname: `/dir`, search }}
-                >
-                  <ListItemIcon>
-                    <FolderRounded />
-                  </ListItemIcon>
-                  <ListItemText disableTypography>
-                    <Typography fontFamily="monospace">
-                      {item.name}
-                    </Typography>
-                  </ListItemText>
-                </ListItemButton>
-              </ListItem>
+                <Card>
+                  <CardActionArea
+                    disableRipple
+                    disableTouchRipple
+                    component={Link}
+                    to={{
+                      pathname: "/dir",
+                      search,
+                    }}
+                  >
+                    <CardHeader title={repo.name} />
+                    {repo.description !== null && (
+                      <CardContent>
+                        <Typography>
+                          {repo.description}
+                        </Typography>
+                      </CardContent>
+                    )}
+                  </CardActionArea>
+                </Card>
+              </Grid2>
             );
           })}
-        </List>
+        </Grid2>
       </Box>
     </Container>
   );

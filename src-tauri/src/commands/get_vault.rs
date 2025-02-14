@@ -5,11 +5,19 @@ use crate::entities::{
 use serde::Serialize;
 use std::{
     fmt::write,
-    fs::{self, read_dir, read_to_string},
+    fs::{self, metadata, read_dir, read_to_string},
     path::{Path, PathBuf},
-    time::SystemTime,
+    time::{SystemTime, UNIX_EPOCH},
 };
-use tauri::{utils::config, Manager, Runtime};
+use tauri::{menu::AboutMetadata, utils::config, Manager, Runtime};
+
+macro_rules! system_time_to_unix_time {
+    ($e: expr) => {
+        $e.ok()
+            .and_then(|q| q.duration_since(UNIX_EPOCH).ok())
+            .and_then(|r| Some(r.as_millis()));
+    };
+}
 
 fn collect_repository_entries(
     vault_dir_path: &Path,
@@ -40,23 +48,36 @@ fn collect_repository_entries(
             continue;
         };
 
-        let dir_name_string = match relative_repository_path.file_name() {
-            Some(dir_name_os_string) => {
-                match dir_name_os_string.to_os_string().into_string() {
-                    Ok(result) => result,
-                    Err(_) => continue,
-                }
-            }
-            None => continue,
-        };
-
-        let Ok(metadata) = repository_path.metadata() else {
+        let Some(dir_name_string) = relative_repository_path
+            .file_name()
+            .and_then(|file_name_os_str| {
+                file_name_os_str.to_os_string().into_string().ok()
+            })
+        else {
             continue;
         };
+
+        let Ok(dir_metadata) = repository_path.metadata() else {
+            continue;
+        };
+
+        let created_at = system_time_to_unix_time!(dir_metadata.created());
+        let last_modified = system_time_to_unix_time!(dir_metadata.modified());
+        let last_accessed = system_time_to_unix_time!(dir_metadata.accessed());
+
+        let repository_config_file_path =
+            repository_path.join(".sapphire.repository.config");
+
+        let repository_config_string =
+            read_to_string(relative_repository_path).ok();
 
         repository_entries.push(RepositoryEntry {
             name: dir_name_string,
             path: relative_repository_path_string,
+            created_at,
+            last_accessed,
+            last_modified,
+            description: repository_config_string,
         })
     }
     return Ok(repository_entries);
@@ -109,6 +130,6 @@ pub fn get_vault<R: Runtime>(
     Ok(VaultData {
         repositories,
         name,
-        config: config,
+        config,
     })
 }

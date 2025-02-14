@@ -1,5 +1,6 @@
 mod commands;
 mod entities;
+mod services;
 mod setup;
 use crate::commands::create_vault_collection::create_vault_collection;
 use crate::commands::get_directory::get_directory;
