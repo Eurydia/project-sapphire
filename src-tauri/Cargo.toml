@@ -1,6 +1,6 @@
 [package]
 name = "project-sapphire"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Thanakorn Phuttharaksa"]
 edition = "2021"
