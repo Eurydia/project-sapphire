@@ -2,6 +2,7 @@ import { FolderRounded } from "@mui/icons-material";
 import {
   Box,
   Breadcrumbs,
+  Button,
   Container,
   List,
   ListItem,
@@ -9,8 +10,8 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography,
 } from "@mui/material";
+import { invoke } from "@tauri-apps/api/core";
 import { FC, useMemo } from "react";
 import {
   createSearchParams,
@@ -31,27 +32,39 @@ export const RepositoryView: FC = () => {
   return (
     <Container maxWidth="lg">
       <Box sx={{ padding: 4 }}>
+        <Breadcrumbs>
+          <StyledLink to="/">{vault_name}</StyledLink>
+          {pathSegments.map((name, index) => {
+            const pathSegment = pathSegments
+              .slice(0, index + 1)
+              .join("\\");
+            const params = createSearchParams({
+              path: pathSegment,
+            });
+            const search = `?${params}`;
+            return (
+              <StyledLink
+                key={"path-segment" + index}
+                to={{ pathname: "/dir", search }}
+              >
+                {name}
+              </StyledLink>
+            );
+          })}
+        </Breadcrumbs>
         <Toolbar disableGutters>
-          <Breadcrumbs>
-            <StyledLink to="/">{vault_name}</StyledLink>
-            {pathSegments.map((name, index) => {
-              const pathSegment = pathSegments
-                .slice(0, index + 1)
-                .join("\\");
-              const params = createSearchParams({
-                path: pathSegment,
-              });
-              const search = `?${params}`;
-              return (
-                <StyledLink
-                  key={"path-segment" + index}
-                  to={{ pathname: "/dir", search }}
-                >
-                  {name}
-                </StyledLink>
-              );
-            })}
-          </Breadcrumbs>
+          <Button
+            disableElevation
+            disableFocusRipple
+            disableRipple
+            disableTouchRipple
+            startIcon={<FolderRounded />}
+            onClick={() =>
+              invoke("open_directory", { path })
+            }
+          >
+            Open
+          </Button>
         </Toolbar>
         <List>
           {directories.map((item, index) => {
@@ -77,10 +90,12 @@ export const RepositoryView: FC = () => {
                   <ListItemIcon>
                     <FolderRounded />
                   </ListItemIcon>
-                  <ListItemText disableTypography>
-                    <Typography fontFamily="monospace">
-                      {item.name}
-                    </Typography>
+                  <ListItemText
+                    slotProps={{
+                      primary: { fontFamily: "monospace" },
+                    }}
+                  >
+                    {`${item.name}/`}
                   </ListItemText>
                 </ListItemButton>
               </ListItem>
@@ -107,10 +122,12 @@ export const RepositoryView: FC = () => {
                   }}
                 >
                   <ListItemIcon></ListItemIcon>
-                  <ListItemText disableTypography>
-                    <Typography fontFamily="monospace">
-                      {item.name}
-                    </Typography>
+                  <ListItemText
+                    slotProps={{
+                      primary: { fontFamily: "monospace" },
+                    }}
+                  >
+                    {item.name}
                   </ListItemText>
                 </ListItemButton>
               </ListItem>

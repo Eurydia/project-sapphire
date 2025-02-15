@@ -5,7 +5,7 @@ use std::{
 
 use crate::entities::{app::SapphireAppConfig, file};
 
-pub fn load_app_config(path: &Path) -> Result<SapphireAppConfig, String> {
+pub fn get_app_config(path: &Path) -> Result<SapphireAppConfig, String> {
     let config_file_content =
         read_to_string(path).map_err(|_| "Cannot content in config file")?;
     let app_config =

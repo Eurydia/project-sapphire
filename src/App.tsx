@@ -18,7 +18,7 @@ const ROUTER = createHashRouter([
   FILE_CONTROLLER,
 ]);
 const THEME = responsiveFontSizes(
-  createTheme({ palette: { mode: "dark" } })
+  createTheme({ palette: { mode: "light" } })
 );
 
 export const App = () => {

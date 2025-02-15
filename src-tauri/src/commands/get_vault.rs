@@ -1,6 +1,6 @@
 use crate::entities::{
     app::SapphireAppConfig,
-    vault::{RepositoryEntry, VaultConfig, VaultData},
+    vault::{VaultConfig, VaultData},
 };
 use serde::Serialize;
 use std::{
@@ -11,20 +11,12 @@ use std::{
 };
 use tauri::{menu::AboutMetadata, utils::config, Manager, Runtime};
 
-macro_rules! system_time_to_unix_time {
-    ($e: expr) => {
-        $e.ok()
-            .and_then(|q| q.duration_since(UNIX_EPOCH).ok())
-            .and_then(|r| Some(r.as_millis()));
-    };
-}
-
 fn collect_repository_entries(
     vault_dir_path: &Path,
-) -> Result<Vec<RepositoryEntry>, String> {
+) -> Result<Vec<String>, String> {
     let entries =
         read_dir(vault_dir_path).map_err(|_| "Cannot read vault entries")?;
-    let mut repository_entries: Vec<RepositoryEntry> = Vec::new();
+    let mut repository_entries: Vec<String> = Vec::new();
     for entry_result in entries {
         let Ok(entry) = entry_result else {
             continue;
@@ -48,43 +40,13 @@ fn collect_repository_entries(
             continue;
         };
 
-        let Some(dir_name_string) = relative_repository_path
-            .file_name()
-            .and_then(|file_name_os_str| {
-                file_name_os_str.to_os_string().into_string().ok()
-            })
-        else {
-            continue;
-        };
-
-        let Ok(dir_metadata) = repository_path.metadata() else {
-            continue;
-        };
-
-        let created_at = system_time_to_unix_time!(dir_metadata.created());
-        let last_modified = system_time_to_unix_time!(dir_metadata.modified());
-        let last_accessed = system_time_to_unix_time!(dir_metadata.accessed());
-
-        let repository_config_file_path =
-            repository_path.join(".sapphire.repository.config");
-
-        let repository_config_string =
-            read_to_string(relative_repository_path).ok();
-
-        repository_entries.push(RepositoryEntry {
-            name: dir_name_string,
-            path: relative_repository_path_string,
-            created_at,
-            last_accessed,
-            last_modified,
-            description: repository_config_string,
-        })
+        repository_entries.push(relative_repository_path_string)
     }
     return Ok(repository_entries);
 }
 
 fn read_or_create_vault_config(path: &Path) -> Result<VaultConfig, String> {
-    let config_file_path = path.join(".sapphire.vault.config");
+    let config_file_path = path.join(".sapphire.config.json");
     if !config_file_path
         .try_exists()
         .map_err(|_| "Cannot check if vault config file exist")?
@@ -127,9 +89,10 @@ pub fn get_vault<R: Runtime>(
         .to_os_string()
         .into_string()
         .map_err(|_| "Cannot convert OsString into String")?;
-    Ok(VaultData {
+
+    return Ok(VaultData {
         repositories,
         name,
         config,
-    })
+    });
 }
