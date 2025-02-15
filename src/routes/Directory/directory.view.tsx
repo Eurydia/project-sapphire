@@ -19,11 +19,13 @@ import {
   useLoaderData,
 } from "react-router";
 import { StyledLink } from "../../components/StyledLink";
+import { StyledMarkdown } from "../../components/StyledMarkdown";
 import { DirectoryLoaderData } from "./directory.entity";
 
 export const RepositoryView: FC = () => {
   const { data }: DirectoryLoaderData = useLoaderData();
-  const { directories, files, path, vault_name } = data;
+  const { readme, directories, files, path, vault_name } =
+    data;
 
   const pathSegments = useMemo(() => {
     return path.split("\\");
@@ -134,6 +136,9 @@ export const RepositoryView: FC = () => {
             );
           })}
         </List>
+        {readme !== null && (
+          <StyledMarkdown>{readme}</StyledMarkdown>
+        )}
       </Box>
     </Container>
   );

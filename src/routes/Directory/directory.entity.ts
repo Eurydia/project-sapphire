@@ -7,6 +7,7 @@ export type DirectoryData = {
   path: string;
   files: FileEntry[];
   directories: DirectoryEntry[];
+  readme: string | null;
 };
 
 export type DirectoryEntry = {

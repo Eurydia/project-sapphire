@@ -6,6 +6,7 @@ pub struct DirectoryData {
     pub path: String,
     pub files: Vec<FileEntry>,
     pub directories: Vec<DirectoryEntry>,
+    pub readme: Option<String>,
 }
 #[derive(Serialize)]
 pub struct DirectoryEntry {

@@ -1,10 +1,14 @@
-use std::{fs::read_dir, path::Path};
+use std::{
+    fs::{read_dir, read_to_string},
+    path::Path,
+};
 
 use tauri::{Manager, Runtime};
 
 use crate::entities::{
     app::SapphireAppConfig,
     directory::{DirectoryData, DirectoryEntry, FileEntry},
+    file,
 };
 
 #[tauri::command]
@@ -15,17 +19,19 @@ pub fn get_directory<R: Runtime>(
 ) -> Result<DirectoryData, String> {
     let app_config = app
         .try_state::<SapphireAppConfig>()
-        .ok_or_else(|| "Cannot access app state")?;
+        .ok_or("Cannot access app state")?;
     let vault_dir_path_string = app_config
         .base_dir
         .as_ref()
-        .ok_or_else(|| "Path to vault is not set")?;
+        .ok_or("Path to vault is not set")?;
     let vault_dir_path = Path::new(&vault_dir_path_string);
     let repository_path = vault_dir_path.join(&path);
 
+    let mut readme_content: Option<String> = Option::None;
     let mut files: Vec<FileEntry> = Vec::new();
     let mut directories: Vec<DirectoryEntry> = Vec::new();
-    let entries = read_dir(repository_path).unwrap();
+    let entries = read_dir(repository_path)
+        .map_err(|_| "Cannot read directory content")?;
 
     for entry_result in entries {
         let Ok(entry) = entry_result else {
@@ -37,27 +43,35 @@ pub fn get_directory<R: Runtime>(
         else {
             continue;
         };
-        let name_string = match relative_entry_path.file_name() {
-            Some(os_str) => match os_str.to_os_string().into_string() {
-                Ok(ok) => ok,
-                Err(_) => continue,
-            },
-            None => continue,
+        let Some(name_string) =
+            relative_entry_path
+                .file_name()
+                .and_then(|file_name_os_str| {
+                    return file_name_os_str.to_os_string().into_string().ok();
+                })
+        else {
+            continue;
         };
-        let relative_entry_path_string = match relative_entry_path
+        let Ok(relative_entry_path_string) = relative_entry_path
             .to_path_buf()
             .into_os_string()
             .into_string()
-        {
-            Ok(ok) => ok,
-            Err(_) => continue,
+        else {
+            continue;
         };
+
         if entry_path.is_dir() {
             directories.push(DirectoryEntry {
                 name: name_string,
                 path: relative_entry_path_string,
             })
         } else if entry_path.is_file() {
+            if readme_content.is_none()
+                && name_string.to_lowercase().starts_with("readme")
+            {
+                readme_content = read_to_string(entry_path).ok();
+            }
+
             files.push(FileEntry {
                 name: name_string,
                 path: relative_entry_path_string,
@@ -66,14 +80,16 @@ pub fn get_directory<R: Runtime>(
     }
     let vault_name = vault_dir_path
         .file_name()
-        .unwrap()
-        .to_os_string()
-        .into_string()
-        .unwrap();
+        .and_then(|file_name_os_str| {
+            return file_name_os_str.to_os_string().into_string().ok();
+        })
+        .ok_or("Cannot transform vault name to String")?;
+
     return Ok(DirectoryData {
         vault_name,
         path,
         files,
         directories,
+        readme: readme_content,
     });
 }
