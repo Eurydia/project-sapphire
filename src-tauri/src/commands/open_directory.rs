@@ -20,7 +20,6 @@ pub async fn open_directory<R: Runtime>(
         .ok_or("Vault path is not set")?;
     let vault_path = Path::new(vault_path_string);
     let target_path = vault_path.join(path);
-    open_path(target_path, Option::<&str>::None)
-        .map_err(|_| "Cannot open path")?;
+    open_path(target_path, None::<&str>).map_err(|_| "Cannot open path")?;
     return Ok(());
 }

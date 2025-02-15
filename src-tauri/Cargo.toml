@@ -1,9 +1,10 @@
 [package]
 name = "project-sapphire"
 version = "0.1.2"
-description = ""
+description = "A project to keep track project ideas."
 authors = ["Thanakorn Phuttharaksa"]
 edition = "2021"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

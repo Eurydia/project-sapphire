@@ -13,7 +13,6 @@ pub fn setup_app_config(app: &App) -> Result<SapphireAppConfig, String> {
         .path()
         .app_config_dir()
         .map_err(|_| "Cannot get config_dir path")?;
-
     let config_file_path = config_dir_path.join("config.json");
 
     if (!config_file_path
@@ -24,7 +23,8 @@ pub fn setup_app_config(app: &App) -> Result<SapphireAppConfig, String> {
         let serialized_app_config =
             serde_json::to_string_pretty(&default_app_config)
                 .map_err(|_| "Cannot serialize default app config")?;
-
+        create_dir_all(config_dir_path)
+            .map_err(|_| "Cannot create missing dir");
         write(&config_file_path, serialized_app_config)
             .map_err(|_| "Cannot write serialized default app config")?;
         return Ok(default_app_config);
