@@ -1,4 +1,4 @@
-import { BorderColorRounded } from "@mui/icons-material";
+import { LaunchRounded } from "@mui/icons-material";
 import {
   Alert,
   Box,
@@ -20,7 +20,7 @@ import { FileLoaderData } from "./file.entity";
 
 export const FileView: FC = () => {
   const { data }: FileLoaderData = useLoaderData();
-  const { content, path, name, vault_name } = data;
+  const { content, path, vault_name } = data;
 
   const pathSegments = useMemo(() => {
     return path.split("\\");
@@ -29,31 +29,29 @@ export const FileView: FC = () => {
   return (
     <Container maxWidth="lg">
       <Box sx={{ padding: 4 }}>
-        <Toolbar disableGutters>
-          <Breadcrumbs>
-            <StyledLink to="/">{vault_name}</StyledLink>
-            {pathSegments.map((name, index) => {
-              const pathSegment = pathSegments
-                .slice(0, index + 1)
-                .join("\\");
-              const params = createSearchParams({
-                path: pathSegment,
-              });
-              const search = `?${params}`;
-              return (
-                <StyledLink
-                  key={"path-segment" + index}
-                  to={{ pathname: "/dir", search }}
-                >
-                  {name}
-                </StyledLink>
-              );
-            })}
-          </Breadcrumbs>
-        </Toolbar>
+        <Breadcrumbs>
+          <StyledLink to="/">{vault_name}</StyledLink>
+          {pathSegments.map((name, index) => {
+            const pathSegment = pathSegments
+              .slice(0, index + 1)
+              .join("\\");
+            const params = createSearchParams({
+              path: pathSegment,
+            });
+            const search = `?${params}`;
+            return (
+              <StyledLink
+                key={"path-segment" + index}
+                to={{ pathname: "/dir", search }}
+              >
+                {name}
+              </StyledLink>
+            );
+          })}
+        </Breadcrumbs>
         <Toolbar disableGutters>
           <Button
-            startIcon={<BorderColorRounded />}
+            startIcon={<LaunchRounded />}
             variant="outlined"
             disableElevation
             disableRipple
@@ -65,10 +63,14 @@ export const FileView: FC = () => {
               });
             }}
           >
-            Edit
+            OPEN
           </Button>
         </Toolbar>
-        <Typography component="div">
+        <Typography
+          component="div"
+          maxWidth="md"
+          marginX="auto"
+        >
           {content.length === 0 && (
             <Alert
               severity="info"
