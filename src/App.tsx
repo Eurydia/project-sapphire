@@ -1,7 +1,6 @@
 import {
   createTheme,
   CssBaseline,
-  responsiveFontSizes,
   ThemeProvider,
 } from "@mui/material";
 import {
@@ -17,9 +16,12 @@ const ROUTER = createHashRouter([
   DIRECTORY_CONTROLLER,
   FILE_CONTROLLER,
 ]);
-const THEME = responsiveFontSizes(
-  createTheme({ palette: { mode: "light" } })
-);
+const THEME = createTheme({
+  palette: { mode: "light" },
+  typography: {
+    fontFamily: "roboto",
+  },
+});
 
 export const App = () => {
   return (

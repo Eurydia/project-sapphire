@@ -66,11 +66,7 @@ export const FileView: FC = () => {
             OPEN
           </Button>
         </Toolbar>
-        <Typography
-          component="div"
-          maxWidth="md"
-          marginX="auto"
-        >
+        <Typography component="div">
           {content.length === 0 && (
             <Alert
               severity="info"

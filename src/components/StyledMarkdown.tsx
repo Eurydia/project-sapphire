@@ -18,7 +18,7 @@ const COMPONENTS: Partial<Components> = {
   p: ({ children, className }) => (
     <Typography
       className={className}
-      component="p"
+      fontFamily="ibm plex serif"
     >
       {children}
     </Typography>
@@ -44,7 +44,7 @@ const COMPONENTS: Partial<Components> = {
   span: ({ children, className }) => (
     <Typography
       className={className}
-      component="span"
+      fontFamily="ibm plex serif"
     >
       {children}
     </Typography>
@@ -63,23 +63,29 @@ export const StyledMarkdown: FC<StyledMarkdownProps> = (
 ) => {
   const { children } = props;
   return (
-    <Markdown
-      components={COMPONENTS}
-      remarkPlugins={[
-        remarkMath,
-        remarkRehype,
-        [
-          remarkParse,
-          { fragment: true } as RemarkParseOptions,
-        ],
-      ]}
-      rehypePlugins={[
-        rehypeSanitize,
-        rehypeDocument,
-        rehypeMathjax,
-      ]}
+    <Typography
+      sx={{
+        fontFamily: "ibm plex serif",
+      }}
     >
-      {children}
-    </Markdown>
+      <Markdown
+        components={COMPONENTS}
+        remarkPlugins={[
+          remarkMath,
+          remarkRehype,
+          [
+            remarkParse,
+            { fragment: true } as RemarkParseOptions,
+          ],
+        ]}
+        rehypePlugins={[
+          rehypeSanitize,
+          rehypeDocument,
+          rehypeMathjax,
+        ]}
+      >
+        {children}
+      </Markdown>
+    </Typography>
   );
 };

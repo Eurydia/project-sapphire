@@ -1,20 +1,24 @@
-import { FolderRounded } from "@mui/icons-material";
+import {
+  FolderRounded,
+  LaunchRounded,
+} from "@mui/icons-material";
 import {
   Box,
   Breadcrumbs,
   Button,
+  Card,
+  CardContent,
+  CardHeader,
   Container,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Stack,
   Toolbar,
-  Typography,
 } from "@mui/material";
 import { invoke } from "@tauri-apps/api/core";
-import { FC, Fragment } from "react";
+import { FC } from "react";
 import {
   createSearchParams,
   Link,
@@ -25,7 +29,7 @@ import { HomeLoaderData } from "./home.entity";
 
 export const HomeView: FC = () => {
   const { data }: HomeLoaderData = useLoaderData();
-  const { name, repositories, config } = data;
+  const { name, repositories } = data;
 
   return (
     <Container maxWidth="lg">
@@ -39,7 +43,8 @@ export const HomeView: FC = () => {
             disableFocusRipple
             disableTouchRipple
             disableRipple
-            startIcon={<FolderRounded />}
+            startIcon={<LaunchRounded />}
+            variant="outlined"
             onClick={() =>
               invoke("open_directory", { path: "" })
             }
@@ -47,110 +52,53 @@ export const HomeView: FC = () => {
             OPEN
           </Button>
         </Toolbar>
-        <Stack spacing={4}>
-          <Typography
-            variant="h2"
-            fontWeight={900}
-          >
-            Collections
-          </Typography>
-          {Object.entries(config.collections)
-            .toSorted(([a], [b]) => a.localeCompare(b))
-            .map(([name, repos], index) => {
-              return (
-                <Fragment key={"collection" + index}>
-                  <Typography
-                    variant="h3"
-                    fontWeight={900}
+        <Card variant="outlined">
+          <CardHeader
+            title="All repositories"
+            slotProps={{
+              title: {
+                fontWeight: 900,
+              },
+            }}
+          />
+          <CardContent>
+            <List disablePadding>
+              {repositories.map((path) => {
+                const params = createSearchParams({
+                  path: path,
+                });
+                const search = `?${params}`;
+                return (
+                  <ListItem
+                    key={path}
+                    divider
+                    disablePadding
                   >
-                    {name}
-                  </Typography>
-                  <List disablePadding>
-                    {repos.map((repo, reIndex) => {
-                      const params = createSearchParams({
-                        path: repo,
-                      });
-                      const search = `?${params}`;
-                      return (
-                        <ListItem
-                          key={
-                            "collection" +
-                            index +
-                            "repo" +
-                            reIndex
-                          }
-                          disablePadding
-                          divider
-                        >
-                          <ListItemButton
-                            disableRipple
-                            disableTouchRipple
-                            component={Link}
-                            to={{
-                              pathname: "/dir",
-                              search,
-                            }}
-                          >
-                            <ListItemIcon>
-                              <FolderRounded />
-                            </ListItemIcon>
-                            <ListItemText
-                              slotProps={{
-                                primary: {
-                                  fontFamily: "monospace",
-                                },
-                              }}
-                            >
-                              {`${repo}/`}
-                            </ListItemText>
-                          </ListItemButton>
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                </Fragment>
-              );
-            })}
-          <Typography
-            variant="h2"
-            fontWeight={900}
-          >
-            All repositories
-          </Typography>
-          <List disablePadding>
-            {repositories.map((path) => {
-              const params = createSearchParams({
-                path: path,
-              });
-              const search = `?${params}`;
-              return (
-                <ListItem
-                  key={path}
-                  divider
-                  disablePadding
-                >
-                  <ListItemButton
-                    component={Link}
-                    to={{ pathname: "/dir", search }}
-                    disableRipple
-                    disableTouchRipple
-                  >
-                    <ListItemIcon>
-                      <FolderRounded />
-                    </ListItemIcon>
-                    <ListItemText
-                      slotProps={{
-                        primary: {
-                          fontFamily: "monospace",
-                        },
-                      }}
-                    >{`${path}/`}</ListItemText>
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-        </Stack>
+                    <ListItemButton
+                      component={Link}
+                      to={{ pathname: "/dir", search }}
+                      disableRipple
+                      disableTouchRipple
+                    >
+                      <ListItemIcon>
+                        <FolderRounded />
+                      </ListItemIcon>
+                      <ListItemText
+                        slotProps={{
+                          primary: {
+                            fontFamily: "monospace",
+                          },
+                        }}
+                      >
+                        {path}
+                      </ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </CardContent>
+        </Card>
       </Box>
     </Container>
   );
