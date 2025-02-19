@@ -1,11 +1,10 @@
 import { RouteObject } from "react-router";
-import { DirectoryLoaderData } from "./directory.entity";
-import { getDirectory as getDirectoryEntry } from "./directory.service";
-import { RepositoryView } from "./directory.view";
+import { DirectoryLoaderData } from "~types/directory.types";
+import { DirectoryView } from "~views/DirectoryView";
 
 export const DIRECTORY_CONTROLLER: RouteObject = {
   path: "/dir",
-  element: <RepositoryView />,
+  element: <DirectoryView />,
   loader: async ({ request }) => {
     const { searchParams } = new URL(request.url);
     const path = searchParams.get("path");

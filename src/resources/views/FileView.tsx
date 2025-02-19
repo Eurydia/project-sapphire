@@ -14,9 +14,9 @@ import {
   createSearchParams,
   useLoaderData,
 } from "react-router";
-import { StyledLink } from "../../components/StyledLink";
-import { StyledMarkdown } from "../../components/StyledMarkdown";
-import { FileLoaderData } from "./file.entity";
+import { FileLoaderData } from "~types/file.types";
+import { StyledLink } from "../components/StyledLink";
+import { StyledMarkdown } from "../components/StyledMarkdown";
 
 export const FileView: FC = () => {
   const { data }: FileLoaderData = useLoaderData();

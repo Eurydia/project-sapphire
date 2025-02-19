@@ -1,8 +1,10 @@
 import { invoke } from "@tauri-apps/api/core";
-import { VaultData } from "./home.entity";
+import { VaultData } from "~types/home.types";
 
-export const getVaultData = async () => {
-  const response: VaultData = await invoke("get_vault");
+export const getVault = async () => {
+  const response: VaultData | null = await invoke(
+    "get_vault"
+  );
   return response;
 };
 

@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { FileData } from "./file.entity";
+import { FileData } from "~types/file.types";
 
 export const getFileData = async (path: string) => {
   const data = (await invoke("get_file", {

@@ -24,18 +24,19 @@ import {
   Link,
   useLoaderData,
 } from "react-router";
-import { StyledLink } from "../../components/StyledLink";
-import { HomeLoaderData } from "./home.entity";
+import { StyledLink } from "~components/StyledLink";
+import { HomeLoaderData } from "~types/home.types";
 
 export const HomeView: FC = () => {
   const { data }: HomeLoaderData = useLoaderData();
+
   const { name, repositories } = data;
 
   return (
     <Container maxWidth="lg">
       <Box sx={{ padding: 4 }}>
         <Breadcrumbs>
-          <StyledLink to="/">{name}</StyledLink>s
+          <StyledLink to="/">{name}</StyledLink>
         </Breadcrumbs>
         <Toolbar disableGutters>
           <Button

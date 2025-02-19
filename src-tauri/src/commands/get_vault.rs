@@ -71,14 +71,15 @@ fn read_or_create_vault_config(path: &Path) -> Result<VaultConfig, String> {
 pub fn get_vault<R: Runtime>(
     app: tauri::AppHandle<R>,
     window: tauri::Window<R>,
-) -> Result<VaultData, String> {
+) -> Result<Option<VaultData>, String> {
     let app_config = app
         .try_state::<SapphireAppConfig>()
         .ok_or("Cannot access app state")?;
-    let vault_dir_path_string = app_config
-        .base_dir
-        .as_ref()
-        .ok_or("Path to vault is not set")?;
+
+    let Some(vault_dir_path_string) = app_config.base_dir.as_ref() else {
+        return Ok(Option::None);
+    };
+
     let vault_dir_path = Path::new(&vault_dir_path_string);
 
     let repositories = collect_repository_entries(vault_dir_path)?;
@@ -90,9 +91,9 @@ pub fn get_vault<R: Runtime>(
         .into_string()
         .map_err(|_| "Cannot convert OsString into String")?;
 
-    return Ok(VaultData {
+    return Ok(Option::Some(VaultData {
         repositories,
         name,
         config,
-    });
+    }));
 }

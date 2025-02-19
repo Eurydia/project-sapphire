@@ -18,11 +18,11 @@ import {
   Link,
   useLoaderData,
 } from "react-router";
-import { StyledLink } from "../../components/StyledLink";
-import { StyledMarkdown } from "../../components/StyledMarkdown";
-import { DirectoryLoaderData } from "./directory.entity";
+import { DirectoryLoaderData } from "~types/directory.types";
+import { StyledLink } from "../components/StyledLink";
+import { StyledMarkdown } from "../components/StyledMarkdown";
 
-export const RepositoryView: FC = () => {
+export const DirectoryView: FC = () => {
   const { data }: DirectoryLoaderData = useLoaderData();
   const { readme, directories, files, path, vault_name } =
     data;

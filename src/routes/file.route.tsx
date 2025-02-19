@@ -1,7 +1,7 @@
 import { RouteObject } from "react-router";
-import { FileLoaderData } from "./file.entity";
-import { getFileData } from "./file.service";
-import { FileView } from "./file.view";
+import { getFileData } from "~services/file.services";
+import { FileLoaderData } from "~types/file.types";
+import { FileView } from "~views/FileView";
 
 export const FILE_CONTROLLER: RouteObject = {
   path: "/file",

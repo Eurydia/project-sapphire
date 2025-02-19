@@ -7,9 +7,9 @@ import {
   createHashRouter,
   RouterProvider,
 } from "react-router";
-import { DIRECTORY_CONTROLLER } from "./routes/Directory/directory.controller";
-import { FILE_CONTROLLER } from "./routes/File/file.controller";
-import { HOME_CONTROLLER } from "./routes/Home/home.controller";
+import { DIRECTORY_CONTROLLER } from "~routes/directory.route";
+import { FILE_CONTROLLER } from "~routes/file.route";
+import { HOME_CONTROLLER } from "~routes/home.route";
 
 const ROUTER = createHashRouter([
   HOME_CONTROLLER,
@@ -18,8 +18,15 @@ const ROUTER = createHashRouter([
 ]);
 const THEME = createTheme({
   palette: { mode: "light" },
-  typography: {
-    fontFamily: "roboto",
+  components: {
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+        disableRipple: true,
+        disableFocusRipple: true,
+        disableTouchRipple: true,
+      },
+    },
   },
 });
 
