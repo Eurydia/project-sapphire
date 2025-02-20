@@ -8,6 +8,7 @@ use crate::commands::get_file::get_file;
 use crate::commands::get_vault::get_vault;
 use crate::commands::open_directory::open_directory;
 use crate::setup::setup_app_config;
+use commands::put_vault_dir;
 use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -25,7 +26,8 @@ pub fn run() {
             get_directory,
             get_vault,
             open_directory,
-            create_vault_collection
+            create_vault_collection,
+            put_vault_dir
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

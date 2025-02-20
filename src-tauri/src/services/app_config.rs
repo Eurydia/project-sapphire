@@ -29,14 +29,14 @@ pub fn update_vault_path(
 ) -> Result<(), String> {
     let mut app_config = get_app_config(path)?;
 
-    let cleaned_vault_path = Path::from(vault_path_string);
+    let cleaned_vault_path = Path::new(&vault_path_string);
     let cleaned_vault_path_string = cleaned_vault_path
         .as_os_str()
         .to_os_string()
         .into_string()
         .ok();
 
-    app_config.base_dir = cleaned_vault_path;
+    app_config.base_dir = cleaned_vault_path_string;
 
     let new_app_config_string = serde_json::to_string_pretty(&app_config)
         .map_err(|err| err.to_string())?;
