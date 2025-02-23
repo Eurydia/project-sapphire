@@ -6,9 +6,8 @@ use crate::commands::create_vault_collection::create_vault_collection;
 use crate::commands::get_directory::get_directory;
 use crate::commands::get_file::get_file;
 use crate::commands::get_vault::get_vault;
-use crate::commands::open_directory::open_directory;
 use crate::setup::setup_app_config;
-use commands::put_vault_dir;
+use commands::*;
 use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
