@@ -1,7 +1,13 @@
-export enum PorjectStage {}
 export type Project = {
   id: string
-  description: string
   name: string
-  tags: string[]
+  description?: string
+  updatedAt?: string
+  createdAt: string
+  tags: {
+    technologies: string[]
+    topics: string[]
+    status: string
+    visibility: string
+  }
 }

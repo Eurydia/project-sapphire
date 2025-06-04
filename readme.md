@@ -8,3 +8,6 @@
   - consideration: conflicts and desynchronization
 - can only brain dump onto existing (albeit empty) repo -> sense of commitment
   - create empty repo on GitHub -> prepare wiki -> brain dump
+- hybrid (database + local file)
+  - database: tracks metadata, repo directory
+  - local file: edit, git repo
