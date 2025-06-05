@@ -1,4 +1,4 @@
 import { createTheme } from '@mui/material'
-import { brown } from '@mui/material/colors'
+import { indigo } from '@mui/material/colors'
 
-export const theme = createTheme({ palette: { primary: brown } })
+export const theme = createTheme({ palette: { primary: indigo } })

@@ -2,7 +2,7 @@ export type Project = {
   id: string
   name: string
   description?: string
-  updatedAt?: string
+  updatedAt: string
   createdAt: string
   tags: {
     technologies: string[]
