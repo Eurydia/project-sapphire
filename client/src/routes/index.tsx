@@ -1,7 +1,6 @@
 import { StyledLink } from '@/components/StyledLink'
 import { getProjectAll } from '@/services/project/api'
 import { ProjectQueryBuilder } from '@/services/project/helper'
-import type { Project } from '@/types/Project'
 import { SearchRounded } from '@mui/icons-material'
 import {
   Box,
@@ -17,44 +16,14 @@ import {
 } from '@mui/material'
 import { createFileRoute } from '@tanstack/react-router'
 import { fallback, zodValidator } from '@tanstack/zod-adapter'
-import { useMemo, useState, type FC } from 'react'
+import { type FC } from 'react'
 import { z } from 'zod'
-
-const useOrderProjects = (items: Project[]) => {
-  const [sortOrder, setSortOrder] = useState(true)
-  const [sortBy, setSortBy] = useState<'name' | 'updatedAt' | 'createdAt'>(
-    'name',
-  )
-  const sortedItems = useMemo(() => {
-    return items.sort((a, b) => {
-      const aValue = a[sortBy]
-      const bValue = b[sortBy]
-      if (aValue < bValue) {
-        return sortOrder ? -1 : 1
-      }
-      if (aValue > bValue) {
-        return sortOrder ? 1 : -1
-      }
-      return 0
-    })
-  }, [items, sortOrder, sortBy])
-
-  return {
-    sortedItems,
-    sortOrder,
-    setSortOrder,
-    setSortBy,
-    sortBy,
-  }
-}
-
 const RouteComponent: FC = () => {
   const { items } = Route.useLoaderData()
-  const { setSortBy, setSortOrder, sortBy, sortOrder, sortedItems } =
-    useOrderProjects(items)
 
   return (
     <Box sx={{ maxWidth: 'lg', marginX: 'auto', padding: 4 }}>
+      <Box ref={ref}></Box>
       <Stack spacing={1}>
         <form>
           <Toolbar

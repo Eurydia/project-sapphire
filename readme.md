@@ -11,3 +11,10 @@
 - hybrid (database + local file)
   - database: tracks metadata, repo directory
   - local file: edit, git repo
+
+---
+
+- keep copy on database for security reasons
+- sync on start up/page update/force refresh
+- dont show file content but open it in default app
+  - avoid incompaitble format/flavour of markdown
