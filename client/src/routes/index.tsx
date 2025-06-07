@@ -8,7 +8,10 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  ListSubheader,
   Stack,
   TextField,
   Toolbar,
@@ -18,12 +21,12 @@ import { createFileRoute } from '@tanstack/react-router'
 import { fallback, zodValidator } from '@tanstack/zod-adapter'
 import { type FC } from 'react'
 import { z } from 'zod'
+
 const RouteComponent: FC = () => {
-  const { items } = Route.useLoaderData()
+  const { items, search } = Route.useLoaderData()
 
   return (
     <Box sx={{ maxWidth: 'lg', marginX: 'auto', padding: 4 }}>
-      <Box ref={ref}></Box>
       <Stack spacing={1}>
         <form>
           <Toolbar
@@ -39,7 +42,7 @@ const RouteComponent: FC = () => {
               name="name"
               fullWidth
               autoComplete="off"
-              defaultValue=""
+              defaultValue={search.name}
               placeholder="Search project"
             />
             <Stack
@@ -65,33 +68,75 @@ const RouteComponent: FC = () => {
             <Card variant="outlined" key={item.id}>
               <CardHeader title={<StyledLink to="/">{item.name}</StyledLink>} />
               <CardContent>{item.description}</CardContent>
-              <CardContent
-                sx={{
-                  display: 'flex',
-                  gap: 1,
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                }}
-              >
-                {item.tags.technologies.map((tech) => {
-                  return (
-                    <Paper
-                      key={`tech-${tech}`}
-                      variant="outlined"
-                      sx={{
-                        paddingX: 1,
-                        borderRadius: ({ shape }) => shape.borderRadius,
-                        width: 'fit-content',
-                      }}
-                    >
-                      <Typography variant="subtitle1">
-                        <StyledLink to="." search={{ technologies: [tech] }}>
-                          {tech}
-                        </StyledLink>
-                      </Typography>
-                    </Paper>
-                  )
-                })}
+              <CardContent>
+                <List
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                  }}
+                  disablePadding
+                  dense
+                  subheader={
+                    <ListSubheader disableGutters disableSticky>
+                      Technologies
+                    </ListSubheader>
+                  }
+                >
+                  {item.tags.technologies.map((tech) => {
+                    return (
+                      <ListItem
+                        key={`tech-${tech}`}
+                        dense
+                        sx={{
+                          width: 'fit-content',
+                        }}
+                      >
+                        <ListItemText>
+                          <StyledLink to="." search={{ technologies: [tech] }}>
+                            {`${tech}`}
+                          </StyledLink>
+                        </ListItemText>
+                      </ListItem>
+                    )
+                  })}
+                </List>
+                <List
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                  }}
+                  disablePadding
+                  dense
+                  subheader={
+                    <ListSubheader disableGutters disableSticky>
+                      Topics:
+                    </ListSubheader>
+                  }
+                >
+                  {item.tags.topics.map((topics) => {
+                    return (
+                      <ListItem
+                        dense
+                        key={`topic-${topics}`}
+                        sx={{
+                          width: 'fit-content',
+                        }}
+                      >
+                        <ListItemText>
+                          <StyledLink
+                            to="."
+                            search={{ technologies: [topics] }}
+                          >
+                            {`${topics}`}
+                          </StyledLink>
+                        </ListItemText>
+                      </ListItem>
+                    )
+                  })}
+                </List>
               </CardContent>
             </Card>
           )
@@ -122,6 +167,6 @@ export const Route = createFileRoute('/')({
       .withTopics(deps.search.topics)
       .build()
     const items = await getProjectAll(query)
-    return { items }
+    return { items, search: deps.search }
   },
 })

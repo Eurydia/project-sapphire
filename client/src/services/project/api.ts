@@ -1,9 +1,9 @@
 import type { Project } from '@/types/Project'
 import { faker } from '@faker-js/faker'
-import { matchSorter } from 'match-sorter'
+import { matchSorter, rankings } from 'match-sorter'
 import type { ProjectQuery } from './helper'
 
-export const getProject = async (id: string) => {
+export const getProject = (id: string) => {
   return {
     id,
     name: faker.lorem.word(), // single random word
@@ -18,11 +18,17 @@ export const getProject = async (id: string) => {
     },
   } as Project
 }
-const projects = await Promise.all(
-  faker.helpers.multiple(() => getProject(faker.string.uuid()), {
+
+let projects = []
+if (localStorage.getItem('t_projects') === null) {
+  projects = faker.helpers.multiple(() => getProject(faker.string.uuid()), {
     count: 50,
-  }),
-)
+  })
+  localStorage.setItem('t_projects', JSON.stringify(projects))
+} else {
+  projects = JSON.parse(localStorage.getItem('t_projects')!)
+}
+
 export const getProjectAll = async (query: ProjectQuery) => {
   // The query should be passed along to the backend
   // instead of loading every project and filter with match-sorter here
@@ -39,6 +45,7 @@ export const getProjectAll = async (query: ProjectQuery) => {
     items = query.technologies.reduceRight((acc, tech) => {
       return matchSorter(acc, tech, {
         keys: ['tags.technologies'],
+        threshold: rankings.EQUAL,
       })
     }, items)
   }
@@ -47,6 +54,7 @@ export const getProjectAll = async (query: ProjectQuery) => {
     items = query.topics.reduceRight((acc, topic) => {
       return matchSorter(acc, topic, {
         keys: ['tags.topics'],
+        threshold: rankings.EQUAL,
       })
     }, items)
   }
