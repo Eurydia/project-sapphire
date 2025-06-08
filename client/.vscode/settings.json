@@ -8,5 +8,8 @@
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true
   },
-  "terminal.integrated.cwd": "${workspaceFolder}"
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "javascript.autoClosingTags": true,
+  "javascript.suggest.autoImports": true,
+  "typescript.suggest.autoImports": true
 }

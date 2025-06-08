@@ -8,6 +8,6 @@ export type Project = {
     technologies: string[]
     topics: string[]
     status: string
-    visibility: string
+    priority: string
   }
 }

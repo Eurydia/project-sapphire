@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useRef } from 'react'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeMathJax from 'rehype-mathjax'
@@ -22,10 +22,8 @@ const processor = remark()
   .use(rehypeMathJax)
   .use(rehypeHighlight)
   .use(rehypeStringify)
-export const useMarkdownParser = (
-  containerRef: RefObject<HTMLElement>,
-  markdown: string,
-) => {
+export const useMarkdownParser = (markdown: string) => {
+  const containerRef = useRef<HTMLElement>(null)
   useEffect(() => {
     if (!containerRef.current) {
       return
@@ -45,4 +43,5 @@ export const useMarkdownParser = (
       cancelled = true
     }
   }, [containerRef, markdown])
+  return containerRef
 }
