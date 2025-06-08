@@ -1,7 +1,7 @@
 import { Markdown } from '@/components/Markdown'
 import { StyledLink } from '@/components/StyledLink'
-import { getProjectAll } from '@/services/project/api'
-import { ProjectQueryBuilder } from '@/services/project/helper'
+import { getProjectAll } from '@/services/projects/api'
+import { ProjectQueryBuilder } from '@/services/projects/helper'
 import {
   AddRounded,
   CodeRounded,
@@ -95,7 +95,8 @@ const RouteComponent: FC = () => {
               <CardHeader
                 title={
                   <StyledLink
-                    to="/"
+                    to="/projects/$projectId"
+                    params={{ projectId: item.id }}
                     sx={{
                       display: 'block',
                       textOverflow: 'ellipsis',

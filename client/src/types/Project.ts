@@ -10,4 +10,5 @@ export type Project = {
     status: string
     priority: string
   }
+  location: string
 }
