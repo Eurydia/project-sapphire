@@ -1,1 +1,8 @@
-<!--  -->
+- project/tree/$
+  - no blob (file display)
+- project/graph/
+  - epic, stories, tasks
+    - bind one or more note under the project
+    - task dependency graph representation
+    - these will not have notes of their own but can be binded with existing note
+    - allow usual disk representation and augmentation

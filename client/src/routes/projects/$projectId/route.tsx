@@ -4,9 +4,14 @@ import {
   getProject,
 } from '@/services/projects/api'
 import {
-  AppBar,
+  FolderRounded,
+  MoreVertRounded,
+  SyncRounded,
+} from '@mui/icons-material'
+import {
   Box,
-  Breadcrumbs,
+  Button,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -18,69 +23,94 @@ import {
   Typography,
 } from '@mui/material'
 import { createFileRoute, notFound, Outlet } from '@tanstack/react-router'
-import type { FC } from 'react'
+import moment from 'moment'
+import { Fragment, type FC } from 'react'
 
 const RouteComponent: FC = () => {
   const { path, data, project } = Route.useLoaderData()
   return (
-    <Box>
-      <AppBar
-        variant="outlined"
-        color="default"
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        position="relative"
+    <Fragment>
+      <Box
+        marginX={4}
+        marginY={8}
+        sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}
       >
-        <Toolbar disableGutters variant="dense">
-          <Breadcrumbs>
-            {path.map((segment, idx) => {
-              const to = `/${segment.path}`
-              const isLast = idx === path.length - 1
-              return isLast ? (
-                <Typography key={to} color="text.primary">
-                  {segment.label}
-                </Typography>
-              ) : (
-                <StyledLink key={to} to={to}>
-                  {segment.label}
-                </StyledLink>
-              )
-            })}
-          </Breadcrumbs>
+        <Toolbar variant="dense" disableGutters sx={{ gap: 1 }}>
+          <Button variant="contained" disableElevation disableRipple>
+            <SyncRounded />
+          </Button>
+          <Typography>{`Synchronized ${moment(data.lastSynchronized).fromNow()}`}</Typography>
         </Toolbar>
-      </AppBar>
-      <Paper variant="outlined" sx={{ marginX: 2 }}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.subdirectories.map((entry) => {
-                console.debug(data)
-                return (
-                  <TableRow key={entry} hover>
-                    <TableCell component="th">
-                      <StyledLink
-                        to={`/projects/$projectId/$`}
-                        params={{
-                          projectId: project.id,
-                          _splat: `${data.path}/${entry}`,
-                        }}
-                      >
-                        {entry.at(-1)}
-                      </StyledLink>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-      <Outlet />
-    </Box>
+
+        <Paper variant="outlined">
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell />
+                  <TableCell>Name</TableCell>
+                  <TableCell>Last updated</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.subdirectories.map(({ path, updatedAt }, index) => {
+                  return (
+                    <TableRow
+                      key={`row-dir-${index}`}
+                      hover
+                      sx={{
+                        '&:last-child td, &:last-child th': { border: 0 },
+                      }}
+                    >
+                      <TableCell padding="checkbox">
+                        <FolderRounded color="primary" fontSize="small" />
+                      </TableCell>
+                      <TableCell>
+                        <StyledLink
+                          to={`/projects/$projectId/tree/$`}
+                          params={{
+                            projectId: project.id,
+                            _splat: `${data.path}/${path}`,
+                          }}
+                        >
+                          {path}
+                        </StyledLink>
+                      </TableCell>
+                      <TableCell>{moment(updatedAt).fromNow()}</TableCell>
+                      <TableCell>
+                        <IconButton>
+                          <MoreVertRounded />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+                {data.files.map(({ path, updatedAt }, index) => {
+                  return (
+                    <TableRow
+                      key={`row-file-${index}`}
+                      hover
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell padding="checkbox" />
+                      <TableCell>{path}</TableCell>
+                      <TableCell>{moment(updatedAt).fromNow()}</TableCell>
+                      <TableCell>
+                        <IconButton>
+                          <MoreVertRounded />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+        <Outlet />
+      </Box>
+    </Fragment>
   )
 }
 
@@ -88,17 +118,21 @@ export const Route = createFileRoute('/projects/$projectId')({
   component: RouteComponent,
 
   loader: (ctx) => {
-    const segments = ctx.location.pathname.split('/').filter(Boolean)
-    segments.shift()
+    // const segments = ctx.location.pathname.split('/').filter(Boolean).slice(2)
     const project = getProject(ctx.params.projectId)
     if (project === null) {
       throw notFound()
     }
     return {
-      path: segments.map((segment, idx) => ({
-        label: idx === 0 ? project.name : segment,
-        path: ['projects', ...segments.slice(0, idx + 1)].join('/'),
-      })),
+      // path: segments.map((segment, idx) => ({
+      //   label: idx === 0 ? project.name : segment,
+      //   path: [
+      //     'projects',
+      //     ctx.params.projectId,
+      //     'tree',
+      //     ...segments.slice(0, idx + 1),
+      //   ].join('/'),
+      // })),
       data: generateFakeProjectDirectory(segments.slice(1).join('/')),
       project,
     }

@@ -83,10 +83,24 @@ export const getProjectAll = async (query: ProjectQuery) => {
   return items
 }
 export function generateFakeProjectDirectory(path: string): ProjectDirectory {
-  const files = faker.helpers.multiple(() => faker.lorem.slug(), { count: 5 })
-  const subdirectories = faker.helpers.multiple(() => faker.lorem.slug(), {
-    count: 6,
-  })
+  const files: ProjectDirectory['files'] = faker.helpers.multiple(
+    () => ({
+      createdAt: faker.date.past().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+      path: faker.system.fileName(),
+    }),
+    { count: 5 },
+  )
+  const subdirectories = faker.helpers.multiple(
+    () => ({
+      createdAt: faker.date.past().toISOString(),
+      updatedAt: faker.date.recent().toISOString(),
+      path: faker.system.fileName({ extensionCount: 0 }),
+    }),
+    {
+      count: 5,
+    },
+  )
   const lastModified = faker.date.recent().toISOString()
   const lastSynchronized = faker.date.recent().toISOString()
 
@@ -96,9 +110,11 @@ export function generateFakeProjectDirectory(path: string): ProjectDirectory {
     path,
     files,
     subdirectories,
-    lastModified,
+    lastUpdated: lastModified,
     lastSynchronized,
-    indexFile: {
+    excludedFiles: [],
+    excludedSubdirectories: [],
+    readme: {
       content: `# Ultor hunc laesum viae agmine venis sumpsere
 
 ## Sub centum

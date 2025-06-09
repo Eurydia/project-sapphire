@@ -1,10 +1,16 @@
 export type ProjectDirectory = {
   path: string
-  files: string[]
-  subdirectories: string[]
-  lastModified: string
+  files: { path: string; createdAt: string; updatedAt: string }[]
+  excludedFiles: string[]
+  subdirectories: {
+    path: string
+    createdAt: string
+    updatedAt: string
+  }[]
+  excludedSubdirectories: string[]
+  lastUpdated: string
   lastSynchronized: string
-  indexFile?: {
+  readme?: {
     content: string
     path: string
     name: string
