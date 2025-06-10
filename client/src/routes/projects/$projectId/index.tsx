@@ -31,7 +31,6 @@ const RouteComponent: FC = () => {
           <Tab label="Read me" value="readme" />
           <Tab label="Metadata" value="metadata" />
         </TabList>
-
         <CardContent>
           <TabPanel value="readme" sx={{ padding: 0 }} keepMounted>
             {data.readme !== undefined && (

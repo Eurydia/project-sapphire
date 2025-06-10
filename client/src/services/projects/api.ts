@@ -84,19 +84,28 @@ export const getProjectAll = async (query: ProjectQuery) => {
 }
 export function generateFakeProjectDirectory(path: string): ProjectDirectory {
   const files: ProjectDirectory['files'] = faker.helpers.multiple(
-    () => ({
-      createdAt: faker.date.past().toISOString(),
-      updatedAt: faker.date.recent().toISOString(),
-      path: faker.system.fileName(),
-    }),
+    () => {
+      const name = faker.system.fileName()
+      return {
+        createdAt: faker.date.past().toISOString(),
+        updatedAt: faker.date.recent().toISOString(),
+        name,
+        path: `${path}/${name}`,
+      }
+    },
     { count: 5 },
   )
   const subdirectories = faker.helpers.multiple(
-    () => ({
-      createdAt: faker.date.past().toISOString(),
-      updatedAt: faker.date.recent().toISOString(),
-      path: faker.system.fileName({ extensionCount: 0 }),
-    }),
+    () => {
+      const name = faker.system.fileName({ extensionCount: 0 })
+
+      return {
+        createdAt: faker.date.past().toISOString(),
+        updatedAt: faker.date.recent().toISOString(),
+        name,
+        path: `${path}/${name}`,
+      }
+    },
     {
       count: 5,
     },

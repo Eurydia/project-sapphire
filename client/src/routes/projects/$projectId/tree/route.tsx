@@ -1,35 +1,18 @@
-import type { StyledLink } from '@/components/StyledLink'
-import { AppBar, Breadcrumbs, Toolbar, Typography } from '@mui/material'
-import { createFileRoute } from '@tanstack/react-router'
+import { Box } from '@mui/material'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
+
+const RouteComponent = () => {
+  return (
+    <Box
+      marginX={4}
+      marginY={8}
+      sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}
+    >
+      <Outlet />
+    </Box>
+  )
+}
 
 export const Route = createFileRoute('/projects/$projectId/tree')({
   component: RouteComponent,
 })
-
-function RouteComponent() {
-  return (
-    <AppBar
-      variant="outlined"
-      color="default"
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-    >
-      <Toolbar disableGutters variant="dense">
-        <Breadcrumbs>
-          {path.map((segment, idx) => {
-            const to = `/${segment.path}`
-            const isLast = idx === path.length - 1
-            return isLast ? (
-              <Typography key={to} color="text.primary">
-                {segment.label}
-              </Typography>
-            ) : (
-              <StyledLink key={to} to={to}>
-                {segment.label}
-              </StyledLink>
-            )
-          })}
-        </Breadcrumbs>
-      </Toolbar>
-    </AppBar>
-  )
-}

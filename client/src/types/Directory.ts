@@ -1,8 +1,9 @@
 export type ProjectDirectory = {
   path: string
-  files: { path: string; createdAt: string; updatedAt: string }[]
+  files: { name: string; path: string; createdAt: string; updatedAt: string }[]
   excludedFiles: string[]
   subdirectories: {
+    name: string
     path: string
     createdAt: string
     updatedAt: string
