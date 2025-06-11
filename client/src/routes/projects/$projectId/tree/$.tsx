@@ -96,7 +96,7 @@ const RouteComponent: FC = () => {
                   </TableRow>
                 )
               })}
-              {data.files.map(({ path, updatedAt }, index) => {
+              {data.files.map(({ name, path, updatedAt }, index) => {
                 return (
                   <TableRow
                     key={`row-file-${index}`}
@@ -104,7 +104,14 @@ const RouteComponent: FC = () => {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell padding="checkbox" />
-                    <TableCell>{path}</TableCell>
+                    <TableCell>
+                      <StyledLink
+                        to="/projects/$projectId/blob/$"
+                        params={{ projectId: project.id, _splat: path }}
+                      >
+                        {name}
+                      </StyledLink>
+                    </TableCell>
                     <TableCell>{moment(updatedAt).fromNow()}</TableCell>
                     <TableCell>
                       <IconButton>

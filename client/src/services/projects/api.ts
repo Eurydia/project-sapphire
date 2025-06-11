@@ -9,7 +9,7 @@ const _getProject = (id: string) => {
     id,
     name: faker.lorem.word({ length: { min: 100, max: 200 } }), // single random word
     description: faker.lorem.sentence(), // one random sentence
-    updatedAt: faker.date.recent().toISOString(), // recent ISO timestamp
+    modifiedAt: faker.date.recent().toISOString(), // recent ISO timestamp
     createdAt: faker.date.past().toISOString(),
     tags: {
       technologies: faker.lorem.words(3).split(' '), // array of 3 fake technology names
@@ -116,7 +116,7 @@ export function generateFakeProjectDirectory(path: string): ProjectDirectory {
   const name = faker.lorem.words({ min: 3, max: 10 })
 
   return {
-    path,
+    absPathFromRoot: path,
     files,
     subdirectories,
     lastUpdated: lastModified,

@@ -4,19 +4,13 @@ import {
 } from '@/services/projects/api'
 import { Box } from '@mui/material'
 import { createFileRoute, notFound, Outlet } from '@tanstack/react-router'
-import { Fragment, type FC } from 'react'
+import { type FC } from 'react'
 
 const RouteComponent: FC = () => {
   return (
-    <Fragment>
-      <Box
-        marginX={4}
-        marginY={8}
-        sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}
-      >
-        <Outlet />
-      </Box>
-    </Fragment>
+    <Box margin={4}>
+      <Outlet />
+    </Box>
   )
 }
 

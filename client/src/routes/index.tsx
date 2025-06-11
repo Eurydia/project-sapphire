@@ -123,7 +123,7 @@ const RouteComponent: FC = () => {
                 <Divider flexItem />
                 <CardContent>
                   <Typography>
-                    {`Updated ${moment(item.updatedAt).fromNow()}`}
+                    {`Updated ${moment(item.modifiedAt).fromNow()}`}
                   </Typography>
                   <List
                     sx={{

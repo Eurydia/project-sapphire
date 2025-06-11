@@ -2,7 +2,7 @@ export type Project = {
   id: string
   name: string
   description?: string
-  updatedAt: string
+  modifiedAt: string
   createdAt: string
   tags: {
     technologies: string[]
@@ -10,5 +10,4 @@ export type Project = {
     status: string
     priority: string
   }
-  path: string
 }

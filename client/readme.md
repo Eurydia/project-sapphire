@@ -8,5 +8,15 @@
     - allow usual disk representation and augmentation
 - for hosting -> need auth and protect local disk
 - adapter for underlying file system
+
   - separate API endpoint for the backend to communicate with
     - need to protect this endpoint also
+
+- network support
+  - temporary project sharing
+  - session auth
+
+---
+
+- display additional data with sidebar?
+- path verification

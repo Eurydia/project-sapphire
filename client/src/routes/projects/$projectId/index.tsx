@@ -1,92 +1,183 @@
 import { Markdown } from '@/components/Markdown'
+import { StyledLink } from '@/components/StyledLink'
 import {
   generateFakeProjectDirectory,
   getProject,
 } from '@/services/projects/api'
-import { TabContext, TabList, TabPanel } from '@mui/lab'
 import {
-  Card,
-  CardContent,
+  FolderRounded,
+  MoreVertRounded,
+  SyncRounded,
+} from '@mui/icons-material'
+import {
+  Button,
   Divider,
+  Grid,
+  IconButton,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemText,
+  Paper,
   Stack,
-  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from '@mui/material'
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import moment from 'moment'
-import { useState, type FC } from 'react'
+import { type FC } from 'react'
 
 const RouteComponent: FC = () => {
   const { data, project } = Route.useLoaderData()
-  const [tab, setTab] = useState<'readme' | 'metadata'>(
-    data.readme !== undefined ? 'readme' : 'metadata',
-  )
   return (
-    <Card variant="outlined">
-      <TabContext value={tab}>
-        <TabList onChange={(_, value) => setTab(value)}>
-          <Tab label="Read me" value="readme" />
-          <Tab label="Metadata" value="metadata" />
-        </TabList>
-        <CardContent>
-          <TabPanel value="readme" sx={{ padding: 0 }} keepMounted>
-            {data.readme !== undefined && (
-              <Stack
-                spacing={1}
-                divider={<Divider flexItem variant="middle" />}
-              >
-                <List dense disablePadding>
-                  <ListItem>
-                    <ListItemText
-                      secondary={data.readme.name}
-                      primary="File name"
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="Path" secondary={data.readme.path} />
-                  </ListItem>
-                </List>
-                <Markdown content={data.readme.content} />
-              </Stack>
-            )}
-            {data.readme === undefined && <Typography>Unset</Typography>}
-          </TabPanel>
-          <TabPanel value="metadata" sx={{ padding: 0 }} keepMounted>
-            <List dense disablePadding>
-              <ListItem>
-                <ListItemText
-                  primary="Updated"
-                  secondary={moment(project.updatedAt).fromNow()}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Created"
-                  secondary={moment(project.createdAt).fromNow()}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Technologies"
-                  secondary={project.tags.technologies.join(', ')}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  disableTypography
-                  primary="Topics"
-                  secondary={project.tags.topics.join(', ')}
-                />
-              </ListItem>
-            </List>
-            <Markdown content={project.description ?? ''} />
-          </TabPanel>
-        </CardContent>
-      </TabContext>
-    </Card>
+    <Grid container spacing={2}>
+      <Grid size={{ md: 9 }}>
+        <Paper variant="outlined">
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell />
+                  <TableCell>Name</TableCell>
+                  <TableCell>Last updated</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.subdirectories.map(({ name, path, updatedAt }, index) => {
+                  return (
+                    <TableRow
+                      key={`row-dir-${index}`}
+                      hover
+                      sx={{
+                        '&:last-child td, &:last-child th': { border: 0 },
+                      }}
+                    >
+                      <TableCell padding="checkbox">
+                        <FolderRounded color="primary" fontSize="small" />
+                      </TableCell>
+                      <TableCell>
+                        <StyledLink
+                          to={`/projects/$projectId/tree/$`}
+                          params={{
+                            projectId: project.id,
+                            _splat: path,
+                          }}
+                        >
+                          {name}
+                        </StyledLink>
+                      </TableCell>
+                      <TableCell>{moment(updatedAt).fromNow()}</TableCell>
+                      <TableCell align="right">
+                        <IconButton>
+                          <MoreVertRounded />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+                {data.files.map(({ name, path, updatedAt }, index) => {
+                  return (
+                    <TableRow
+                      key={`row-file-${index}`}
+                      hover
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell padding="checkbox" />
+                      <TableCell>
+                        <StyledLink
+                          to="/projects/$projectId/blob/$"
+                          params={{ projectId: project.id, _splat: path }}
+                        >
+                          {name}
+                        </StyledLink>
+                      </TableCell>
+                      <TableCell>{moment(updatedAt).fromNow()}</TableCell>
+                      <TableCell align="right">
+                        <IconButton>
+                          <MoreVertRounded />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Grid>
+      <Grid size={{ md: 3 }}>
+        <Paper variant="outlined" sx={{ padding: 1 }}>
+          <List dense disablePadding>
+            <ListItem>
+              <ListItemText primary={project.description} />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Synced"
+                secondary={moment(data.lastSynchronized).fromNow()}
+              />
+              <ListItemAvatar>
+                <Button disableFocusRipple variant="outlined" disableElevation>
+                  <SyncRounded fontSize="small" />
+                </Button>
+              </ListItemAvatar>
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Modified"
+                secondary={moment(project.modifiedAt).fromNow()}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Created"
+                secondary={moment(project.createdAt).fromNow()}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Technologies"
+                secondary={project.tags.technologies.join(', ')}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Topics"
+                secondary={project.tags.topics.join(', ')}
+              />
+            </ListItem>
+          </List>
+        </Paper>
+      </Grid>
+      <Grid size={{ md: 12 }}>
+        <Paper variant="outlined" sx={{ padding: 2 }}>
+          {data.readme !== undefined && (
+            <Stack spacing={1} divider={<Divider flexItem variant="middle" />}>
+              <List dense disablePadding>
+                <ListItem>
+                  <ListItemText
+                    secondary={data.readme.name}
+                    primary="File name"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Path" secondary={data.readme.path} />
+                </ListItem>
+              </List>
+              <Markdown content={data.readme.content} />
+            </Stack>
+          )}
+          {data.readme === undefined && <Typography>Unset</Typography>}
+          <Markdown content={project.description ?? ''} />
+        </Paper>
+      </Grid>
+    </Grid>
   )
 }
 
