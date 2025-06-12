@@ -1,16 +1,10 @@
-import { Markdown } from '@/components/Markdown'
 import { StyledLink } from '@/components/StyledLink'
-import {
-  generateFakeProjectDirectory,
-  getProject,
-} from '@/services/projects/api'
-import { FolderRounded, MoreVertRounded } from '@mui/icons-material'
+import { getProject } from '@/services/projects/api'
 import {
   AppBar,
   Breadcrumbs,
   Card,
   CardContent,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -22,11 +16,10 @@ import {
   Typography,
 } from '@mui/material'
 import { createFileRoute, notFound } from '@tanstack/react-router'
-import moment from 'moment'
 import { type FC } from 'react'
 
 const RouteComponent: FC = () => {
-  const { data, segments, project } = Route.useLoaderData()
+  const { segments, project } = Route.useLoaderData()
   return (
     <>
       <AppBar
@@ -64,7 +57,7 @@ const RouteComponent: FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.subdirectories.map(({ name, path, updatedAt }, index) => {
+              {/* {data.subdirectories.map(({ name, path, updatedAt }, index) => {
                 return (
                   <TableRow
                     key={`row-dir-${index}`}
@@ -120,17 +113,17 @@ const RouteComponent: FC = () => {
                     </TableCell>
                   </TableRow>
                 )
-              })}
+              })} */}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
       <Card variant="outlined">
         <CardContent>
-          {data.readme !== undefined && (
+          {/* {data.readme !== undefined && (
             <Markdown content={data.readme.content} />
           )}
-          {data.readme === undefined && <Typography>Read me unset</Typography>}
+          {data.readme === undefined && <Typography>Read me unset</Typography>} */}
         </CardContent>
       </Card>
     </>
@@ -144,8 +137,6 @@ export const Route = createFileRoute('/projects/$projectId/tree/$')({
     if (project === null) {
       throw notFound()
     }
-    console.debug(ctx.params._splat)
-    const data = generateFakeProjectDirectory(ctx.params._splat ?? '')
     const rawSegments = (ctx.params._splat ?? '').split('/').filter(Boolean)
     const segments = [
       {
@@ -160,6 +151,6 @@ export const Route = createFileRoute('/projects/$projectId/tree/$')({
       })),
     ]
 
-    return { data, segments, project }
+    return { segments, project }
   },
 })

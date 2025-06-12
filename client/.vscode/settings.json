@@ -3,12 +3,20 @@
     "**/routeTree.gen.ts": true
   },
   "search.exclude": {
-    "**/routeTree.gen.ts": true
+    "**/routeTree.gen.ts": true,
+    "**/node_modules": true
   },
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true
   },
-  "terminal.integrated.cwd": "${workspaceFolder}",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": true
+  },
   "javascript.autoClosingTags": true,
   "javascript.suggest.autoImports": true,
   "typescript.suggest.autoImports": true

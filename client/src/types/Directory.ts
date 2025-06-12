@@ -1,19 +1,10 @@
+export type ProjectFile = unknown
+export type ProjectSubdirectory = unknown
+
 export type ProjectDirectory = {
-  absPathFromRoot: string
-  files: { name: string; path: string; createdAt: string; updatedAt: string }[]
-  excludedFiles: string[]
-  subdirectories: {
-    name: string
-    path: string
-    createdAt: string
-    updatedAt: string
-  }[]
-  excludedSubdirectories: string[]
-  lastUpdated: string
-  lastSynchronized: string
-  readme?: {
-    content: string
-    path: string
-    name: string
-  }
+  fullPath: string
+  name: string
+  files: ProjectFile[]
+  subdirectories: ProjectSubdirectory[]
+  readme?: ProjectFile
 }

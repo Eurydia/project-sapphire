@@ -1,13 +1,8 @@
 export type Project = {
   id: string
   name: string
-  description?: string
-  modifiedAt: string
-  createdAt: string
   tags: {
-    technologies: string[]
-    topics: string[]
-    status: string
-    priority: string
+    technologies: Array<string>
+    topics: Array<string>
   }
 }
