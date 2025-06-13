@@ -1,13 +1,34 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 200 })
+  @Column()
   name: string;
 
   @Column()
-  path: string;
+  absPath: string;
+
+  @Column({ type: "text", nullable: true })
+  description?: string | null;
+
+  @CreateDateColumn({
+    type: "datetime",
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: "datetime",
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  modifiedAt: Date;
 }

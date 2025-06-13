@@ -19,8 +19,8 @@ export class ProjectsController {
 
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  create(@Body() data: CreateProjectDto) {
-    return this.projectsSvc.create(data);
+  create(@Body() dto: CreateProjectDto) {
+    return this.projectsSvc.create(dto);
   }
 
   @Get()

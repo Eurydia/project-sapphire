@@ -1,9 +1,13 @@
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class CreateProjectDto {
   @IsString()
   name: string;
 
   @IsString()
-  path: string;
+  absPath: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string | null;
 }

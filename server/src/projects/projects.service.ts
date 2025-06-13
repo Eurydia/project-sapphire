@@ -14,28 +14,30 @@ export class ProjectsService {
   ) {}
 
   async create(dto: CreateProjectDto) {
-    if (!isAbsolute(dto.path)) {
-      throw new BadRequestException(`Path "${dto.path}" is not absolute`);
+    if (!isAbsolute(dto.absPath)) {
+      throw new BadRequestException(`Path "${dto.absPath}" is not absolute`);
     }
 
-    if (!existsSync(dto.path)) {
+    if (!existsSync(dto.absPath)) {
       throw new BadRequestException(
-        `Path "${dto.path}" does not exist on disk`,
+        `Path "${dto.absPath}" does not exist on disk`,
       );
     }
 
-    // 2) Check for DB path collision
     const existing = await this.projectsRepo.findOne({
-      where: { path: dto.path },
+      where: { absPath: dto.absPath },
     });
     if (existing) {
       throw new BadRequestException(
-        `Path "${dto.path}" is already used by project id ${existing.id}`,
+        `Path "${dto.absPath}" is already used by project id ${existing.id}`,
       );
     }
-
-    // 3) Create & save
-    const project = this.projectsRepo.create(dto);
+    const now = new Date();
+    const project = this.projectsRepo.create({
+      ...dto,
+      createdAt: now,
+      modifiedAt: now,
+    });
     return this.projectsRepo.save(project);
   }
 

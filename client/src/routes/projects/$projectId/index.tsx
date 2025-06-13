@@ -1,5 +1,4 @@
-import { getProject } from '@/services/projects/api'
-import { SyncRounded } from '@mui/icons-material'
+import { SyncRounded } from "@mui/icons-material";
 import {
   Button,
   Grid,
@@ -14,12 +13,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from '@mui/material'
-import { createFileRoute, notFound } from '@tanstack/react-router'
-import { type FC } from 'react'
+} from "@mui/material";
+import { createFileRoute, notFound } from "@tanstack/react-router";
+import { type FC } from "react";
 
 const RouteComponent: FC = () => {
-  const { project } = Route.useLoaderData()
+  // const { project } = Route.useLoaderData();
   return (
     <Grid container spacing={2}>
       <Grid size={{ md: 9 }}>
@@ -129,13 +128,13 @@ const RouteComponent: FC = () => {
             <ListItem>
               <ListItemText
                 primary="Technologies"
-                secondary={project.tags.technologies.join(', ')}
+                // secondary={project.tags.technologies.join(", ")}
               />
             </ListItem>
             <ListItem>
               <ListItemText
                 primary="Topics"
-                secondary={project.tags.topics.join(', ')}
+                // secondary={project.tags.topics.join(", ")}
               />
             </ListItem>
           </List>
@@ -164,19 +163,19 @@ const RouteComponent: FC = () => {
         </Paper> */}
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
-export const Route = createFileRoute('/projects/$projectId/')({
+export const Route = createFileRoute("/projects/$projectId/")({
   component: RouteComponent,
   loader: (ctx) => {
-    const project = getProject(ctx.params.projectId)
-    if (project === null) {
-      throw notFound()
-    }
+    // const project = getProject(ctx.params.projectId)
+    // if (project === null) {
+    throw notFound();
+    // }
     // const segments = ctx.location.pathname.split('/').filter(Boolean)
-    return {
-      project,
-    }
+    // return {
+    //   project,
+    // }
   },
-})
+});
