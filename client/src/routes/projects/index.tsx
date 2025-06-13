@@ -1,12 +1,8 @@
-import { Markdown } from '@/components/Markdown'
 import { StyledLink } from '@/components/StyledLink'
-import { getProjectAll } from '@/services/projects/api'
-import { ProjectQueryBuilder } from '@/services/projects/helper'
+import { ProjectController } from '@/controllers/projects.controller'
 import {
   AddRounded,
-  CodeRounded,
   FilterListRounded,
-  LocalOfferOutlined,
   SearchRounded,
   UnfoldLessRounded,
   UnfoldMoreRounded,
@@ -15,15 +11,10 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
   CardHeader,
   Collapse,
   Divider,
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  ListSubheader,
   Stack,
   TextField,
   Toolbar,
@@ -31,12 +22,11 @@ import {
 } from '@mui/material'
 import { createFileRoute } from '@tanstack/react-router'
 import { fallback, zodValidator } from '@tanstack/zod-adapter'
-import moment from 'moment'
 import { useState, type FC } from 'react'
 import { z } from 'zod'
 
 const RouteComponent: FC = () => {
-  const { items, search } = Route.useLoaderData()
+  const { projects, search } = Route.useLoaderData()
 
   return (
     <Box sx={{ maxWidth: 'lg', marginX: 'auto', padding: 4 }}>
@@ -84,19 +74,19 @@ const RouteComponent: FC = () => {
                   <FilterListRounded />
                 </Button>
               </Stack>
-              <Typography>{`Showing ${items.length} projects`}</Typography>
+              <Typography>{projects.projectCountMsg}</Typography>
             </Stack>
           </Toolbar>
         </form>
-        {items.map((item) => {
+        {projects.projects.map((project) => {
           const [collapsed, setCollapsed] = useState(true)
           return (
-            <Card variant="outlined" key={item.id}>
+            <Card variant="outlined" key={project.id}>
               <CardHeader
                 title={
                   <StyledLink
                     to="/projects/$projectId"
-                    params={{ projectId: item.id }}
+                    params={{ projectId: project.id }}
                     sx={{
                       display: 'block',
                       textOverflow: 'ellipsis',
@@ -104,7 +94,7 @@ const RouteComponent: FC = () => {
                       overflow: 'hidden',
                     }}
                   >
-                    {item.name}
+                    {project.name}
                   </StyledLink>
                 }
                 action={
@@ -114,14 +104,14 @@ const RouteComponent: FC = () => {
                   </IconButton>
                 }
               />
-              {item.description !== undefined && (
+              {/* {project.description !== undefined && (
                 <CardContent sx={{ paddingY: 0 }}>
-                  <Markdown content={item.description} />
+                  <Markdown content={project.description} />
                 </CardContent>
-              )}
+              )} */}
               <Collapse in={!collapsed}>
                 <Divider flexItem />
-                <CardContent>
+                {/* <CardContent>
                   <Typography>
                     {`Updated ${moment(item.modifiedAt).fromNow()}`}
                   </Typography>
@@ -213,7 +203,7 @@ const RouteComponent: FC = () => {
                       )
                     })}
                   </List>
-                </CardContent>
+                </CardContent> */}
               </Collapse>
             </Card>
           )
@@ -225,27 +215,29 @@ const RouteComponent: FC = () => {
 
 const searchParamSchema = z.object({
   name: fallback(z.string().optional(), undefined).catch(undefined),
-  technologies: fallback(z.string().array().optional(), undefined).catch(
-    undefined,
-  ),
-  topics: fallback(z.string().array().optional(), undefined).catch(undefined),
-  status: fallback(z.string().optional(), undefined).catch(undefined),
+  // technologies: fallback(z.string().array().optional(), undefined).catch(
+  //   undefined,
+  // ),
+  // topics: fallback(z.string().array().optional(), undefined).catch(undefined),
+  // status: fallback(z.string().optional(), undefined).catch(undefined),
 })
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/projects/')({
   component: RouteComponent,
   loaderDeps: ({ search }) => {
     return { search }
   },
   validateSearch: zodValidator(searchParamSchema),
   loader: async ({ deps }) => {
-    const query = new ProjectQueryBuilder()
-      .withName(deps.search.name)
-      .withTechnologies(deps.search.technologies)
-      .withTopics(deps.search.topics)
-      .withStatus(deps.search.status)
-      .build()
-    const items = await getProjectAll(query)
-    return { items, search: deps.search }
+    // const query = new ProjectQueryBuilder()
+    //   .withName(deps.search.name)
+    //   // .withTechnologies(deps.search.technologies)
+    //   // .withTopics(deps.search.topics)
+    //   // .withStatus(deps.search.status)
+    //   .build()
+    // const items = await getProjectAll(query)
+    const projects = await ProjectController.Index()
+    console.debug(projects)
+    return { projects, search: deps.search }
   },
 })

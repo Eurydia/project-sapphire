@@ -6,7 +6,10 @@ import {
   Param,
   Post,
   Put,
+  UsePipes,
+  ValidationPipe,
 } from "@nestjs/common";
+import { CreateProjectDto } from "./dto/create-project.dto";
 import { Project } from "./projects.entity";
 import { ProjectsService } from "./projects.service";
 
@@ -15,7 +18,8 @@ export class ProjectsController {
   constructor(private readonly projectsSvc: ProjectsService) {}
 
   @Post()
-  create(@Body() data: Partial<Project>) {
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  create(@Body() data: CreateProjectDto) {
     return this.projectsSvc.create(data);
   }
 

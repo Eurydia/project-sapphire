@@ -1,39 +1,25 @@
-import { Markdown } from '@/components/Markdown'
-import { StyledLink } from '@/components/StyledLink'
-import {
-  generateFakeProjectDirectory,
-  getProject,
-} from '@/services/projects/api'
-import {
-  FolderRounded,
-  MoreVertRounded,
-  SyncRounded,
-} from '@mui/icons-material'
+import { getProject } from '@/services/projects/api'
+import { SyncRounded } from '@mui/icons-material'
 import {
   Button,
-  Divider,
   Grid,
-  IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Paper,
-  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from '@mui/material'
 import { createFileRoute, notFound } from '@tanstack/react-router'
-import moment from 'moment'
 import { type FC } from 'react'
 
 const RouteComponent: FC = () => {
-  const { data, project } = Route.useLoaderData()
+  const { project } = Route.useLoaderData()
   return (
     <Grid container spacing={2}>
       <Grid size={{ md: 9 }}>
@@ -49,7 +35,7 @@ const RouteComponent: FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.subdirectories.map(({ name, path, updatedAt }, index) => {
+                {/* {data.subdirectories.map(({ name, path, updatedAt }, index) => {
                   return (
                     <TableRow
                       key={`row-dir-${index}`}
@@ -105,7 +91,7 @@ const RouteComponent: FC = () => {
                       </TableCell>
                     </TableRow>
                   )
-                })}
+                })} */}
               </TableBody>
             </Table>
           </TableContainer>
@@ -115,12 +101,12 @@ const RouteComponent: FC = () => {
         <Paper variant="outlined" sx={{ padding: 1 }}>
           <List dense disablePadding>
             <ListItem>
-              <ListItemText primary={project.description} />
+              {/* <ListItemText primary={project.description} /> */}
             </ListItem>
             <ListItem>
               <ListItemText
                 primary="Synced"
-                secondary={moment(data.lastSynchronized).fromNow()}
+                // secondary={moment(data.lastSynchronized).fromNow()}
               />
               <ListItemAvatar>
                 <Button disableFocusRipple variant="outlined" disableElevation>
@@ -131,13 +117,13 @@ const RouteComponent: FC = () => {
             <ListItem>
               <ListItemText
                 primary="Modified"
-                secondary={moment(project.modifiedAt).fromNow()}
+                // secondary={moment(project.modifiedAt).fromNow()}
               />
             </ListItem>
             <ListItem>
               <ListItemText
                 primary="Created"
-                secondary={moment(project.createdAt).fromNow()}
+                // secondary={moment(project.createdAt).fromNow()}
               />
             </ListItem>
             <ListItem>
@@ -156,7 +142,7 @@ const RouteComponent: FC = () => {
         </Paper>
       </Grid>
       <Grid size={{ md: 12 }}>
-        <Paper variant="outlined" sx={{ padding: 2 }}>
+        {/* <Paper variant="outlined" sx={{ padding: 2 }}>
           {data.readme !== undefined && (
             <Stack spacing={1} divider={<Divider flexItem variant="middle" />}>
               <List dense disablePadding>
@@ -174,8 +160,8 @@ const RouteComponent: FC = () => {
             </Stack>
           )}
           {data.readme === undefined && <Typography>Unset</Typography>}
-          <Markdown content={project.description ?? ''} />
-        </Paper>
+           <Markdown content={project.description ?? ''} /> 
+        </Paper> */}
       </Grid>
     </Grid>
   )
@@ -183,14 +169,13 @@ const RouteComponent: FC = () => {
 
 export const Route = createFileRoute('/projects/$projectId/')({
   component: RouteComponent,
-  loader: async (ctx) => {
+  loader: (ctx) => {
     const project = getProject(ctx.params.projectId)
     if (project === null) {
       throw notFound()
     }
-    const segments = ctx.location.pathname.split('/').filter(Boolean)
+    // const segments = ctx.location.pathname.split('/').filter(Boolean)
     return {
-      data: generateFakeProjectDirectory(segments.slice(2).join('/')),
       project,
     }
   },

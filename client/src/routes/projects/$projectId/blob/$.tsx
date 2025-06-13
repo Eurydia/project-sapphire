@@ -1,9 +1,6 @@
 import { Markdown } from '@/components/Markdown'
 import { StyledLink } from '@/components/StyledLink'
-import {
-  generateFakeProjectDirectory,
-  getProject,
-} from '@/services/projects/api'
+import { getProject } from '@/services/projects/api'
 import {
   AppBar,
   Breadcrumbs,

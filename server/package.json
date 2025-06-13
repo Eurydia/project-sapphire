@@ -6,6 +6,7 @@
   "private": true,
   "license": "GPL-3.0-only",
   "scripts": {
+    "migration:generate": "npm run build && typeorm migration:generate --name $npm_config_name --dataSource dist/data-source.js",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

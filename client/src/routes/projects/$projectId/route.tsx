@@ -1,7 +1,4 @@
-import {
-  generateFakeProjectDirectory,
-  getProject,
-} from '@/services/projects/api'
+import { getProject } from '@/services/projects/api'
 import { Box } from '@mui/material'
 import { createFileRoute, notFound, Outlet } from '@tanstack/react-router'
 import { type FC } from 'react'
@@ -33,7 +30,6 @@ export const Route = createFileRoute('/projects/$projectId')({
       //     ...segments.slice(0, idx + 1),
       //   ].join('/'),
       // })),
-      data: generateFakeProjectDirectory(ctx.params.projectId),
       project,
     }
   },

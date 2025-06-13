@@ -19,6 +19,7 @@
     "@mui/lab": "7.0.0-beta.13",
     "@mui/material": "^7.1.1",
     "@tanstack/react-form": "^1.12.1",
+    "@tanstack/react-query": "^5.80.7",
     "@tanstack/react-router": "^1.114.3",
     "@tanstack/react-router-devtools": "^1.114.3",
     "@tanstack/zod-adapter": "^1.120.15",

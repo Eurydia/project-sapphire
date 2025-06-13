@@ -14,7 +14,7 @@ import { ProjectsModule } from "./projects/projects.module";
       type: "sqlite",
       database: "database/db.sqlite",
       entities: [__dirname + "/**/*.entity{.ts,.js}"],
-      synchronize: false,
+      synchronize: true,
     }),
     ProjectsModule,
   ],
