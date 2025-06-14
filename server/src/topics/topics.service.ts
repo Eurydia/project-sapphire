@@ -1,0 +1,22 @@
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { randomColorHex } from "src/common/utils/colorHex";
+import { Repository } from "typeorm";
+import { CreateTopicDto } from "./dto/create-topic.dto";
+import { Topic } from "./topic.entity";
+
+@Injectable()
+export class TopicsService {
+  constructor(
+    @InjectRepository(Topic)
+    private readonly repo: Repository<Topic>,
+  ) {}
+
+  async create(dto: CreateTopicDto): Promise<Topic> {
+    const topic = this.repo.create({
+      name: dto.name,
+      colorHex: dto.colorHex ?? randomColorHex(),
+    });
+    return this.repo.save(topic);
+  }
+}

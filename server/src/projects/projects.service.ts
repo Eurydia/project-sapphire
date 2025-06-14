@@ -1,59 +1,96 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { existsSync } from "fs";
-import { isAbsolute } from "path";
-import { Repository } from "typeorm";
+import { randomColorHex } from "src/common/utils/colorHex";
+import { Technology } from "src/technologies/technology.entity";
+import { Topic } from "src/topics/topic.entity";
+import { In, Repository } from "typeorm";
 import { CreateProjectDto } from "./dto/create-project.dto";
-import { Project } from "./projects.entity";
+import { Project } from "./project.entity";
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectRepository(Project)
-    private projectsRepo: Repository<Project>,
+    private projectRepo: Repository<Project>,
+
+    @InjectRepository(Topic)
+    private readonly topicRepo: Repository<Topic>,
+
+    @InjectRepository(Technology)
+    private readonly techRepo: Repository<Technology>,
   ) {}
 
-  async create(dto: CreateProjectDto) {
-    if (!isAbsolute(dto.absPath)) {
-      throw new BadRequestException(`Path "${dto.absPath}" is not absolute`);
+  async create(dto: CreateProjectDto): Promise<Project> {
+    const project = this.projectRepo.create({
+      name: dto.name,
+      absPath: dto.absPath,
+      description: dto.description ?? null,
+    });
+
+    if (dto.topics !== undefined && dto.topics.length > 0) {
+      const existingTopics = await this.topicRepo.findBy({
+        name: In(dto.topics),
+      });
+      const existingTopicNames = new Set(existingTopics.map((t) => t.name));
+      const newTopicNames = dto.topics.filter(
+        (name) => !existingTopicNames.has(name),
+      );
+      const newTopics = await Promise.all(
+        newTopicNames.map(async (name) => {
+          const topic = this.topicRepo.create({
+            name,
+            colorHex: randomColorHex(),
+          });
+          return this.topicRepo.save(topic);
+        }),
+      );
+
+      await this.topicRepo.save(newTopics);
+      project.topics = [...existingTopics, ...newTopics];
     }
 
-    if (!existsSync(dto.absPath)) {
-      throw new BadRequestException(
-        `Path "${dto.absPath}" does not exist on disk`,
+    if (dto.technologies !== undefined && dto.technologies.length > 0) {
+      const existingTech = await this.techRepo.findBy({
+        name: In(dto.technologies),
+      });
+      const existingTechNames = new Set(existingTech.map((t) => t.name));
+
+      const newTechNames = dto.technologies.filter(
+        (name) => !existingTechNames.has(name),
       );
+
+      const newTech = await Promise.all(
+        newTechNames.map(async (name) => {
+          const tech = this.techRepo.create({
+            name,
+            colorHex: randomColorHex(),
+          });
+          return this.techRepo.save(tech);
+        }),
+      );
+
+      project.technologies = [...existingTech, ...newTech];
     }
 
-    const existing = await this.projectsRepo.findOne({
-      where: { absPath: dto.absPath },
-    });
-    if (existing) {
-      throw new BadRequestException(
-        `Path "${dto.absPath}" is already used by project id ${existing.id}`,
-      );
-    }
-    const now = new Date();
-    const project = this.projectsRepo.create({
-      ...dto,
-      createdAt: now,
-      modifiedAt: now,
-    });
-    return this.projectsRepo.save(project);
+    return this.projectRepo.save(project);
   }
 
   findAll() {
-    return this.projectsRepo.find();
+    return this.projectRepo.find({ relations: ["technologies", "topics"] });
   }
 
-  findOne(id: number) {
-    return this.projectsRepo.findOneBy({ id });
+  findOne(id: string) {
+    return this.projectRepo.findOne({
+      where: { id },
+      relations: ["technologies", "topics"],
+    });
   }
 
-  update(id: number, data: Partial<Project>) {
-    return this.projectsRepo.update(id, data);
+  update(id: string, data: Partial<Project>) {
+    return this.projectRepo.update(id, data);
   }
 
-  remove(id: number) {
-    return this.projectsRepo.delete(id);
+  remove(id: string) {
+    return this.projectRepo.delete(id);
   }
 }

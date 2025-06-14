@@ -14,7 +14,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
@@ -171,7 +171,6 @@ export const Route = createFileRoute("/projects/$projectId/")({
   loader: (ctx) => {
     // const project = getProject(ctx.params.projectId)
     // if (project === null) {
-    throw notFound();
     // }
     // const segments = ctx.location.pathname.split('/').filter(Boolean)
     // return {

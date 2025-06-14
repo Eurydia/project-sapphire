@@ -1,13 +1,14 @@
+export type ProjectTechnology = { name: string; id: string };
+export type ProjectTopic = { name: string; id: string };
+
 export type Project = {
   id: string;
   name: string;
   description?: string;
   createdAt: string;
   modifiedAt: string;
-  tags: {
-    technologies: string[];
-    topics: string[];
-  };
+  technologies: ProjectTechnology[];
+  topics: ProjectTopic[];
 };
 
 export type ProjectQuery = {

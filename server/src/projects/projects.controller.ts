@@ -1,18 +1,21 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   Param,
   Post,
   Put,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
 import { CreateProjectDto } from "./dto/create-project.dto";
-import { Project } from "./projects.entity";
+import { Project } from "./project.entity";
 import { ProjectsService } from "./projects.service";
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller("projects")
 export class ProjectsController {
   constructor(private readonly projectsSvc: ProjectsService) {}
@@ -30,16 +33,16 @@ export class ProjectsController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.projectsSvc.findOne(+id);
+    return this.projectsSvc.findOne(id);
   }
 
   @Put(":id")
   update(@Param("id") id: string, @Body() data: Partial<Project>) {
-    return this.projectsSvc.update(+id, data);
+    return this.projectsSvc.update(id, data);
   }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.projectsSvc.remove(+id);
+    return this.projectsSvc.remove(id);
   }
 }

@@ -5,6 +5,8 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { LoggerMiddleware } from "./common/middlerware/logger.middleware";
 import { ProjectsModule } from "./projects/projects.module";
+import { TechnologiesModule } from "./technologies/technologies.module";
+import { TopicsModule } from "./topics/topics.module";
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { ProjectsModule } from "./projects/projects.module";
       synchronize: true,
     }),
     ProjectsModule,
+    TechnologiesModule,
+    TopicsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

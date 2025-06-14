@@ -3,37 +3,27 @@ import type { Project, ProjectQuery } from "@/types/projects/project.entity";
 import axios from "axios";
 
 export class ProjectsService {
-  private static readonly API_HOST = import.meta.env.VITE_API_HOST;
-  private static readonly API_PORT: string = import.meta.env.VITE_API_PORT;
-  private static readonly API = `${this.API_HOST}:${this.API_PORT}`;
+  private static readonly CLIENT = axios.create({
+    baseURL: `${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`,
+  });
 
   public static async findAll() {
-    const projects = await axios
-      .get<Project[]>(`http://localhost:8081/projects`)
-      .then(
-        (res) => res.data,
-        (err) => {
-          console.warn(err);
-          return [];
-        },
-      );
+    const projects = this.CLIENT.get<Project[]>(`/projects`).then(
+      (res) => res.data,
+      () => [] as Project[],
+    );
     return projects;
   }
 
   public static async create(dto: CreateProjectDto) {
-    return await axios
-      .post<Project>("http://localhost:8081/projects", dto)
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        if (err.response) {
-          console.error("Response:", err);
-        } else {
-          console.error("Error:", err);
-        }
-        return null;
-      });
+    return await this.CLIENT.post<Project>(`/projects`, dto).then(
+      (res) => res.data,
+    );
+  }
+
+  public static async delete(id: string) {
+    console.debug(id);
+    return await this.CLIENT.delete(`/projects/${id}`);
   }
 }
 

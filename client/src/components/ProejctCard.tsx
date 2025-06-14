@@ -1,162 +1,180 @@
 import type { Project } from "@/types/projects/project.entity";
 import {
-  CodeRounded,
-  LocalOfferOutlined,
-  UnfoldLessRounded,
-  UnfoldMoreRounded,
-} from "@mui/icons-material";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Collapse,
   Divider,
-  IconButton,
   List,
+  ListItem,
+  ListItemText,
   ListSubheader,
+  Paper,
+  Stack,
+  Toolbar,
   Typography,
 } from "@mui/material";
+import { Link } from "@tanstack/react-router";
 import moment from "moment";
-import { useCallback, useMemo, useState, type FC } from "react";
-import { Markdown } from "./Markdown";
+import { useMemo, type FC } from "react";
 import { StyledLink } from "./StyledLink";
 
 type Props = {
   project: Project;
 };
 export const ProjectCard: FC<Props> = ({ project }) => {
-  const [collapsed, setCollapsed] = useState(false);
-
-  const handleCollaspeToggle = useCallback(() => {
-    setCollapsed((prev) => !prev);
-  }, []);
-
   const createdAtMsg = useMemo(() => {
-    return moment(project.createdAt).fromNow();
+    const date = moment(project.createdAt).fromNow();
+    return `Created ${date}`;
   }, [project.createdAt]);
 
   const modifiedAtMsg = useMemo(() => {
-    const modified = moment(project.modifiedAt).fromNow();
-    return `Updated ${modified}`;
+    const date = moment(project.modifiedAt).fromNow();
+    return `Modified ${date}`;
   }, [project.modifiedAt]);
 
   return (
-    <Card variant="outlined">
-      <CardHeader
-        title={
-          <StyledLink
-            to="/projects/$projectId"
-            params={{ projectId: project.id }}
-            sx={{
-              display: "block",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-            }}
-          >
+    <Paper variant="outlined" sx={{ padding: 2 }}>
+      <Toolbar
+        disableGutters
+        variant="dense"
+        sx={{
+          gap: 2,
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+        }}
+      >
+        <Stack
+          direction="row"
+          spacing={1}
+          divider={<Divider flexItem variant="middle" orientation="vertical" />}
+        >
+          <Typography variant="subtitle2" color="textSecondary">
+            {modifiedAtMsg}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary">
+            {createdAtMsg}
+          </Typography>
+        </Stack>
+        <Typography variant="subtitle2" color="textSecondary">
+          {project.id}
+        </Typography>
+      </Toolbar>
+      <Stack spacing={2}>
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+          }}
+        >
+          <Link to="/projects/$projectId" params={{ projectId: project.id }}>
             {project.name}
-          </StyledLink>
+          </Link>
+        </Typography>
+        {project.description !== undefined && (
+          <Typography>{project.description}</Typography>
+        )}
+      </Stack>
+      <List
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+        disablePadding
+        subheader={
+          <ListSubheader disableGutters disableSticky>
+            Technologies:
+          </ListSubheader>
         }
-        action={
-          <IconButton onClick={handleCollaspeToggle}>
-            {collapsed && <UnfoldMoreRounded />}
-            {!collapsed && <UnfoldLessRounded />}
-          </IconButton>
-        }
-      />
-      {project.description !== undefined && (
-        <CardContent>
-          <Markdown content={project.description} />
-        </CardContent>
-      )}
-      <Collapse in={!collapsed}>
-        <Divider flexItem variant="middle" />
-        <CardContent>
-          <Typography>{modifiedAtMsg}</Typography>
-          <List
+      >
+        {project.technologies.length === 0 && (
+          <ListItem sx={{ width: "fit-content" }}>
+            <ListItemText
+              slotProps={{
+                primary: { variant: "subtitle2", color: "textSecondary" },
+              }}
+            >
+              None
+            </ListItemText>
+          </ListItem>
+        )}
+        {project.technologies.map(({ id, name }) => {
+          return (
+            <ListItem
+              key={`tech-${id}`}
+              sx={{
+                width: "fit-content",
+              }}
+            >
+              <ListItemText>
+                <StyledLink
+                  to="/projects"
+                  search={{ technologies: [name] }}
+                  variant="subtitle2"
+                  color="textSecondary"
+                >
+                  {`${name}`}
+                </StyledLink>
+              </ListItemText>
+            </ListItem>
+          );
+        })}
+      </List>
+      <List
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+        }}
+        disablePadding
+        subheader={
+          <ListSubheader
+            disableGutters
+            disableSticky
             sx={{
               display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
               alignItems: "center",
+              justifyContent: "center",
             }}
-            disablePadding
-            subheader={
-              <ListSubheader
-                disableGutters
-                disableSticky
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <CodeRounded />
-              </ListSubheader>
-            }
           >
-            {/* {item.tags.technologies.map((tech) => {
-              return (
-                <ListItem
-                  key={`tech-${tech}`}
-                  sx={{
-                    width: "fit-content",
-                  }}
+            Topics:
+          </ListSubheader>
+        }
+      >
+        {project.topics.length === 0 && (
+          <ListItem sx={{ width: "fit-content" }}>
+            <ListItemText
+              slotProps={{
+                primary: { variant: "subtitle2", color: "textSecondary" },
+              }}
+            >
+              None
+            </ListItemText>
+          </ListItem>
+        )}
+        {project.topics.map(({ id, name }) => {
+          return (
+            <ListItem
+              key={`topic-${id}`}
+              sx={{
+                width: "fit-content",
+              }}
+            >
+              <ListItemText>
+                <StyledLink
+                  variant="subtitle2"
+                  color="textSecondary"
+                  to="/projects"
+                  search={{ topics: [name] }}
                 >
-                  <ListItemText>
-                    <StyledLink to="." search={{ technologies: [tech] }}>
-                      {`${tech}`}
-                    </StyledLink>
-                  </ListItemText>
-                </ListItem>
-              );
-            })} */}
-          </List>
-          <List
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-            }}
-            disablePadding
-            subheader={
-              <ListSubheader
-                disableGutters
-                disableSticky
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <LocalOfferOutlined />
-              </ListSubheader>
-            }
-          >
-            {/* {item.tags.topics.length === 0 && (
-              <ListItem sx={{ width: "fit-content" }}>
-                <ListItemText>No topic</ListItemText>
-              </ListItem>
-            )}
-            {item.tags.topics.map((topics) => {
-              return (
-                <ListItem
-                  key={`topic-${topics}`}
-                  sx={{
-                    width: "fit-content",
-                  }}
-                >
-                  <ListItemText>
-                    <StyledLink to="." search={{ technologies: [topics] }}>
-                      {`${topics}`}
-                    </StyledLink>
-                  </ListItemText>
-                </ListItem>
-              );
-            })} */}
-          </List>
-        </CardContent>
-      </Collapse>
-    </Card>
+                  {`${name}`}
+                </StyledLink>
+              </ListItemText>
+            </ListItem>
+          );
+        })}
+      </List>
+    </Paper>
   );
 };
