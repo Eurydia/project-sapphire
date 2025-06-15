@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { randomColorHex } from "src/common/utils/colorHex";
+import { getProjectRootMetadata } from "src/common/utils/project-root-metadata.helper";
 import { Technology } from "src/technologies/technology.entity";
 import { Topic } from "src/topics/topic.entity";
 import { In, Repository } from "typeorm";
 import { CreateProjectDto } from "./dto/create-project.dto";
+import { ProjectWithMetadataDto } from "./dto/project-with-metadata.dto";
 import { Project } from "./project.entity";
 
 @Injectable()
@@ -39,7 +40,6 @@ export class ProjectsService {
         newTopicNames.map(async (name) => {
           const topic = this.topicRepo.create({
             name,
-            colorHex: randomColorHex(),
           });
           return this.topicRepo.save(topic);
         }),
@@ -63,7 +63,6 @@ export class ProjectsService {
         newTechNames.map(async (name) => {
           const tech = this.techRepo.create({
             name,
-            colorHex: randomColorHex(),
           });
           return this.techRepo.save(tech);
         }),
@@ -75,15 +74,39 @@ export class ProjectsService {
     return this.projectRepo.save(project);
   }
 
-  findAll() {
-    return this.projectRepo.find({ relations: ["technologies", "topics"] });
+  async findAll() {
+    const projectsBase = await this.projectRepo.find({
+      relations: ["technologies", "topics"],
+      order: { name: "ASC" },
+    });
+    const projectsWithMetadata: ProjectWithMetadataDto[] = projectsBase.map(
+      (projectBase) => {
+        const metadata = getProjectRootMetadata(projectBase.absPath);
+        return {
+          ...projectBase,
+          metadata,
+        };
+      },
+    );
+    return projectsWithMetadata;
   }
 
-  findOne(id: string) {
-    return this.projectRepo.findOne({
+  async findOne(id: string) {
+    const projectBase = await this.projectRepo.findOne({
       where: { id },
       relations: ["technologies", "topics"],
     });
+
+    if (projectBase === null) {
+      return null;
+    }
+
+    const metadata = getProjectRootMetadata(projectBase.absPath);
+    const projectWithMetadata: ProjectWithMetadataDto = {
+      ...projectBase,
+      metadata,
+    };
+    return projectWithMetadata;
   }
 
   update(id: string, data: Partial<Project>) {

@@ -1,3 +1,4 @@
+import { ProjectsService } from "@/services/projects.services";
 import { SyncRounded } from "@mui/icons-material";
 import {
   Button,
@@ -14,11 +15,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
-  // const { project } = Route.useLoaderData();
   return (
     <Grid container spacing={2}>
       <Grid size={{ md: 9 }}>
@@ -168,13 +168,13 @@ const RouteComponent: FC = () => {
 
 export const Route = createFileRoute("/projects/$projectId/")({
   component: RouteComponent,
-  loader: (ctx) => {
-    // const project = getProject(ctx.params.projectId)
-    // if (project === null) {
-    // }
-    // const segments = ctx.location.pathname.split('/').filter(Boolean)
-    // return {
-    //   project,
-    // }
+  loader: async (ctx) => {
+    const project = await ProjectsService.find(ctx.params.projectId);
+    if (project === null) {
+      throw notFound();
+    }
+    return {
+      project,
+    };
   },
 });

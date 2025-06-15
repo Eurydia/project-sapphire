@@ -2,12 +2,10 @@ import { Technology } from "src/technologies/technology.entity";
 import { Topic } from "src/topics/topic.entity";
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
@@ -23,18 +21,6 @@ export class Project {
 
   @Column({ type: "text", nullable: true })
   description?: string | null;
-
-  @CreateDateColumn({
-    type: "datetime",
-    default: () => "CURRENT_TIMESTAMP",
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    type: "datetime",
-    default: () => "CURRENT_TIMESTAMP",
-  })
-  modifiedAt: Date;
 
   @ManyToMany(() => Topic, (topic) => topic.projects, {
     cascade: true,

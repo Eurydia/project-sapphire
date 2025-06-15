@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { createFileRoute, notFound, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
@@ -14,6 +14,6 @@ export const Route = createFileRoute("/projects/$projectId")({
   component: RouteComponent,
   loader: (ctx) => {
     // const segments = ctx.location.pathname.split('/').filter(Boolean).slice(2)
-    throw notFound();
+    // throw notFound();
   },
 });

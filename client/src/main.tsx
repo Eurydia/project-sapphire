@@ -30,7 +30,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <RouterProvider router={router} />
-      <ToastContainer />
+      <ToastContainer pauseOnFocusLoss={false} />
     </StrictMode>,
   );
 }

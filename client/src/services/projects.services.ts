@@ -10,9 +10,15 @@ export class ProjectsService {
   public static async findAll() {
     const projects = this.CLIENT.get<Project[]>(`/projects`).then(
       (res) => res.data,
-      () => [] as Project[],
+      (): Project[] => [],
     );
     return projects;
+  }
+
+  public static async find(id: string) {
+    return this.CLIENT.get<Project>(`/projects/${id}`)
+      .then((res) => res.data)
+      .catch(() => null);
   }
 
   public static async create(dto: CreateProjectDto) {

@@ -1,11 +1,7 @@
 import { CreateProjectForm } from "@/components/CreateProjectForm";
-import { ProjectCard } from "@/components/ProejctCard";
+import { ProjectCard } from "@/components/ProjectCard";
 import { ProjectsService } from "@/services/projects.services";
-import {
-  AddRounded,
-  FilterListRounded,
-  SearchRounded,
-} from "@mui/icons-material";
+import { AddRounded } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -13,7 +9,6 @@ import {
   DialogContent,
   DialogTitle,
   Stack,
-  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -42,7 +37,7 @@ const RouteComponent: FC = () => {
               <AddRounded />
             </Button>
           </Toolbar>
-          <Toolbar
+          {/* <Toolbar
             disableGutters
             sx={{
               flexDirection: "column",
@@ -80,7 +75,7 @@ const RouteComponent: FC = () => {
               </Stack>
               <Typography>{projects.projectCountMsg}</Typography>
             </Stack>
-          </Toolbar>
+          </Toolbar> */}
           {projects.projects.map((project) => {
             return <ProjectCard project={project} key={project.id} />;
           })}
