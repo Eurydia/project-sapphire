@@ -1,3 +1,4 @@
+import { ProjectTree } from "src/project-tree/entities/project-tree.entity";
 import { Technology } from "src/technologies/technology.entity";
 import { Topic } from "src/topics/topic.entity";
 import {
@@ -5,6 +6,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -16,7 +18,7 @@ export class Project {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   absPath: string;
 
   @Column({ type: "text", nullable: true })
@@ -35,4 +37,7 @@ export class Project {
   })
   @JoinTable({ name: "project_technologies" })
   technologies: Technology[];
+
+  @OneToMany(() => ProjectTree, (tree) => tree.project)
+  trees: ProjectTree[];
 }

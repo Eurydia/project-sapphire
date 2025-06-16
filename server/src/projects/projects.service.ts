@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { normalize } from "path";
 import { getProjectRootMetadata } from "src/common/utils/project-root-metadata.helper";
 import { Technology } from "src/technologies/technology.entity";
 import { Topic } from "src/topics/topic.entity";
@@ -20,10 +21,10 @@ export class ProjectsService {
     private readonly techRepo: Repository<Technology>,
   ) {}
 
-  async create(dto: CreateProjectDto): Promise<Project> {
+  async create(dto: CreateProjectDto) {
     const project = this.projectRepo.create({
       name: dto.name,
-      absPath: dto.absPath,
+      absPath: normalize(dto.absPath),
       description: dto.description ?? null,
     });
 

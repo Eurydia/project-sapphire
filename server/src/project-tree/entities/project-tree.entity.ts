@@ -1,12 +1,24 @@
 import { Project } from "src/projects/project.entity";
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
+@Entity()
 export class ProjectTree {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column()
+
+  @ManyToOne(() => Project, (project) => project.trees, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "project_id" })
   project: Project;
+
   @Column()
   path: string;
-  readme?: string | null | undefined;
+
+  @Column({ nullable: true, type: "text" })
+  readme?: string | null;
 }
