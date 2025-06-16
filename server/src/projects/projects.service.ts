@@ -5,7 +5,6 @@ import { Technology } from "src/technologies/technology.entity";
 import { Topic } from "src/topics/topic.entity";
 import { In, Repository } from "typeorm";
 import { CreateProjectDto } from "./dto/create-project.dto";
-import { ProjectWithMetadataDto } from "./dto/project-with-metadata.dto";
 import { Project } from "./project.entity";
 
 @Injectable()
@@ -79,16 +78,13 @@ export class ProjectsService {
       relations: ["technologies", "topics"],
       order: { name: "ASC" },
     });
-    const projectsWithMetadata: ProjectWithMetadataDto[] = projectsBase.map(
-      (projectBase) => {
-        const metadata = getProjectRootMetadata(projectBase.absPath);
-        return {
-          ...projectBase,
-          metadata,
-        };
-      },
-    );
-    return projectsWithMetadata;
+    return projectsBase.map((projectBase) => {
+      const metadata = getProjectRootMetadata(projectBase.absPath);
+      return {
+        ...projectBase,
+        metadata,
+      };
+    });
   }
 
   async findOne(id: string) {
@@ -102,11 +98,10 @@ export class ProjectsService {
     }
 
     const metadata = getProjectRootMetadata(projectBase.absPath);
-    const projectWithMetadata: ProjectWithMetadataDto = {
+    return {
       ...projectBase,
       metadata,
     };
-    return projectWithMetadata;
   }
 
   update(id: string, data: Partial<Project>) {

@@ -1,24 +1,20 @@
-import { existsSync, Stats, statSync } from "fs";
+import { existsSync } from "fs";
+import { lstat } from "fs/promises";
 import { isAbsolute } from "path";
 
-export type ProjectRootMetadata = Pick<
-  Stats,
-  "atimeMs" | "ctimeMs" | "mtimeMs"
->;
-
-export const getProjectRootMetadata = (path: string) => {
+export const getProjectRootMetadata = async (path: string) => {
   if (!isAbsolute(path) || !existsSync(path)) {
     return null;
   }
 
-  const stats = statSync(path);
+  const stats = await lstat(path);
   if (!stats.isDirectory()) {
     return null;
   }
-  const metadata: ProjectRootMetadata = {
-    ctimeMs: stats.ctimeMs,
-    atimeMs: stats.atimeMs,
-    mtimeMs: stats.mtimeMs,
+
+  return {
+    ctime: stats.ctime,
+    atime: stats.atimeMs,
+    mtime: stats.mtimeMs,
   };
-  return metadata;
 };
