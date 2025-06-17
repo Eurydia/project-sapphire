@@ -2,7 +2,7 @@ import type { CreateProjectDto } from "@/types/projects/dto/create-project.dto";
 import type { Project, ProjectQuery } from "@/types/projects/project.entity";
 import axios from "axios";
 
-export class ProjectsService {
+export class ProjectService {
   private static readonly CLIENT = axios.create({
     baseURL: `${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`,
   });

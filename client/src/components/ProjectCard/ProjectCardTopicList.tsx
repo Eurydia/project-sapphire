@@ -1,12 +1,12 @@
-import type { ProjectTechnology } from "@/types/projects/project.entity";
+import type { ProjectTopic } from "@/types/projects/project.entity";
 import { Stack, Typography } from "@mui/material";
 import type { FC } from "react";
-import { StyledLink } from "./StyledLink";
+import { StyledLink } from "../StyledLink";
 
 type Props = {
-  items: ProjectTechnology[];
+  items: ProjectTopic[];
 };
-export const ProjectCardTechnologyList: FC<Props> = ({ items }) => {
+export const ProjectCardTopicList: FC<Props> = ({ items }) => {
   return (
     <Stack
       direction="row"
@@ -15,7 +15,7 @@ export const ProjectCardTechnologyList: FC<Props> = ({ items }) => {
       flexWrap="wrap"
       alignItems="baseline"
     >
-      <Typography color="textSecondary">{`Technologies:`}</Typography>
+      <Typography color="textSecondary">{`Topics:`}</Typography>
       {items.length === 0 && (
         <Typography sx={{ width: "fit-content" }} color="textSecondary">
           {`None`}

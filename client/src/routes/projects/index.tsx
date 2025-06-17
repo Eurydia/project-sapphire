@@ -1,87 +1,137 @@
 import { CreateProjectForm } from "@/components/CreateProjectForm";
-import { ProjectCard } from "@/components/ProjectCard";
-import { ProjectsService } from "@/services/projects.services";
-import { AddRounded } from "@mui/icons-material";
+import { ProjectCard } from "@/components/ProjectCard/ProjectCard";
+import { ProjectCardSkeleton } from "@/components/ProjectCard/ProjectCardSkeleton";
+import { ProjectService } from "@/services/projects.services";
 import {
-  Box,
+  AddRounded,
+  FilterListRounded,
+  SearchRounded,
+} from "@mui/icons-material";
+import {
   Button,
   Dialog,
   DialogContent,
   DialogTitle,
+  Grid,
+  Paper,
+  Skeleton,
   Stack,
+  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import {
+  Await,
+  createFileRoute,
+  defer,
+  useRouter,
+} from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
-import { useState, type FC } from "react";
+import { Fragment, Suspense, useState, type FC } from "react";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
 const RouteComponent: FC = () => {
-  const { projects, search } = Route.useLoaderData();
+  const { projectsPromise, search } = Route.useLoaderData();
   const router = useRouter();
   const [createDialogActive, setCreateDialogActive] = useState(false);
 
   return (
     <>
-      <Box sx={{ maxWidth: "lg", marginX: "auto", padding: 4 }}>
-        <Stack spacing={1}>
-          <Toolbar disableGutters variant="dense">
-            <Button
-              disableElevation
-              disableRipple
-              variant="contained"
-              onClick={() => setCreateDialogActive(true)}
-            >
-              <AddRounded />
-            </Button>
-          </Toolbar>
-          {/* <Toolbar
-            disableGutters
+      <Grid container spacing={2} sx={{ padding: 2, paddingBottom: 0 }}>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <Paper
+            variant="outlined"
             sx={{
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              gap: 1,
+              padding: 1,
+              position: "sticky",
+              top: 20,
             }}
-            component="form"
           >
-            <TextField
-              name="name"
-              fullWidth
-              autoComplete="off"
-              defaultValue={search.name}
-              placeholder="Search project"
-            />
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              sx={{ width: "100%" }}
+            <Toolbar
+              disableGutters
+              sx={{
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                gap: 1,
+              }}
+              component="form"
             >
-              <Stack direction="row" spacing={1} useFlexGap>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disableElevation
-                  disableRipple
-                >
-                  <SearchRounded />
-                </Button>
-                <Button variant="outlined" disableElevation disableRipple>
-                  <FilterListRounded />
-                </Button>
+              <TextField
+                name="name"
+                fullWidth
+                autoComplete="off"
+                defaultValue={search.name}
+                placeholder="Search project"
+              />
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ width: "100%" }}
+              >
+                <Stack direction="row" spacing={1} useFlexGap>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disableElevation
+                    disableRipple
+                  >
+                    <SearchRounded />
+                  </Button>
+                  <Button variant="outlined" disableElevation disableRipple>
+                    <FilterListRounded />
+                  </Button>
+                  <Button
+                    disableElevation
+                    disableRipple
+                    variant="outlined"
+                    onClick={() => setCreateDialogActive(true)}
+                  >
+                    <AddRounded />
+                  </Button>
+                </Stack>
               </Stack>
-              <Typography>{projects.projectCountMsg}</Typography>
-            </Stack>
-          </Toolbar> */}
-          {projects.projects.map((project) => {
-            return <ProjectCard project={project} key={project.id} />;
-          })}
-        </Stack>
-      </Box>
+            </Toolbar>
+          </Paper>
+        </Grid>
+        <Grid size={{ xs: 12, md: 9 }}>
+          <Stack spacing={1}>
+            <Suspense>
+              <Await
+                promise={projectsPromise}
+                fallback={
+                  <Fragment>
+                    <Typography>
+                      <Skeleton width="20ch" />
+                    </Typography>
+                    <ProjectCardSkeleton />
+                    <ProjectCardSkeleton />
+                    <ProjectCardSkeleton />
+                  </Fragment>
+                }
+              >
+                {(projects) => (
+                  <Fragment>
+                    <Typography>
+                      {projects.length <= 1
+                        ? `Showing ${projects.length} item`
+                        : `Showing ${projects.length} items`}
+                    </Typography>
+                    {projects.map((project) => (
+                      <ProjectCard project={project} key={project.id} />
+                    ))}
+                  </Fragment>
+                )}
+              </Await>
+            </Suspense>
+          </Stack>
+        </Grid>
+      </Grid>
+
       <Dialog
+        scroll="paper"
         maxWidth="md"
         fullWidth
         open={createDialogActive}
@@ -122,17 +172,10 @@ export const Route = createFileRoute("/projects/")({
     return { search };
   },
   validateSearch: zodValidator(searchParamSchema),
-  loader: async ({ deps }) => {
-    const projects = await ProjectsService.findAll();
-    const projectCount = projects.length;
-    let projectCountMsg = "";
-    if (projectCount <= 1) {
-      projectCountMsg = `Showing ${projects.length} item`;
-    } else {
-      projectCountMsg = `Showing ${projects.length} items`;
-    }
+  loader: ({ deps }) => {
+    const projectsPromise = ProjectService.findAll();
     return {
-      projects: { projects, projectCountMsg, projectCount },
+      projectsPromise: defer(projectsPromise),
       search: deps.search,
     };
   },

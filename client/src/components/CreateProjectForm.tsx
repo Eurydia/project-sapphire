@@ -1,4 +1,4 @@
-import { ProjectsService } from "@/services/projects.services";
+import { ProjectService } from "@/services/projects.services";
 import type { CreateProjectDto } from "@/types/projects/dto/create-project.dto";
 import type { Project } from "@/types/projects/project.entity";
 import {
@@ -30,7 +30,7 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
     } as CreateProjectDto,
     onSubmit: ({ value, formApi }) => {
       setIsBusy(true);
-      ProjectsService.create(value)
+      ProjectService.create(value)
         .then((project) => {
           formApi.reset();
           onSubmitSuccess(project);

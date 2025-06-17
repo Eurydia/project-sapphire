@@ -3,7 +3,6 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
 // Import the generated route tree
-import { ToastContainer } from "react-toastify";
 import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
@@ -30,7 +29,6 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <RouterProvider router={router} />
-      <ToastContainer pauseOnFocusLoss={false} />
     </StrictMode>,
   );
 }

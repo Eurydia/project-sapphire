@@ -1,20 +1,19 @@
-import { existsSync } from "fs";
-import { lstat } from "fs/promises";
+import { existsSync, lstatSync } from "fs";
 import { isAbsolute } from "path";
 
-export const getProjectRootMetadata = async (path: string) => {
+export const getProjectRootMetadata = (path: string) => {
   if (!isAbsolute(path) || !existsSync(path)) {
     return null;
   }
 
-  const stats = await lstat(path);
+  const stats = lstatSync(path);
   if (!stats.isDirectory()) {
     return null;
   }
 
   return {
     ctime: stats.ctime,
-    atime: stats.atimeMs,
-    mtime: stats.mtimeMs,
+    atime: stats.atime,
+    mtime: stats.mtime,
   };
 };

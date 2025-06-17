@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ProjectsProjectIdRouteRouteImport } from './routes/projects/$projectId/route'
 import { Route as ProjectsProjectIdIndexRouteImport } from './routes/projects/$projectId/index'
@@ -19,6 +20,11 @@ import { Route as ProjectsProjectIdBlobIndexRouteImport } from './routes/project
 import { Route as ProjectsProjectIdTreeSplatRouteImport } from './routes/projects/$projectId/tree/$'
 import { Route as ProjectsProjectIdBlobSplatRouteImport } from './routes/projects/$projectId/blob/$'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   id: '/projects/',
   path: '/projects/',
@@ -72,6 +78,7 @@ const ProjectsProjectIdBlobSplatRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/projects/$projectId': typeof ProjectsProjectIdRouteRouteWithChildren
   '/projects': typeof ProjectsIndexRoute
   '/projects/$projectId/blob': typeof ProjectsProjectIdBlobRouteRouteWithChildren
@@ -83,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId/tree/': typeof ProjectsProjectIdTreeIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$projectId': typeof ProjectsProjectIdIndexRoute
   '/projects/$projectId/blob/$': typeof ProjectsProjectIdBlobSplatRoute
@@ -92,6 +100,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/projects/$projectId': typeof ProjectsProjectIdRouteRouteWithChildren
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$projectId/blob': typeof ProjectsProjectIdBlobRouteRouteWithChildren
@@ -105,6 +114,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/projects/$projectId'
     | '/projects'
     | '/projects/$projectId/blob'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/projects/$projectId/tree/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/projects'
     | '/projects/$projectId'
     | '/projects/$projectId/blob/$'
@@ -124,6 +135,7 @@ export interface FileRouteTypes {
     | '/projects/$projectId/tree'
   id:
     | '__root__'
+    | '/'
     | '/projects/$projectId'
     | '/projects/'
     | '/projects/$projectId/blob'
@@ -136,12 +148,20 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   ProjectsProjectIdRouteRoute: typeof ProjectsProjectIdRouteRouteWithChildren
   ProjectsIndexRoute: typeof ProjectsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$projectId': {
       id: '/projects/$projectId'
       path: '/projects/$projectId'
@@ -261,6 +281,7 @@ const ProjectsProjectIdRouteRouteWithChildren =
   )
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   ProjectsProjectIdRouteRoute: ProjectsProjectIdRouteRouteWithChildren,
   ProjectsIndexRoute: ProjectsIndexRoute,
 }

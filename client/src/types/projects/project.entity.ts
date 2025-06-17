@@ -23,9 +23,9 @@ export const projectSchema = z.strictObject({
   topics: projectTopicSchema.array(),
   metadata: z
     .strictObject({
-      ctimeMs: z.number().nonnegative(),
-      atimeMs: z.number().nonnegative(),
-      mtimeMs: z.number().nonnegative(),
+      ctime: z.string().datetime(),
+      atime: z.string().datetime(),
+      mtime: z.string().datetime(),
     })
     .nullable(),
 });

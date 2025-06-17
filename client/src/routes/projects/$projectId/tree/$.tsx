@@ -1,21 +1,18 @@
+import { ProjectTreeService } from "@/services/project-tree.service";
+import { ProjectService } from "@/services/projects.services";
 import {
   AppBar,
   Breadcrumbs,
   Card,
   CardContent,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Toolbar,
 } from "@mui/material";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
+  const { project, tree } = Route.useLoaderData();
   return (
     <>
       <AppBar
@@ -41,79 +38,7 @@ const RouteComponent: FC = () => {
           </Breadcrumbs>
         </Toolbar>
       </AppBar>
-      <Paper variant="outlined">
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                <TableCell>Name</TableCell>
-                <TableCell>Last updated</TableCell>
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {/* {data.subdirectories.map(({ name, path, updatedAt }, index) => {
-                return (
-                  <TableRow
-                    key={`row-dir-${index}`}
-                    hover
-                    sx={{
-                      '&:last-child td, &:last-child th': { border: 0 },
-                    }}
-                  >
-                    <TableCell padding="checkbox">
-                      <FolderRounded color="primary" fontSize="small" />
-                    </TableCell>
-                    <TableCell>
-                      <StyledLink
-                        to={`/projects/$projectId/tree/$`}
-                        params={{
-                          projectId: project.id,
-                          _splat: path,
-                        }}
-                      >
-                        {name}
-                      </StyledLink>
-                    </TableCell>
-                    <TableCell>{moment(updatedAt).fromNow()}</TableCell>
-                    <TableCell>
-                      <IconButton>
-                        <MoreVertRounded />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-              {data.files.map(({ name, path, updatedAt }, index) => {
-                return (
-                  <TableRow
-                    key={`row-file-${index}`}
-                    hover
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell padding="checkbox" />
-                    <TableCell>
-                      <StyledLink
-                        to="/projects/$projectId/blob/$"
-                        params={{ projectId: project.id, _splat: path }}
-                      >
-                        {name}
-                      </StyledLink>
-                    </TableCell>
-                    <TableCell>{moment(updatedAt).fromNow()}</TableCell>
-                    <TableCell>
-                      <IconButton>
-                        <MoreVertRounded />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                )
-              })} */}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+      <Paper variant="outlined"></Paper>
       <Card variant="outlined">
         <CardContent>
           {/* {data.readme !== undefined && (
@@ -128,22 +53,19 @@ const RouteComponent: FC = () => {
 
 export const Route = createFileRoute("/projects/$projectId/tree/$")({
   component: RouteComponent,
-  loader: (ctx) => {
-    throw notFound();
-    // const rawSegments = (ctx.params._splat ?? '').split('/').filter(Boolean)
-    // const segments = [
-    //   {
-    //     label: ctx.params.projectId,
-    //     href: `/projects/${ctx.params.projectId}`,
-    //   },
-    //   ...rawSegments.map((seg, idx) => ({
-    //     label: seg,
-    //     href:
-    //       `/projects/${ctx.params.projectId}/tree/` +
-    //       rawSegments.slice(0, idx + 1).join('/'),
-    //   })),
-    // ]
+  loader: async (ctx) => {
+    const project = await ProjectService.find(ctx.params.projectId);
+    if (project === null) {
+      throw notFound();
+    }
 
-    // return { segments, project }
+    const tree = await ProjectTreeService.getTree(
+      project.id,
+      ctx.params._splat ?? "",
+    );
+    if (tree === null) {
+      throw notFound();
+    }
+    return { project, tree };
   },
 });

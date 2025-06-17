@@ -1,4 +1,6 @@
-import { ProjectsService } from "@/services/projects.services";
+import { ProjectTreeTable } from "@/components/ProjectTreeTable";
+import { ProjectTreeService } from "@/services/project-tree.service";
+import { ProjectService } from "@/services/projects.services";
 import { SyncRounded } from "@mui/icons-material";
 import {
   Button,
@@ -8,93 +10,39 @@ import {
   ListItemAvatar,
   ListItemText,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
 } from "@mui/material";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
+  const router = useRouter();
+  const { project, tree } = Route.useLoaderData();
   return (
     <Grid container spacing={2}>
       <Grid size={{ md: 9 }}>
         <Paper variant="outlined">
-          <TableContainer>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell />
-                  <TableCell>Name</TableCell>
-                  <TableCell>Last updated</TableCell>
-                  <TableCell />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {/* {data.subdirectories.map(({ name, path, updatedAt }, index) => {
-                  return (
-                    <TableRow
-                      key={`row-dir-${index}`}
-                      hover
-                      sx={{
-                        '&:last-child td, &:last-child th': { border: 0 },
-                      }}
-                    >
-                      <TableCell padding="checkbox">
-                        <FolderRounded color="primary" fontSize="small" />
-                      </TableCell>
-                      <TableCell>
-                        <StyledLink
-                          to={`/projects/$projectId/tree/$`}
-                          params={{
-                            projectId: project.id,
-                            _splat: path,
-                          }}
-                        >
-                          {name}
-                        </StyledLink>
-                      </TableCell>
-                      <TableCell>{moment(updatedAt).fromNow()}</TableCell>
-                      <TableCell align="right">
-                        <IconButton>
-                          <MoreVertRounded />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-                {data.files.map(({ name, path, updatedAt }, index) => {
-                  return (
-                    <TableRow
-                      key={`row-file-${index}`}
-                      hover
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell padding="checkbox" />
-                      <TableCell>
-                        <StyledLink
-                          to="/projects/$projectId/blob/$"
-                          params={{ projectId: project.id, _splat: path }}
-                        >
-                          {name}
-                        </StyledLink>
-                      </TableCell>
-                      <TableCell>{moment(updatedAt).fromNow()}</TableCell>
-                      <TableCell align="right">
-                        <IconButton>
-                          <MoreVertRounded />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })} */}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <ProjectTreeTable projectUUID={project.id} tree={tree} />
         </Paper>
+        {/* <Paper variant="outlined" sx={{ padding: 2 }}>
+          {data.readme !== undefined && (
+            <Stack spacing={1} divider={<Divider flexItem variant="middle" />}>
+              <List dense disablePadding>
+                <ListItem>
+                  <ListItemText
+                    secondary={data.readme.name}
+                    primary="File name"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Path" secondary={data.readme.path} />
+                </ListItem>
+              </List>
+              <Markdown content={data.readme.content} />
+            </Stack>
+          )}
+          {data.readme === undefined && <Typography>Unset</Typography>}
+           <Markdown content={project.description ?? ''} /> 
+        </Paper> */}
       </Grid>
       <Grid size={{ md: 3 }}>
         <Paper variant="outlined" sx={{ padding: 1 }}>
@@ -108,7 +56,14 @@ const RouteComponent: FC = () => {
                 // secondary={moment(data.lastSynchronized).fromNow()}
               />
               <ListItemAvatar>
-                <Button disableFocusRipple variant="outlined" disableElevation>
+                <Button
+                  disableFocusRipple
+                  variant="outlined"
+                  disableElevation
+                  onClick={() => {
+                    router.invalidate({ sync: true });
+                  }}
+                >
                   <SyncRounded fontSize="small" />
                 </Button>
               </ListItemAvatar>
@@ -140,28 +95,6 @@ const RouteComponent: FC = () => {
           </List>
         </Paper>
       </Grid>
-      <Grid size={{ md: 12 }}>
-        {/* <Paper variant="outlined" sx={{ padding: 2 }}>
-          {data.readme !== undefined && (
-            <Stack spacing={1} divider={<Divider flexItem variant="middle" />}>
-              <List dense disablePadding>
-                <ListItem>
-                  <ListItemText
-                    secondary={data.readme.name}
-                    primary="File name"
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Path" secondary={data.readme.path} />
-                </ListItem>
-              </List>
-              <Markdown content={data.readme.content} />
-            </Stack>
-          )}
-          {data.readme === undefined && <Typography>Unset</Typography>}
-           <Markdown content={project.description ?? ''} /> 
-        </Paper> */}
-      </Grid>
     </Grid>
   );
 };
@@ -169,12 +102,15 @@ const RouteComponent: FC = () => {
 export const Route = createFileRoute("/projects/$projectId/")({
   component: RouteComponent,
   loader: async (ctx) => {
-    const project = await ProjectsService.find(ctx.params.projectId);
+    const project = await ProjectService.find(ctx.params.projectId);
     if (project === null) {
       throw notFound();
     }
+    const tree = await ProjectTreeService.getTree(project.id);
+
     return {
       project,
+      tree,
     };
   },
 });
