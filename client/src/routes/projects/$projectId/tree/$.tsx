@@ -1,5 +1,5 @@
 import { ProjectTreeService } from "@/services/project-tree.service";
-import { ProjectService } from "@/services/projects.services";
+import { ProjectService } from "@/services/projects.service";
 import {
   AppBar,
   Breadcrumbs,
@@ -12,7 +12,6 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
-  const { project, tree } = Route.useLoaderData();
   return (
     <>
       <AppBar

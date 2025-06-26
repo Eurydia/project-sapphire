@@ -1,4 +1,4 @@
-import { ProjectService } from "@/services/projects.services";
+import { ProjectService } from "@/services/projects.service";
 import type { CreateProjectDto } from "@/types/projects/dto/create-project.dto";
 import type { Project } from "@/types/projects/project.entity";
 import {

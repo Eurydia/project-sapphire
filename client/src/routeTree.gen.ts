@@ -162,13 +162,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects/$projectId': {
-      id: '/projects/$projectId'
-      path: '/projects/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof ProjectsProjectIdRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/projects/': {
       id: '/projects/'
       path: '/projects'
@@ -176,11 +169,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects/$projectId/blob': {
-      id: '/projects/$projectId/blob'
-      path: '/blob'
-      fullPath: '/projects/$projectId/blob'
-      preLoaderRoute: typeof ProjectsProjectIdBlobRouteRouteImport
+    '/projects/$projectId': {
+      id: '/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof ProjectsProjectIdRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$projectId/': {
+      id: '/projects/$projectId/'
+      path: '/'
+      fullPath: '/projects/$projectId/'
+      preLoaderRoute: typeof ProjectsProjectIdIndexRouteImport
       parentRoute: typeof ProjectsProjectIdRouteRoute
     }
     '/projects/$projectId/tree': {
@@ -190,25 +190,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProjectIdTreeRouteRouteImport
       parentRoute: typeof ProjectsProjectIdRouteRoute
     }
-    '/projects/$projectId/': {
-      id: '/projects/$projectId/'
-      path: '/'
-      fullPath: '/projects/$projectId/'
-      preLoaderRoute: typeof ProjectsProjectIdIndexRouteImport
+    '/projects/$projectId/blob': {
+      id: '/projects/$projectId/blob'
+      path: '/blob'
+      fullPath: '/projects/$projectId/blob'
+      preLoaderRoute: typeof ProjectsProjectIdBlobRouteRouteImport
       parentRoute: typeof ProjectsProjectIdRouteRoute
     }
-    '/projects/$projectId/blob/$': {
-      id: '/projects/$projectId/blob/$'
-      path: '/$'
-      fullPath: '/projects/$projectId/blob/$'
-      preLoaderRoute: typeof ProjectsProjectIdBlobSplatRouteImport
-      parentRoute: typeof ProjectsProjectIdBlobRouteRoute
-    }
-    '/projects/$projectId/tree/$': {
-      id: '/projects/$projectId/tree/$'
-      path: '/$'
-      fullPath: '/projects/$projectId/tree/$'
-      preLoaderRoute: typeof ProjectsProjectIdTreeSplatRouteImport
+    '/projects/$projectId/tree/': {
+      id: '/projects/$projectId/tree/'
+      path: '/'
+      fullPath: '/projects/$projectId/tree/'
+      preLoaderRoute: typeof ProjectsProjectIdTreeIndexRouteImport
       parentRoute: typeof ProjectsProjectIdTreeRouteRoute
     }
     '/projects/$projectId/blob/': {
@@ -218,12 +211,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProjectIdBlobIndexRouteImport
       parentRoute: typeof ProjectsProjectIdBlobRouteRoute
     }
-    '/projects/$projectId/tree/': {
-      id: '/projects/$projectId/tree/'
-      path: '/'
-      fullPath: '/projects/$projectId/tree/'
-      preLoaderRoute: typeof ProjectsProjectIdTreeIndexRouteImport
+    '/projects/$projectId/tree/$': {
+      id: '/projects/$projectId/tree/$'
+      path: '/$'
+      fullPath: '/projects/$projectId/tree/$'
+      preLoaderRoute: typeof ProjectsProjectIdTreeSplatRouteImport
       parentRoute: typeof ProjectsProjectIdTreeRouteRoute
+    }
+    '/projects/$projectId/blob/$': {
+      id: '/projects/$projectId/blob/$'
+      path: '/$'
+      fullPath: '/projects/$projectId/blob/$'
+      preLoaderRoute: typeof ProjectsProjectIdBlobSplatRouteImport
+      parentRoute: typeof ProjectsProjectIdBlobRouteRoute
     }
   }
 }

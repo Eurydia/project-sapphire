@@ -1,5 +1,9 @@
 import type { CreateProjectDto } from "@/types/projects/dto/create-project.dto";
-import type { Project, ProjectQuery } from "@/types/projects/project.entity";
+import {
+  projectSchema,
+  type Project,
+  type ProjectQuery,
+} from "@/types/projects/project.entity";
 import axios from "axios";
 
 export class ProjectService {
@@ -8,17 +12,13 @@ export class ProjectService {
   });
 
   public static async findAll() {
-    const projects = this.CLIENT.get<Project[]>(`/projects`).then(
-      (res) => res.data,
-      (): Project[] => [],
+    return this.CLIENT.get<Project[]>(`/projects`).then((res) =>
+      projectSchema.array().parseAsync(res.data),
     );
-    return projects;
   }
 
   public static async find(id: string) {
-    return this.CLIENT.get<Project>(`/projects/${id}`)
-      .then((res) => res.data)
-      .catch(() => null);
+    return this.CLIENT.get<Project>(`/projects/${id}`).then((res) => res.data);
   }
 
   public static async create(dto: CreateProjectDto) {
@@ -28,7 +28,6 @@ export class ProjectService {
   }
 
   public static async delete(id: string) {
-    console.debug(id);
     return await this.CLIENT.delete(`/projects/${id}`);
   }
 }

@@ -12,8 +12,8 @@ const RouteComponent: FC = () => {
 
 export const Route = createFileRoute("/projects/$projectId")({
   component: RouteComponent,
-  loader: (ctx) => {
-    // const segments = ctx.location.pathname.split('/').filter(Boolean).slice(2)
-    // throw notFound();
-  },
+  // loader: (ctx) => {
+  //   // const segments = ctx.location.pathname.split('/').filter(Boolean).slice(2)
+  //   // throw notFound();
+  // },
 });

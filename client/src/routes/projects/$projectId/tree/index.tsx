@@ -1,6 +1,6 @@
 import { StyledLink } from "@/components/StyledLink";
 import { ProjectTreeService } from "@/services/project-tree.service";
-import { ProjectService } from "@/services/projects.services";
+import { ProjectService } from "@/services/projects.service";
 import { FolderRounded, MoreVertRounded } from "@mui/icons-material";
 import {
   AppBar,

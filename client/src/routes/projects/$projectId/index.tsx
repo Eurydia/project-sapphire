@@ -1,6 +1,5 @@
-import { ProjectTreeTable } from "@/components/ProjectTreeTable";
 import { ProjectTreeService } from "@/services/project-tree.service";
-import { ProjectService } from "@/services/projects.services";
+import { ProjectService } from "@/services/projects.service";
 import { SyncRounded } from "@mui/icons-material";
 import {
   Button,
@@ -16,13 +15,9 @@ import { type FC } from "react";
 
 const RouteComponent: FC = () => {
   const router = useRouter();
-  const { project, tree } = Route.useLoaderData();
   return (
     <Grid container spacing={2}>
       <Grid size={{ md: 9 }}>
-        <Paper variant="outlined">
-          <ProjectTreeTable projectUUID={project.id} tree={tree} />
-        </Paper>
         {/* <Paper variant="outlined" sx={{ padding: 2 }}>
           {data.readme !== undefined && (
             <Stack spacing={1} divider={<Divider flexItem variant="middle" />}>

@@ -1,5 +1,5 @@
 import { AppBar, Breadcrumbs, Card, CardContent, Toolbar } from "@mui/material";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
@@ -44,23 +44,23 @@ const RouteComponent: FC = () => {
 
 export const Route = createFileRoute("/projects/$projectId/blob/$")({
   component: RouteComponent,
-  loader: (ctx) => {
-    throw notFound();
-    // console.debug(ctx.params._splat);
-    // const rawSegments = (ctx.params._splat ?? "").split("/").filter(Boolean);
-    // const segments = [
-    //   {
-    //     label: ctx.params.projectId,
-    //     href: `/projects/${ctx.params.projectId}`,
-    //   },
-    //   ...rawSegments.map((seg, idx) => ({
-    //     label: seg,
-    //     href:
-    //       `/projects/${ctx.params.projectId}/tree/` +
-    //       rawSegments.slice(0, idx + 1).join("/"),
-    //   })),
-    // ];
+  // loader: (ctx) => {
+  //   throw notFound();
+  //   // console.debug(ctx.params._splat);
+  //   // const rawSegments = (ctx.params._splat ?? "").split("/").filter(Boolean);
+  //   // const segments = [
+  //   //   {
+  //   //     label: ctx.params.projectId,
+  //   //     href: `/projects/${ctx.params.projectId}`,
+  //   //   },
+  //   //   ...rawSegments.map((seg, idx) => ({
+  //   //     label: seg,
+  //   //     href:
+  //   //       `/projects/${ctx.params.projectId}/tree/` +
+  //   //       rawSegments.slice(0, idx + 1).join("/"),
+  //   //   })),
+  //   // ];
 
-    // return { data, segments, project };
-  },
+  //   // return { data, segments, project };
+  // },
 });
