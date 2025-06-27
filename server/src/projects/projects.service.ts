@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { normalize } from "path";
 import { getProjectRootMetadata } from "src/common/utils/project-root-metadata.helper";
@@ -95,7 +95,7 @@ export class ProjectsService {
     });
 
     if (projectBase === null) {
-      return null;
+      throw new NotFoundException("Project not found");
     }
 
     const metadata = getProjectRootMetadata(projectBase.absPath);

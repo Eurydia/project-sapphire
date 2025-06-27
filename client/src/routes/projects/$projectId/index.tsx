@@ -1,23 +1,28 @@
 import { ProjectTreeService } from "@/services/project-tree.service";
 import { ProjectService } from "@/services/projects.service";
-import { SyncRounded } from "@mui/icons-material";
-import {
-  Button,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-} from "@mui/material";
-import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
+import { Grid, Paper, Stack, Typography } from "@mui/material";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
-  const router = useRouter();
   return (
-    <Grid container spacing={2}>
-      <Grid size={{ md: 9 }}>
+    <Grid container spacing={2} sx={{ height: "100vh" }}>
+      <Grid size={{ md: 3 }}></Grid>
+      <Grid size={{ md: 9 }} sx={{ overflowY: "auto", maxHeight: "50vh" }}>
+        <Stack spacing={2}>
+          <Paper variant="outlined">
+            <Typography>Pinned notes</Typography>
+          </Paper>
+          <Paper variant="outlined">
+            <Typography>Directory tree</Typography>
+          </Paper>
+          <Paper variant="outlined">
+            <Typography>Read me</Typography>
+          </Paper>
+          <Paper variant="outlined">
+            <Typography>Metadata</Typography>
+          </Paper>
+        </Stack>
         {/* <Paper variant="outlined" sx={{ padding: 2 }}>
           {data.readme !== undefined && (
             <Stack spacing={1} divider={<Divider flexItem variant="middle" />}>
@@ -38,57 +43,6 @@ const RouteComponent: FC = () => {
           {data.readme === undefined && <Typography>Unset</Typography>}
            <Markdown content={project.description ?? ''} /> 
         </Paper> */}
-      </Grid>
-      <Grid size={{ md: 3 }}>
-        <Paper variant="outlined" sx={{ padding: 1 }}>
-          <List dense disablePadding>
-            <ListItem>
-              {/* <ListItemText primary={project.description} /> */}
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="Synced"
-                // secondary={moment(data.lastSynchronized).fromNow()}
-              />
-              <ListItemAvatar>
-                <Button
-                  disableFocusRipple
-                  variant="outlined"
-                  disableElevation
-                  onClick={() => {
-                    router.invalidate({ sync: true });
-                  }}
-                >
-                  <SyncRounded fontSize="small" />
-                </Button>
-              </ListItemAvatar>
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="Modified"
-                // secondary={moment(project.modifiedAt).fromNow()}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="Created"
-                // secondary={moment(project.createdAt).fromNow()}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="Technologies"
-                // secondary={project.tags.technologies.join(", ")}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="Topics"
-                // secondary={project.tags.topics.join(", ")}
-              />
-            </ListItem>
-          </List>
-        </Paper>
       </Grid>
     </Grid>
   );

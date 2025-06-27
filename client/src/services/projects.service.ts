@@ -1,9 +1,5 @@
 import type { CreateProjectDto } from "@/types/projects/dto/create-project.dto";
-import {
-  projectSchema,
-  type Project,
-  type ProjectQuery,
-} from "@/types/projects/project.entity";
+import { projectSchema, type Project } from "@/types/projects/project.entity";
 import axios from "axios";
 
 export class ProjectService {
@@ -18,7 +14,11 @@ export class ProjectService {
   }
 
   public static async find(id: string) {
-    return this.CLIENT.get<Project>(`/projects/${id}`).then((res) => res.data);
+    return this.CLIENT.get<Project>(`/projects/${id}`)
+      .then((res) => {
+        return res.data;
+      })
+      .catch(() => null);
   }
 
   public static async create(dto: CreateProjectDto) {
@@ -29,47 +29,5 @@ export class ProjectService {
 
   public static async delete(id: string) {
     return await this.CLIENT.delete(`/projects/${id}`);
-  }
-}
-
-export class ProjectQueryBuilder {
-  private name: string | undefined;
-  private technologies: string[] | undefined;
-  private topics: string[] | undefined;
-  private status: string | undefined;
-  private visibility: string | undefined;
-
-  public withName(value: typeof this.name) {
-    this.name = value;
-    return this;
-  }
-
-  public withTechnologies(value: typeof this.technologies) {
-    this.technologies = value;
-    return this;
-  }
-
-  public withTopics(value: typeof this.topics) {
-    this.topics = value;
-    return this;
-  }
-
-  public withStatus(value: typeof this.status) {
-    this.status = value;
-    return this;
-  }
-  public withVisibility(value: typeof this.visibility) {
-    this.visibility = value;
-    return this;
-  }
-
-  public build(): ProjectQuery {
-    return {
-      name: this.name,
-      technologies: this.technologies,
-      topics: this.topics,
-      status: this.status,
-      visibility: this.visibility,
-    };
   }
 }

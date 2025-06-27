@@ -4,7 +4,7 @@ import { type FC } from "react";
 
 const RouteComponent: FC = () => {
   return (
-    <Box margin={4}>
+    <Box sx={{ padding: 4, maxHeight: "100vh" }}>
       <Outlet />
     </Box>
   );

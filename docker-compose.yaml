@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     image: sapphire-app-client
     ports:
-      - "8080:8080"
+      - "8080:3000"
     restart: unless-stopped
   server:
     container_name: sapphire-app-server
@@ -14,5 +14,6 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "8081:3000"
     command: ["npm", "run", "start:prod"]
+    restart: unless-stopped

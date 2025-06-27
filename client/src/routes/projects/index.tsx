@@ -1,4 +1,4 @@
-import { CreateProjectForm } from "@/components/CreateProjectForm";
+import { CreateProjectForm } from "@/components/form/CreateProjectForm";
 import { ProjectCard } from "@/components/ProjectCard/ProjectCard";
 import { ProjectCardSkeleton } from "@/components/ProjectCard/ProjectCardSkeleton";
 import { ProjectService } from "@/services/projects.service";
@@ -10,13 +10,11 @@ import {
   Button,
   Dialog,
   DialogContent,
-  DialogTitle,
   Grid,
   Paper,
   Stack,
   TextField,
   Toolbar,
-  Typography,
 } from "@mui/material";
 import {
   Await,
@@ -27,14 +25,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
-import {
-  Fragment,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-  type FC,
-} from "react";
+import { Fragment, Suspense, useRef, useState, type FC } from "react";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -45,18 +36,6 @@ const RouteComponent: FC = () => {
   const { location } = useRouterState();
   const [createDialogActive, setCreateDialogActive] = useState(false);
   const searchFieldRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "k" && e.altKey && searchFieldRef.current !== null) {
-        e.preventDefault();
-        e.stopPropagation();
-        searchFieldRef.current.focus();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
 
   return (
     <>
@@ -114,35 +93,19 @@ const RouteComponent: FC = () => {
           </Paper>
         </Grid>
         <Grid size={{ xs: 12, md: 9 }}>
-          <Paper variant="outlined" sx={{ padding: 1 }}>
-            <Stack spacing={1}>
-              <CatchBoundary
-                getResetKey={() => location.state.key!}
-                errorComponent={({ error }) => (
-                  <Fragment>
-                    <Alert
-                      severity="error"
-                      // action={
-                      //   <Button
-                      //     color="inherit"
-                      //     size="small"
-                      //     onClick={() => {
-                      //       reset();
-                      //       router.invalidate({ sync: true });
-                      //     }}
-                      //   >
-                      //     Retry
-                      //   </Button>
-                      // }
-                      sx={{ mb: 2 }}
-                    >
-                      <AlertTitle>Error loading projects</AlertTitle>
-                      {error.message}
-                    </Alert>
-                  </Fragment>
-                )}
-              >
-                <Suspense
+          <Stack spacing={1}>
+            <CatchBoundary
+              getResetKey={() => location.state.key!}
+              errorComponent={({ error }) => (
+                <Alert severity="error">
+                  <AlertTitle>Error loading projects</AlertTitle>
+                  {error.message}
+                </Alert>
+              )}
+            >
+              <Suspense>
+                <Await
+                  promise={projectsPromise}
                   fallback={
                     <Fragment>
                       <ProjectCardSkeleton />
@@ -151,24 +114,15 @@ const RouteComponent: FC = () => {
                     </Fragment>
                   }
                 >
-                  <Await promise={projectsPromise}>
-                    {(projects) => (
-                      <Fragment>
-                        <Typography>
-                          {projects.length <= 1
-                            ? `Showing ${projects.length} item`
-                            : `Showing ${projects.length} items`}
-                        </Typography>
-                        {projects.map((project) => (
-                          <ProjectCard project={project} key={project.id} />
-                        ))}
-                      </Fragment>
-                    )}
-                  </Await>
-                </Suspense>
-              </CatchBoundary>
-            </Stack>
-          </Paper>
+                  {(projects) =>
+                    projects.map((project) => (
+                      <ProjectCard project={project} key={project.id} />
+                    ))
+                  }
+                </Await>
+              </Suspense>
+            </CatchBoundary>
+          </Stack>
         </Grid>
       </Grid>
 
@@ -178,10 +132,8 @@ const RouteComponent: FC = () => {
         fullWidth
         open={createDialogActive}
         onClose={() => setCreateDialogActive(false)}
+        keepMounted
       >
-        <DialogTitle>
-          <Typography>New Project</Typography>
-        </DialogTitle>
         <DialogContent>
           <CreateProjectForm
             onSubmitSuccess={() => {
