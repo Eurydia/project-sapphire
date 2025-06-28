@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
-import { Route as ProjectsProjectIdRouteRouteImport } from './routes/projects/$projectId/route'
 import { Route as ProjectsProjectIdIndexRouteImport } from './routes/projects/$projectId/index'
 import { Route as ProjectsProjectIdTreeRouteRouteImport } from './routes/projects/$projectId/tree/route'
 import { Route as ProjectsProjectIdBlobRouteRouteImport } from './routes/projects/$projectId/blob/route'
@@ -30,27 +29,22 @@ const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   path: '/projects/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProjectsProjectIdRouteRoute = ProjectsProjectIdRouteRouteImport.update({
-  id: '/projects/$projectId',
-  path: '/projects/$projectId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProjectsProjectIdIndexRoute = ProjectsProjectIdIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ProjectsProjectIdRouteRoute,
+  id: '/projects/$projectId/',
+  path: '/projects/$projectId/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsProjectIdTreeRouteRoute =
   ProjectsProjectIdTreeRouteRouteImport.update({
-    id: '/tree',
-    path: '/tree',
-    getParentRoute: () => ProjectsProjectIdRouteRoute,
+    id: '/projects/$projectId/tree',
+    path: '/projects/$projectId/tree',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const ProjectsProjectIdBlobRouteRoute =
   ProjectsProjectIdBlobRouteRouteImport.update({
-    id: '/blob',
-    path: '/blob',
-    getParentRoute: () => ProjectsProjectIdRouteRoute,
+    id: '/projects/$projectId/blob',
+    path: '/projects/$projectId/blob',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const ProjectsProjectIdTreeIndexRoute =
   ProjectsProjectIdTreeIndexRouteImport.update({
@@ -79,11 +73,10 @@ const ProjectsProjectIdBlobSplatRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRouteRouteWithChildren
   '/projects': typeof ProjectsIndexRoute
   '/projects/$projectId/blob': typeof ProjectsProjectIdBlobRouteRouteWithChildren
   '/projects/$projectId/tree': typeof ProjectsProjectIdTreeRouteRouteWithChildren
-  '/projects/$projectId/': typeof ProjectsProjectIdIndexRoute
+  '/projects/$projectId': typeof ProjectsProjectIdIndexRoute
   '/projects/$projectId/blob/$': typeof ProjectsProjectIdBlobSplatRoute
   '/projects/$projectId/tree/$': typeof ProjectsProjectIdTreeSplatRoute
   '/projects/$projectId/blob/': typeof ProjectsProjectIdBlobIndexRoute
@@ -101,7 +94,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/projects/$projectId': typeof ProjectsProjectIdRouteRouteWithChildren
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$projectId/blob': typeof ProjectsProjectIdBlobRouteRouteWithChildren
   '/projects/$projectId/tree': typeof ProjectsProjectIdTreeRouteRouteWithChildren
@@ -115,11 +107,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/projects/$projectId'
     | '/projects'
     | '/projects/$projectId/blob'
     | '/projects/$projectId/tree'
-    | '/projects/$projectId/'
+    | '/projects/$projectId'
     | '/projects/$projectId/blob/$'
     | '/projects/$projectId/tree/$'
     | '/projects/$projectId/blob/'
@@ -136,7 +127,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/projects/$projectId'
     | '/projects/'
     | '/projects/$projectId/blob'
     | '/projects/$projectId/tree'
@@ -149,8 +139,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ProjectsProjectIdRouteRoute: typeof ProjectsProjectIdRouteRouteWithChildren
   ProjectsIndexRoute: typeof ProjectsIndexRoute
+  ProjectsProjectIdBlobRouteRoute: typeof ProjectsProjectIdBlobRouteRouteWithChildren
+  ProjectsProjectIdTreeRouteRoute: typeof ProjectsProjectIdTreeRouteRouteWithChildren
+  ProjectsProjectIdIndexRoute: typeof ProjectsProjectIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -169,33 +161,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects/$projectId': {
-      id: '/projects/$projectId'
-      path: '/projects/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof ProjectsProjectIdRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/projects/$projectId/': {
       id: '/projects/$projectId/'
-      path: '/'
-      fullPath: '/projects/$projectId/'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
       preLoaderRoute: typeof ProjectsProjectIdIndexRouteImport
-      parentRoute: typeof ProjectsProjectIdRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/projects/$projectId/tree': {
       id: '/projects/$projectId/tree'
-      path: '/tree'
+      path: '/projects/$projectId/tree'
       fullPath: '/projects/$projectId/tree'
       preLoaderRoute: typeof ProjectsProjectIdTreeRouteRouteImport
-      parentRoute: typeof ProjectsProjectIdRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/projects/$projectId/blob': {
       id: '/projects/$projectId/blob'
-      path: '/blob'
+      path: '/projects/$projectId/blob'
       fullPath: '/projects/$projectId/blob'
       preLoaderRoute: typeof ProjectsProjectIdBlobRouteRouteImport
-      parentRoute: typeof ProjectsProjectIdRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/projects/$projectId/tree/': {
       id: '/projects/$projectId/tree/'
@@ -260,30 +245,12 @@ const ProjectsProjectIdTreeRouteRouteWithChildren =
     ProjectsProjectIdTreeRouteRouteChildren,
   )
 
-interface ProjectsProjectIdRouteRouteChildren {
-  ProjectsProjectIdBlobRouteRoute: typeof ProjectsProjectIdBlobRouteRouteWithChildren
-  ProjectsProjectIdTreeRouteRoute: typeof ProjectsProjectIdTreeRouteRouteWithChildren
-  ProjectsProjectIdIndexRoute: typeof ProjectsProjectIdIndexRoute
-}
-
-const ProjectsProjectIdRouteRouteChildren: ProjectsProjectIdRouteRouteChildren =
-  {
-    ProjectsProjectIdBlobRouteRoute:
-      ProjectsProjectIdBlobRouteRouteWithChildren,
-    ProjectsProjectIdTreeRouteRoute:
-      ProjectsProjectIdTreeRouteRouteWithChildren,
-    ProjectsProjectIdIndexRoute: ProjectsProjectIdIndexRoute,
-  }
-
-const ProjectsProjectIdRouteRouteWithChildren =
-  ProjectsProjectIdRouteRoute._addFileChildren(
-    ProjectsProjectIdRouteRouteChildren,
-  )
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ProjectsProjectIdRouteRoute: ProjectsProjectIdRouteRouteWithChildren,
   ProjectsIndexRoute: ProjectsIndexRoute,
+  ProjectsProjectIdBlobRouteRoute: ProjectsProjectIdBlobRouteRouteWithChildren,
+  ProjectsProjectIdTreeRouteRoute: ProjectsProjectIdTreeRouteRouteWithChildren,
+  ProjectsProjectIdIndexRoute: ProjectsProjectIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -14,6 +14,9 @@ const RouteComponent: FC = () => {
             <Typography>Pinned notes</Typography>
           </Paper>
           <Paper variant="outlined">
+            <Typography>Tasks</Typography>
+          </Paper>
+          <Paper variant="outlined">
             <Typography>Directory tree</Typography>
           </Paper>
           <Paper variant="outlined">
@@ -23,26 +26,6 @@ const RouteComponent: FC = () => {
             <Typography>Metadata</Typography>
           </Paper>
         </Stack>
-        {/* <Paper variant="outlined" sx={{ padding: 2 }}>
-          {data.readme !== undefined && (
-            <Stack spacing={1} divider={<Divider flexItem variant="middle" />}>
-              <List dense disablePadding>
-                <ListItem>
-                  <ListItemText
-                    secondary={data.readme.name}
-                    primary="File name"
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText primary="Path" secondary={data.readme.path} />
-                </ListItem>
-              </List>
-              <Markdown content={data.readme.content} />
-            </Stack>
-          )}
-          {data.readme === undefined && <Typography>Unset</Typography>}
-           <Markdown content={project.description ?? ''} /> 
-        </Paper> */}
       </Grid>
     </Grid>
   );

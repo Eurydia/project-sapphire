@@ -1,15 +1,17 @@
 import { ProjectService } from "@/services/projects.service";
 import type { CreateProjectDto } from "@/types/projects/dto/create-project.dto";
 import type { Project } from "@/types/projects/project.entity";
-import { DeleteRounded } from "@mui/icons-material";
 import {
+  Autocomplete,
   Button,
+  Chip,
   CircularProgress,
   Grid,
-  IconButton,
   Stack,
+  TextField,
   Toolbar,
   Typography,
+  type AutocompleteRenderInputParams,
 } from "@mui/material";
 import { useForm } from "@tanstack/react-form";
 import { Fragment, type FC } from "react";
@@ -110,45 +112,36 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
           />
         </Grid>
         <Grid size={{ md: 6 }}>
-          <Field name="topics" mode="array">
+          <Field name="topics">
             {({ state, pushValue, removeValue }) => (
-              <>
-                <Stack spacing={0.5}>
+              <Stack spacing={0.5}>
+                <Autocomplete
+                  freeSolo
+                  renderInput={(params: AutocompleteRenderInputParams) => (
+                    <TextField {...params} />
+                  )}
+                  options={[] as string[]}
+                  onChange={(_, v) => {
+                    if (v !== null) {
+                      pushValue(v);
+                    }
+                  }}
+                />
+                <Stack spacing={0.5} useFlexGap direction="row" flexWrap="wrap">
                   {state.value.map((_, i) => (
                     <Field key={`topic-item-${i}`} name={`topics[${i}]`}>
                       {(subField) => (
-                        <Stack
-                          direction="row"
-                          spacing={0.5}
-                          alignItems="center"
-                        >
-                          <TextInput
-                            size="small"
-                            value={subField.state.value}
-                            onChange={subField.handleChange}
-                            fullWidth
-                          />
-                          <IconButton
-                            disableFocusRipple
-                            disableRipple
-                            disableTouchRipple
-                            onClick={() => removeValue(i)}
-                          >
-                            <DeleteRounded />
-                          </IconButton>
-                        </Stack>
+                        <Chip
+                          label={
+                            <Typography>{subField.state.value}</Typography>
+                          }
+                          onDelete={() => removeValue(i)}
+                        />
                       )}
                     </Field>
                   ))}
                 </Stack>
-                <Button
-                  disableElevation
-                  variant="contained"
-                  onClick={() => pushValue("")}
-                >
-                  add topic
-                </Button>
-              </>
+              </Stack>
             )}
           </Field>
         </Grid>
