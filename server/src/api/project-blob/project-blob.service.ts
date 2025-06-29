@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { ProjectsService } from "src/api/projects/projects.service";
 import { projectBlobReadFile } from "src/common/utils/project-blob-read-file.helper";
-import { ProjectsService } from "src/projects/projects.service";
 
 @Injectable()
 export class ProjectBlobService {

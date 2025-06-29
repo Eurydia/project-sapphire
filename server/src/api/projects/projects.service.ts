@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { normalize } from "path";
+import { Technology } from "src/api/technologies/technology.entity";
+import { Topic } from "src/api/topics/topic.entity";
 import { getProjectRootMetadata } from "src/common/utils/project-root-metadata.helper";
-import { Technology } from "src/technologies/technology.entity";
-import { Topic } from "src/topics/topic.entity";
 import { In, Repository } from "typeorm";
 import { CreateProjectDto } from "./dto/create-project.dto";
 import { Project } from "./project.entity";
@@ -71,7 +71,7 @@ export class ProjectsService {
       project.technologies = [...existingTech, ...newTech];
     }
 
-    return this.projectRepo.save(project);
+    return this.projectRepo.create(project);
   }
 
   async findAll() {

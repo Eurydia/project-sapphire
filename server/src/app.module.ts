@@ -1,14 +1,14 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ProjectBlobModule } from "./api/project-blob/project-blob.module";
+import { ProjectTreeModule } from "./api/project-tree/project-tree.module";
+import { ProjectsModule } from "./api/projects/projects.module";
+import { TechnologiesModule } from "./api/technologies/technologies.module";
+import { TopicsModule } from "./api/topics/topics.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { LoggerMiddleware } from "./common/middlerware/logger.middleware";
-import { ProjectBlobModule } from "./project-blob/project-blob.module";
-import { ProjectTreeModule } from "./project-tree/project-tree.module";
-import { ProjectsModule } from "./projects/projects.module";
-import { TechnologiesModule } from "./technologies/technologies.module";
-import { TopicsModule } from "./topics/topics.module";
 
 @Module({
   imports: [

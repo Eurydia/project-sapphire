@@ -31,11 +31,3 @@ export const projectSchema = z.strictObject({
 });
 
 export type Project = z.infer<typeof projectSchema>;
-
-export type ProjectQuery = {
-  name?: string;
-  technologies?: string[];
-  topics?: string[];
-  status?: string;
-  visibility?: string;
-};

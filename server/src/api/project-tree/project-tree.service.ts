@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { readFile } from "fs/promises";
 import { basename, extname, sep } from "path";
+import { ProjectsService } from "src/api/projects/projects.service";
 import { pathSafeJoin } from "src/common/utils/path-safe-join.helper";
 import { projectTreeReadDir } from "src/common/utils/project-tree-read-dir.helper";
-import { ProjectsService } from "src/projects/projects.service";
 import { Repository } from "typeorm";
 import { ProjectTree } from "./entities/project-tree.entity";
 

@@ -1,5 +1,3 @@
-import { ProjectTreeService } from "@/services/project-tree.service";
-import { ProjectService } from "@/services/projects.service";
 import {
   AppBar,
   Breadcrumbs,
@@ -8,7 +6,7 @@ import {
   Paper,
   Toolbar,
 } from "@mui/material";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { type FC } from "react";
 
 const RouteComponent: FC = () => {
@@ -52,19 +50,5 @@ const RouteComponent: FC = () => {
 
 export const Route = createFileRoute("/projects/$projectId/tree/$")({
   component: RouteComponent,
-  loader: async (ctx) => {
-    const project = await ProjectService.find(ctx.params.projectId);
-    if (project === null) {
-      throw notFound();
-    }
-
-    const tree = await ProjectTreeService.getTree(
-      project.id,
-      ctx.params._splat ?? "",
-    );
-    if (tree === null) {
-      throw notFound();
-    }
-    return { project, tree };
-  },
+  loader: async (ctx) => {},
 });

@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ProjectsModule } from "src/projects/projects.module";
+import { ProjectsModule } from "src/api/projects/projects.module";
 import { ProjectBlobController } from "./project-blob.controller";
 import { ProjectBlobService } from "./project-blob.service";
 

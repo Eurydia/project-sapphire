@@ -1,4 +1,4 @@
-import { Project } from "src/projects/project.entity";
+import { Project } from "src/api/projects/project.entity";
 import {
   Column,
   Entity,

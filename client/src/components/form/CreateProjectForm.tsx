@@ -1,29 +1,38 @@
-import { ProjectService } from "@/services/projects.service";
+import { createProject } from "@/api/projects";
 import type { CreateProjectDto } from "@/types/projects/dto/create-project.dto";
 import type { Project } from "@/types/projects/project.entity";
+import { RotateLeftRounded } from "@mui/icons-material";
 import {
-  Autocomplete,
   Button,
-  Chip,
   CircularProgress,
   Grid,
+  IconButton,
   Stack,
-  TextField,
   Toolbar,
   Typography,
-  type AutocompleteRenderInputParams,
 } from "@mui/material";
 import { useForm } from "@tanstack/react-form";
-import { Fragment, type FC } from "react";
+import { use, type FC } from "react";
 import { z } from "zod";
+import { TagInput } from "../form-input/TagInput";
 import { TextInput } from "../form-input/TextInput";
 
 type Props = {
+  topicOptionsPromise: Promise<string[]>;
+  techOptionsPromise: Promise<string[]>;
   onSubmitSuccess: (project: Project) => unknown;
   onError: (error: any) => unknown;
 };
-export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
-  const { handleSubmit, Field, Subscribe } = useForm({
+export const CreateProjectForm: FC<Props> = ({
+  techOptionsPromise,
+  topicOptionsPromise,
+  onSubmitSuccess,
+  onError,
+}) => {
+  const topicOptions = use(topicOptionsPromise);
+  const techOptions = use(techOptionsPromise);
+
+  const { handleSubmit, Field, Subscribe, resetField } = useForm({
     defaultValues: {
       name: "",
       absPath: "",
@@ -32,7 +41,7 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
       topics: [],
     } as CreateProjectDto,
     onSubmit: ({ value, formApi }) => {
-      ProjectService.create(value)
+      createProject(value)
         .then((project) => {
           formApi.reset();
           onSubmitSuccess(project);
@@ -56,7 +65,23 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
             New Project
           </Typography>
         </Grid>
-        <Grid size={{ md: 12 }}>
+        <Grid size={{ md: 3 }}>
+          <Stack
+            alignItems="center"
+            direction="row"
+            justifyContent="space-between"
+          >
+            <Typography>{`Project Name`}</Typography>
+            <IconButton
+              size="small"
+              disableTouchRipple
+              onClick={() => resetField("name")}
+            >
+              <RotateLeftRounded />
+            </IconButton>
+          </Stack>
+        </Grid>
+        <Grid size={{ md: 9 }}>
           <Field
             name="name"
             validators={{ onChange: z.string().min(3) }}
@@ -65,6 +90,7 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
               const { isTouched, errors } = meta;
               return (
                 <TextInput
+                  minRow={1}
                   fullWidth
                   value={value}
                   onChange={handleChange}
@@ -76,7 +102,23 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
             }}
           />
         </Grid>
-        <Grid size={{ md: 12 }}>
+        <Grid size={{ md: 3 }}>
+          <Stack
+            alignItems="center"
+            direction="row"
+            justifyContent="space-between"
+          >
+            <Typography>{`Path`}</Typography>
+            <IconButton
+              size="small"
+              disableTouchRipple
+              onClick={() => resetField("absPath")}
+            >
+              <RotateLeftRounded />
+            </IconButton>
+          </Stack>
+        </Grid>
+        <Grid size={{ md: 9 }}>
           <Field
             name="absPath"
             validators={{ onChange: z.string().min(1) }}
@@ -85,6 +127,7 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
               const { isTouched, errors } = meta;
               return (
                 <TextInput
+                  minRow={1}
                   value={value}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -96,12 +139,28 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
             }}
           />
         </Grid>
-        <Grid size={{ md: 12 }}>
+        <Grid size={{ md: 3 }}>
+          <Stack
+            alignItems="center"
+            direction="row"
+            justifyContent="space-between"
+          >
+            <Typography>{`Description`}</Typography>
+            <IconButton
+              size="small"
+              disableTouchRipple
+              onClick={() => resetField("description")}
+            >
+              <RotateLeftRounded />
+            </IconButton>
+          </Stack>
+        </Grid>
+        <Grid size={{ md: 9 }}>
           <Field
             name="description"
             children={({ state, handleChange, handleBlur }) => (
               <TextInput
-                value={state.value ?? ""}
+                value={state.value}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="Description"
@@ -111,64 +170,61 @@ export const CreateProjectForm: FC<Props> = ({ onSubmitSuccess, onError }) => {
             )}
           />
         </Grid>
-        <Grid size={{ md: 6 }}>
+        <Grid size={{ md: 3 }}>
+          <Stack
+            alignItems="center"
+            direction="row"
+            justifyContent="space-between"
+          >
+            <Typography>{`Topics`}</Typography>
+            <IconButton
+              size="small"
+              disableTouchRipple
+              onClick={() => resetField("topics")}
+            >
+              <RotateLeftRounded />
+            </IconButton>
+          </Stack>
+        </Grid>
+        <Grid size={{ md: 9 }}>
           <Field name="topics">
             {({ state, pushValue, removeValue }) => (
-              <Stack spacing={0.5}>
-                <Autocomplete
-                  freeSolo
-                  renderInput={(params: AutocompleteRenderInputParams) => (
-                    <TextField {...params} />
-                  )}
-                  options={[] as string[]}
-                  onChange={(_, v) => {
-                    if (v !== null) {
-                      pushValue(v);
-                    }
-                  }}
-                />
-                <Stack spacing={0.5} useFlexGap direction="row" flexWrap="wrap">
-                  {state.value.map((_, i) => (
-                    <Field key={`topic-item-${i}`} name={`topics[${i}]`}>
-                      {(subField) => (
-                        <Chip
-                          label={
-                            <Typography>{subField.state.value}</Typography>
-                          }
-                          onDelete={() => removeValue(i)}
-                        />
-                      )}
-                    </Field>
-                  ))}
-                </Stack>
-              </Stack>
+              <TagInput
+                placeholder="Topics"
+                items={state.value}
+                options={topicOptions}
+                onAdd={pushValue}
+                onRemove={removeValue}
+              />
             )}
           </Field>
         </Grid>
-
-        <Grid size={{ md: 6 }}>
+        <Grid size={{ md: 3 }}>
+          <Stack
+            alignItems="center"
+            direction="row"
+            justifyContent="space-between"
+          >
+            <Typography>{`Technologies`}</Typography>
+            <IconButton
+              size="small"
+              disableTouchRipple
+              onClick={() => resetField("technologies")}
+            >
+              <RotateLeftRounded />
+            </IconButton>
+          </Stack>
+        </Grid>
+        <Grid size={{ md: 9 }}>
           <Field name="technologies" mode="array">
-            {({ state, pushValue }) => (
-              <Fragment>
-                {state.value.map((_, i) => (
-                  <Field key={`tech-item-${i}`} name={`technologies[${i}]`}>
-                    {(subField) => (
-                      <TextInput
-                        value={subField.state.value}
-                        onChange={subField.handleChange}
-                        fullWidth
-                      />
-                    )}
-                  </Field>
-                ))}
-                <Button
-                  disableElevation
-                  variant="contained"
-                  onClick={() => pushValue("")}
-                >
-                  add technology
-                </Button>
-              </Fragment>
+            {({ state, pushValue, removeValue }) => (
+              <TagInput
+                placeholder="Technologies"
+                items={state.value}
+                options={techOptions}
+                onAdd={pushValue}
+                onRemove={removeValue}
+              />
             )}
           </Field>
         </Grid>

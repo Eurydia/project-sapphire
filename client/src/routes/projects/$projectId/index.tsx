@@ -1,5 +1,4 @@
-import { ProjectTreeService } from "@/services/project-tree.service";
-import { ProjectService } from "@/services/projects.service";
+import { fetchProject } from "@/api/projects";
 import { Grid, Paper, Stack, Typography } from "@mui/material";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { type FC } from "react";
@@ -34,15 +33,13 @@ const RouteComponent: FC = () => {
 export const Route = createFileRoute("/projects/$projectId/")({
   component: RouteComponent,
   loader: async (ctx) => {
-    const project = await ProjectService.find(ctx.params.projectId);
+    const project = await fetchProject(ctx.params.projectId);
     if (project === null) {
       throw notFound();
     }
-    const tree = await ProjectTreeService.getTree(project.id);
 
     return {
       project,
-      tree,
     };
   },
 });

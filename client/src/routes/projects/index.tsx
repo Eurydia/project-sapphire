@@ -1,15 +1,12 @@
-import { CreateProjectForm } from "@/components/form/CreateProjectForm";
+import { fetchAllProject } from "@/api/projects";
 import { ProjectCard } from "@/components/ProjectCard/ProjectCard";
 import { ProjectCardSkeleton } from "@/components/ProjectCard/ProjectCardSkeleton";
-import { ProjectService } from "@/services/projects.service";
 import { AddRounded, SearchRounded } from "@mui/icons-material";
 import {
   Alert,
   AlertTitle,
   Box,
   Button,
-  Dialog,
-  DialogContent,
   Grid,
   Paper,
   Stack,
@@ -21,18 +18,15 @@ import {
   CatchBoundary,
   createFileRoute,
   defer,
-  useRouter,
   useRouterState,
 } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { Fragment, Suspense, useRef, useState, type FC } from "react";
-import { toast } from "react-toastify";
 import { z } from "zod";
 
 const RouteComponent: FC = () => {
   const { projectsPromise, search } = Route.useLoaderData();
 
-  const router = useRouter();
   const { location } = useRouterState();
   const [createDialogActive, setCreateDialogActive] = useState(false);
   const searchFieldRef = useRef<HTMLInputElement>(null);
@@ -125,28 +119,6 @@ const RouteComponent: FC = () => {
           </Stack>
         </Grid>
       </Grid>
-
-      <Dialog
-        scroll="paper"
-        maxWidth="md"
-        fullWidth
-        open={createDialogActive}
-        onClose={() => setCreateDialogActive(false)}
-        keepMounted
-      >
-        <DialogContent>
-          <CreateProjectForm
-            onSubmitSuccess={() => {
-              toast.success("Project added");
-              setCreateDialogActive(false);
-              router.invalidate({ sync: true });
-            }}
-            onError={() => {
-              toast.error("Failed to add project");
-            }}
-          />
-        </DialogContent>
-      </Dialog>
     </>
   );
 };
@@ -167,7 +139,7 @@ export const Route = createFileRoute("/projects/")({
   },
   validateSearch: zodValidator(searchParamSchema),
   loader: ({ deps }) => {
-    const projectsPromise = ProjectService.findAll();
+    const projectsPromise = fetchAllProject();
     return {
       projectsPromise: defer(projectsPromise),
       search: deps.search,

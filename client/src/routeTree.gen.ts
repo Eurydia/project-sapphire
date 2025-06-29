@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
+import { Route as ProjectsCreateRouteImport } from './routes/projects/create'
 import { Route as ProjectsProjectIdIndexRouteImport } from './routes/projects/$projectId/index'
 import { Route as ProjectsProjectIdTreeRouteRouteImport } from './routes/projects/$projectId/tree/route'
 import { Route as ProjectsProjectIdBlobRouteRouteImport } from './routes/projects/$projectId/blob/route'
@@ -27,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   id: '/projects/',
   path: '/projects/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsCreateRoute = ProjectsCreateRouteImport.update({
+  id: '/projects/create',
+  path: '/projects/create',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsProjectIdIndexRoute = ProjectsProjectIdIndexRouteImport.update({
@@ -73,6 +79,7 @@ const ProjectsProjectIdBlobSplatRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/projects/create': typeof ProjectsCreateRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$projectId/blob': typeof ProjectsProjectIdBlobRouteRouteWithChildren
   '/projects/$projectId/tree': typeof ProjectsProjectIdTreeRouteRouteWithChildren
@@ -84,6 +91,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/projects/create': typeof ProjectsCreateRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$projectId': typeof ProjectsProjectIdIndexRoute
   '/projects/$projectId/blob/$': typeof ProjectsProjectIdBlobSplatRoute
@@ -94,6 +102,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/projects/create': typeof ProjectsCreateRoute
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$projectId/blob': typeof ProjectsProjectIdBlobRouteRouteWithChildren
   '/projects/$projectId/tree': typeof ProjectsProjectIdTreeRouteRouteWithChildren
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/projects/create'
     | '/projects'
     | '/projects/$projectId/blob'
     | '/projects/$projectId/tree'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/projects/create'
     | '/projects'
     | '/projects/$projectId'
     | '/projects/$projectId/blob/$'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/projects/create'
     | '/projects/'
     | '/projects/$projectId/blob'
     | '/projects/$projectId/tree'
@@ -139,6 +151,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProjectsCreateRoute: typeof ProjectsCreateRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   ProjectsProjectIdBlobRouteRoute: typeof ProjectsProjectIdBlobRouteRouteWithChildren
   ProjectsProjectIdTreeRouteRoute: typeof ProjectsProjectIdTreeRouteRouteWithChildren
@@ -159,6 +172,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/create': {
+      id: '/projects/create'
+      path: '/projects/create'
+      fullPath: '/projects/create'
+      preLoaderRoute: typeof ProjectsCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects/$projectId/': {
@@ -247,6 +267,7 @@ const ProjectsProjectIdTreeRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProjectsCreateRoute: ProjectsCreateRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   ProjectsProjectIdBlobRouteRoute: ProjectsProjectIdBlobRouteRouteWithChildren,
   ProjectsProjectIdTreeRouteRoute: ProjectsProjectIdTreeRouteRouteWithChildren,

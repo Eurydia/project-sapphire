@@ -17,4 +17,8 @@ export class TechnologiesService {
     });
     return this.repo.save(tech);
   }
+
+  async findAll() {
+    return this.repo.find();
+  }
 }

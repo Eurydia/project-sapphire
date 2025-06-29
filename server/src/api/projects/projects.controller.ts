@@ -16,7 +16,7 @@ import { Project } from "./project.entity";
 import { ProjectsService } from "./projects.service";
 
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller("projects")
+@Controller("api/projects")
 export class ProjectsController {
   constructor(private readonly projectsSvc: ProjectsService) {}
 

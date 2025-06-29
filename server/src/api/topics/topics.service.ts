@@ -17,4 +17,8 @@ export class TopicsService {
     });
     return this.repo.save(topic);
   }
+
+  async findAll() {
+    return this.repo.find({ order: { name: "ASC" } });
+  }
 }

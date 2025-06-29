@@ -7,7 +7,7 @@ import {
 import { existsSync } from "fs";
 import { lstat, readFile } from "fs/promises";
 import { basename, extname, relative } from "path";
-import { Project } from "src/projects/project.entity";
+import { Project } from "src/api/projects/project.entity";
 import { gzipSync } from "zlib";
 import { pathSafeJoin } from "./path-safe-join.helper";
 

@@ -2,7 +2,7 @@ import { NotAcceptableException } from "@nestjs/common";
 import { existsSync } from "fs";
 import { lstat, readdir, stat } from "fs/promises";
 import { join, normalize, resolve, sep } from "path";
-import { Project } from "src/projects/project.entity";
+import { Project } from "src/api/projects/project.entity";
 
 export const projectTreeReadDir = async (project: Project, path: string[]) => {
   if (path.includes("..")) {

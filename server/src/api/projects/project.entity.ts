@@ -1,6 +1,6 @@
-import { ProjectTree } from "src/project-tree/entities/project-tree.entity";
-import { Technology } from "src/technologies/technology.entity";
-import { Topic } from "src/topics/topic.entity";
+import { ProjectTree } from "src/api/project-tree/entities/project-tree.entity";
+import { Technology } from "src/api/technologies/technology.entity";
+import { Topic } from "src/api/topics/topic.entity";
 import {
   Column,
   Entity,
@@ -18,7 +18,7 @@ export class Project {
   @Column()
   name: string;
 
-  @Column({ unique: true })
+  @Column()
   absPath: string;
 
   @Column({ type: "text", nullable: true })

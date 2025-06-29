@@ -62,6 +62,14 @@ export const TextInput: FC<Props> = memo(
         onBlur={onBlur}
         onChange={handleChange}
         placeholder={placeholder}
+        slotProps={{
+          htmlInput: {
+            autoComplete: "off",
+            autoCapitalize: "off",
+            autoCorrect: "off",
+            spellCheck: "false",
+          },
+        }}
       />
     );
   },
