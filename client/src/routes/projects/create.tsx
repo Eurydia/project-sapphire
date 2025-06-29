@@ -5,7 +5,7 @@ import { StyledLink } from "@/components/StyledLink";
 import { KeyboardArrowLeftRounded } from "@mui/icons-material";
 import { AppBar, Box, Paper, Toolbar, Typography } from "@mui/material";
 import { createFileRoute, defer } from "@tanstack/react-router";
-import { memo } from "react";
+import { memo, Suspense } from "react";
 import { toast } from "react-toastify";
 
 const RouteComponent = memo(() => {
@@ -33,17 +33,19 @@ const RouteComponent = memo(() => {
       </AppBar>
       <Box sx={{ maxWidth: "md", margin: "auto", paddingY: 2 }}>
         <Paper variant="outlined" sx={{ padding: 2 }}>
-          <CreateProjectForm
-            onSubmitSuccess={() => {
-              toast.success("Project added");
-              navigate({ to: "/projects" });
-            }}
-            onError={() => {
-              toast.error("Failed to add project");
-            }}
-            topicOptionsPromise={topicOptionsPromise}
-            techOptionsPromise={techOptionsPromise}
-          />
+          <Suspense fallback>
+            <CreateProjectForm
+              onSubmitSuccess={() => {
+                toast.success("Project added");
+                navigate({ to: "/projects" });
+              }}
+              onError={() => {
+                toast.error("Failed to add project");
+              }}
+              topicOptionsPromise={topicOptionsPromise}
+              techOptionsPromise={techOptionsPromise}
+            />
+          </Suspense>
         </Paper>
       </Box>
     </>

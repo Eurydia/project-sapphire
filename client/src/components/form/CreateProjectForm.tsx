@@ -1,6 +1,5 @@
 import { createProject } from "@/api/projects";
 import type { CreateProjectDto } from "@/types/projects/dto/create-project.dto";
-import type { Project } from "@/types/projects/project.entity";
 import { RotateLeftRounded } from "@mui/icons-material";
 import {
   Button,
@@ -12,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useForm } from "@tanstack/react-form";
-import { use, type FC } from "react";
+import { type FC } from "react";
 import { z } from "zod";
 import { TagInput } from "../form-input/TagInput";
 import { TextInput } from "../form-input/TextInput";
@@ -20,7 +19,7 @@ import { TextInput } from "../form-input/TextInput";
 type Props = {
   topicOptionsPromise: Promise<string[]>;
   techOptionsPromise: Promise<string[]>;
-  onSubmitSuccess: (project: Project) => unknown;
+  onSubmitSuccess: () => unknown;
   onError: (error: any) => unknown;
 };
 export const CreateProjectForm: FC<Props> = ({
@@ -29,9 +28,6 @@ export const CreateProjectForm: FC<Props> = ({
   onSubmitSuccess,
   onError,
 }) => {
-  const topicOptions = use(topicOptionsPromise);
-  const techOptions = use(techOptionsPromise);
-
   const { handleSubmit, Field, Subscribe, resetField } = useForm({
     defaultValues: {
       name: "",
@@ -42,9 +38,9 @@ export const CreateProjectForm: FC<Props> = ({
     } as CreateProjectDto,
     onSubmit: ({ value, formApi }) => {
       createProject(value)
-        .then((project) => {
+        .then(() => {
           formApi.reset();
-          onSubmitSuccess(project);
+          onSubmitSuccess();
         })
         .catch(onError);
     },
@@ -192,7 +188,7 @@ export const CreateProjectForm: FC<Props> = ({
               <TagInput
                 placeholder="Topics"
                 items={state.value}
-                options={topicOptions}
+                optionsPromise={topicOptionsPromise}
                 onAdd={pushValue}
                 onRemove={removeValue}
               />
@@ -221,7 +217,7 @@ export const CreateProjectForm: FC<Props> = ({
               <TagInput
                 placeholder="Technologies"
                 items={state.value}
-                options={techOptions}
+                optionsPromise={techOptionsPromise}
                 onAdd={pushValue}
                 onRemove={removeValue}
               />

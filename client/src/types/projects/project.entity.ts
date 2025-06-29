@@ -15,7 +15,7 @@ export const projectTopicSchema = z.strictObject({
 export type ProjectTopic = z.infer<typeof projectTopicSchema>;
 
 export const projectSchema = z.strictObject({
-  id: z.string().uuid(),
+  uuid: z.string().uuid(),
   name: z.string().min(1),
   absPath: z.string().min(1),
   description: z.string().nullable(),

@@ -88,9 +88,9 @@ export class ProjectsService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(uuid: string) {
     const projectBase = await this.projectRepo.findOne({
-      where: { id },
+      where: { uuid },
       relations: ["technologies", "topics"],
     });
 

@@ -13,7 +13,7 @@ import {
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  uuid: string;
 
   @Column()
   name: string;

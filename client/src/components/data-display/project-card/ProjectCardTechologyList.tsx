@@ -1,7 +1,7 @@
 import type { ProjectTechnology } from "@/types/projects/project.entity";
 import { Stack, Typography } from "@mui/material";
 import type { FC } from "react";
-import { StyledLink } from "../StyledLink";
+import { StyledLink } from "../../StyledLink";
 
 type Props = {
   items: ProjectTechnology[];

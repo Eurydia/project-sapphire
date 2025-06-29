@@ -19,7 +19,7 @@ export const ProjectCard: FC<Props> = ({ project }) => {
             overflow: "hidden",
           }}
         >
-          <Link to="/projects/$projectId" params={{ projectId: project.id }}>
+          <Link to="/projects/$projectId" params={{ projectId: project.uuid }}>
             {project.name}
           </Link>
         </Typography>

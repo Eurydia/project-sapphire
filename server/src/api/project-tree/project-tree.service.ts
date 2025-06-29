@@ -25,7 +25,7 @@ export class ProjectTreeService {
     const tree = await projectTreeReadDir(project, path);
     const { relPath } = await pathSafeJoin(project.absPath, ...path);
     let node = await this.treeRepo.findOne({
-      where: { project: { id: project.id }, path: relPath },
+      where: { project: { uuid: project.uuid }, path: relPath },
     });
     if (!node) {
       node = this.treeRepo.create({ project, path: relPath, readme: null });
@@ -66,7 +66,7 @@ export class ProjectTreeService {
 
     const { relPath } = await pathSafeJoin(project.absPath, ...path);
     let node = await this.treeRepo.findOne({
-      where: { project: { id: project.id }, path: relPath },
+      where: { project: { uuid: project.uuid }, path: relPath },
     });
 
     if (node === null) {

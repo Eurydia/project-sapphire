@@ -31,18 +31,18 @@ export class ProjectsController {
     return this.projectsSvc.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.projectsSvc.findOne(id);
+  @Get(":uuid")
+  findOne(@Param("uuid") uuid: string) {
+    return this.projectsSvc.findOne(uuid);
   }
 
-  @Put(":id")
-  update(@Param("id") id: string, @Body() data: Partial<Project>) {
-    return this.projectsSvc.update(id, data);
+  @Put(":uuid")
+  update(@Param("uuid") uuid: string, @Body() data: Partial<Project>) {
+    return this.projectsSvc.update(uuid, data);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.projectsSvc.remove(id);
+  @Delete(":uuid")
+  remove(@Param("uuid") uuid: string) {
+    return this.projectsSvc.remove(uuid);
   }
 }

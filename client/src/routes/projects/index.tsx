@@ -1,34 +1,15 @@
 import { fetchAllProject } from "@/api/projects";
-import { ProjectCard } from "@/components/ProjectCard/ProjectCard";
-import { ProjectCardSkeleton } from "@/components/ProjectCard/ProjectCardSkeleton";
-import { AddRounded, SearchRounded } from "@mui/icons-material";
-import {
-  Alert,
-  AlertTitle,
-  Box,
-  Button,
-  Grid,
-  Paper,
-  Stack,
-  TextField,
-  Toolbar,
-} from "@mui/material";
-import {
-  Await,
-  CatchBoundary,
-  createFileRoute,
-  defer,
-  useRouterState,
-} from "@tanstack/react-router";
+import { ProjectList } from "@/components/data-display/ProjectList";
+import { SearchRounded } from "@mui/icons-material";
+import { Box, Button, Grid, Paper, TextField, Toolbar } from "@mui/material";
+import { createFileRoute } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
-import { Fragment, Suspense, useRef, useState, type FC } from "react";
+import { useRef, type FC } from "react";
 import { z } from "zod";
 
 const RouteComponent: FC = () => {
   const { projectsPromise, search } = Route.useLoaderData();
 
-  const { location } = useRouterState();
-  const [createDialogActive, setCreateDialogActive] = useState(false);
   const searchFieldRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -46,17 +27,6 @@ const RouteComponent: FC = () => {
               gap: 1,
             }}
           >
-            <Toolbar variant="dense" disableGutters>
-              <Button
-                disableElevation
-                disableRipple
-                variant="outlined"
-                onClick={() => setCreateDialogActive(true)}
-              >
-                <AddRounded />
-              </Button>
-            </Toolbar>
-
             <Box
               component="form"
               onSubmit={(e) => {
@@ -87,36 +57,7 @@ const RouteComponent: FC = () => {
           </Paper>
         </Grid>
         <Grid size={{ xs: 12, md: 9 }}>
-          <Stack spacing={1}>
-            <CatchBoundary
-              getResetKey={() => location.state.key!}
-              errorComponent={({ error }) => (
-                <Alert severity="error">
-                  <AlertTitle>Error loading projects</AlertTitle>
-                  {error.message}
-                </Alert>
-              )}
-            >
-              <Suspense>
-                <Await
-                  promise={projectsPromise}
-                  fallback={
-                    <Fragment>
-                      <ProjectCardSkeleton />
-                      <ProjectCardSkeleton />
-                      <ProjectCardSkeleton />
-                    </Fragment>
-                  }
-                >
-                  {(projects) =>
-                    projects.map((project) => (
-                      <ProjectCard project={project} key={project.id} />
-                    ))
-                  }
-                </Await>
-              </Suspense>
-            </CatchBoundary>
-          </Stack>
+          <ProjectList projectsPromise={projectsPromise} />
         </Grid>
       </Grid>
     </>
@@ -141,7 +82,7 @@ export const Route = createFileRoute("/projects/")({
   loader: ({ deps }) => {
     const projectsPromise = fetchAllProject();
     return {
-      projectsPromise: defer(projectsPromise),
+      projectsPromise,
       search: deps.search,
     };
   },
