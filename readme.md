@@ -1,20 +1,22 @@
-- integration with git host providers
-- login with credential to access repos (need client id for each provider -> client secrets storage)
-  - pros: sync tags, description and other details with repo
-  - downside: can only manage ongoing and completed projects
-    - need local way to store picthed and planned (but not started) projects
-- brain dump -> repo wiki
-- physical file
-  - consideration: conflicts and desynchronization
-- can only brain dump onto existing (albeit empty) repo -> sense of commitment
-  - create empty repo on GitHub -> prepare wiki -> brain dump
-- hybrid (database + local file)
-  - database: tracks metadata, repo directory
-  - local file: edit, git repo
+- project/tree/$
+  - no blob (file display)
+- project/graph/
+  - epic > stories > tasks
+    - bind one or more note under the project
+    - task dependency graph representation
+    - these will not have notes of their own but can be binded with existing note
+    - allow usual disk representation and augmentation
+- for hosting -> need auth and protect local disk
+- adapter for underlying file system
+
+  - separate API endpoint for the backend to communicate with
+    - need to protect this endpoint also
+
+- network support
+  - temporary project sharing
+  - session auth
 
 ---
 
-- keep copy on database for security reasons
-- sync on start up/page update/force refresh
-- dont show file content but open it in default app
-  - avoid incompaitble format/flavour of markdown
+- display additional data with sidebar?
+- path verification

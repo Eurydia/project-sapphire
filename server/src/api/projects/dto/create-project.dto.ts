@@ -1,4 +1,4 @@
-import { ArrayUnique, IsArray, IsOptional, IsString } from "class-validator";
+import { ArrayUnique, IsArray, IsString } from "class-validator";
 
 export class CreateProjectDto {
   @IsString()
@@ -7,17 +7,14 @@ export class CreateProjectDto {
   @IsString()
   absPath: string;
 
-  @IsOptional()
   @IsString()
-  description?: string | null;
+  description: string;
 
   @IsArray()
   @ArrayUnique()
-  @IsOptional()
-  topics?: string[];
+  topics: string[];
 
   @IsArray()
   @ArrayUnique()
-  @IsOptional()
-  technologies?: string[];
+  technologies: string[];
 }

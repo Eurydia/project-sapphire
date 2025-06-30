@@ -43,6 +43,6 @@ export class ProjectsController {
 
   @Delete(":uuid")
   remove(@Param("uuid") uuid: string) {
-    return this.projectsSvc.remove(uuid);
+    return this.projectsSvc.delete(uuid);
   }
 }
