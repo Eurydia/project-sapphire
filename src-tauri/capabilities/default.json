@@ -10,7 +10,7 @@
       "identifier": "fs:scope",
       "allow": [
         {
-          "path": "$APPLOCALDATA/**"
+          "path": "$APPCONFIG/**"
         }
       ]
     },
