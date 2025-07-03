@@ -26,21 +26,6 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },
-  "bin": "dist/main.js",
-  "pkg": {
-    "scripts": [
-      "dist/**/*.js"
-    ],
-    "assets": [
-      "dist/**/*.json",
-      "dist/**/*.js"
-    ],
-    "targets": [
-      "node16-linux-x64",
-      "node16-macos-x64",
-      "node16-win-x64"
-    ]
-  },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",

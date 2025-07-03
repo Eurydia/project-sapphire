@@ -17,7 +17,7 @@ export const projectBlobReadFile = async (project: Project, path: string[]) => {
   }
 
   const { root, rest: target } = await pathSafeJoin(
-    project.absPath,
+    project.root,
     ...path,
   ).catch((err) => {
     throw err;

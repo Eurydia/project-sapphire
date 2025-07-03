@@ -5,7 +5,7 @@ export class CreateProjectDto {
   name: string;
 
   @IsString()
-  absPath: string;
+  root: string;
 
   @IsString()
   description: string;

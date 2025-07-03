@@ -14,8 +14,9 @@ export class TechnologiesService {
   async create(dto: CreateTechnologyDto): Promise<Technology> {
     const entry = this.repo.create({
       name: dto.name,
+      color: dto.color,
     });
-    return this.repo.insert(entry).then(() => entry);
+    return this.repo.save(entry).then(() => entry);
   }
 
   async findAll() {
@@ -31,5 +32,11 @@ export class TechnologiesService {
     const novel = entries.filter((name) => !existingSet.has(name));
     const requests = novel.map((name) => this.create({ name }));
     return Promise.all(requests);
+  }
+
+  async findFromProject(uuid: string) {
+    return this.repo.find({
+      where: { projects: { uuid } },
+    });
   }
 }

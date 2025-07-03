@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { normalize } from "path";
-import { getProjectRootMetadata } from "src/common/utils/project-root-metadata.helper";
 import { Repository } from "typeorm";
 import { TechnologiesService } from "../technologies/technologies.service";
 import { TopicsService } from "../topics/topics.service";
 import { CreateProjectDto } from "./dto/create-project.dto";
 import { Project } from "./project.entity";
+import { getProjectRootMetadata } from "src/common/utils/project-root-metadata.helper";
 
 @Injectable()
 export class ProjectsService {
@@ -20,7 +20,7 @@ export class ProjectsService {
   async create(dto: CreateProjectDto) {
     const project = this.projectRepo.create({
       name: dto.name,
-      absPath: normalize(dto.absPath),
+      root: normalize(dto.root),
       description: dto.description,
     });
 
@@ -28,38 +28,35 @@ export class ProjectsService {
       dto.technologies,
     );
     project.topics = await this.topicsSvc.createManyFromNames(dto.topics);
-    return this.projectRepo.insert(project);
+    return this.projectRepo.save(project);
   }
 
   async findAll() {
-    const projectsBase = await this.projectRepo.find({
-      relations: ["technologies", "topics"],
-      order: { name: "ASC" },
-    });
-    return projectsBase.map((projectBase) => {
-      const metadata = getProjectRootMetadata(projectBase.absPath);
-      return {
-        ...projectBase,
-        metadata,
-      };
-    });
+    return this.projectRepo
+      .find({
+        order: { name: "ASC" },
+        relations: {
+          technologies: true,
+          topics: true,
+        },
+      })
+      .then((res) =>
+        res.map((entry) => ({
+          ...entry,
+          metadata: getProjectRootMetadata(entry.root),
+        })),
+      );
   }
 
   async findOne(uuid: string) {
-    const projectBase = await this.projectRepo.findOne({
+    const project = await this.projectRepo.findOne({
       where: { uuid },
-      relations: ["technologies", "topics"],
+      relations: { technologies: true, topics: true },
     });
-
-    if (projectBase === null) {
+    if (project === null) {
       throw new NotFoundException("Project not found");
     }
-
-    const metadata = getProjectRootMetadata(projectBase.absPath);
-    return {
-      ...projectBase,
-      metadata,
-    };
+    return { ...project, metadata: getProjectRootMetadata(project.root) };
   }
 
   update(id: string, data: Partial<Project>) {

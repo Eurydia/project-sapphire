@@ -23,7 +23,7 @@ export class ProjectTreeService {
     }
 
     const tree = await projectTreeReadDir(project, path);
-    const { relPath } = await pathSafeJoin(project.absPath, ...path);
+    const { relPath } = await pathSafeJoin(project.root, ...path);
     let node = await this.treeRepo.findOne({
       where: { project: { uuid: project.uuid }, path: relPath },
     });
@@ -40,7 +40,7 @@ export class ProjectTreeService {
 
     if (node.readme) {
       const { relPath, rest } = await pathSafeJoin(
-        project.absPath,
+        project.root,
         ...node.path.split(sep).concat(node.readme),
       );
       const name = basename(relPath);
@@ -64,7 +64,7 @@ export class ProjectTreeService {
       throw new NotFoundException("Project not found");
     }
 
-    const { relPath } = await pathSafeJoin(project.absPath, ...path);
+    const { relPath } = await pathSafeJoin(project.root, ...path);
     let node = await this.treeRepo.findOne({
       where: { project: { uuid: project.uuid }, path: relPath },
     });

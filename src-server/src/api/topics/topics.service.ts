@@ -14,8 +14,9 @@ export class TopicsService {
   async create(dto: CreateTopicDto): Promise<Topic> {
     const entry = this.repo.create({
       name: dto.name,
+      color: dto.color,
     });
-    return this.repo.insert(entry).then(() => entry);
+    return this.repo.save(entry).then(() => entry);
   }
 
   async findAll() {
@@ -23,13 +24,18 @@ export class TopicsService {
   }
 
   async createManyFromNames(entries: string[]) {
-    const dtoEntries = entries.map((name) => ({ name }));
     const existingEntries = await this.repo.findBy({
-      name: In(dtoEntries),
+      name: In(entries),
     });
     const existingEntriesSet = new Set(existingEntries.map((t) => t.name));
     const novel = entries.filter((name) => !existingEntriesSet.has(name));
     const requests = novel.map((name) => this.create({ name }));
     return Promise.all(requests);
+  }
+
+  async findFromProject(uuid: string) {
+    return this.repo.find({
+      where: { projects: { uuid } },
+    });
   }
 }

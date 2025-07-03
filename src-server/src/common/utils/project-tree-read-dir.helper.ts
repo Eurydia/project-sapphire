@@ -9,8 +9,8 @@ export const projectTreeReadDir = async (project: Project, path: string[]) => {
     throw new NotAcceptableException("Invalid path");
   }
 
-  const targetDir = normalize(resolve(project.absPath, ...path));
-  const rootDir = normalize(project.absPath);
+  const targetDir = normalize(resolve(project.root, ...path));
+  const rootDir = normalize(project.root);
   if (!targetDir.startsWith(rootDir)) {
     throw new NotAcceptableException("Access denied");
   }
