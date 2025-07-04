@@ -1,10 +1,10 @@
 import { API_CLIENT } from './client'
 import type { CreateProjectDto } from '@/models/project/dto/create-project'
-import { projectEntrySchema, projectSchema } from '@/models/project/project'
+import { projectSchema } from '@/models/project/project'
 
 export const fetchProjectAll = () =>
   API_CLIENT.get('/projects')
-    .then(projectEntrySchema.array().parseAsync)
+    .then(projectSchema.array().parseAsync)
     .catch(() => [])
 
 export const fetchProject = (uuid: string) =>
