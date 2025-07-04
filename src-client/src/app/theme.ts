@@ -5,9 +5,9 @@ export const theme = createTheme({
   components: {
     MuiPaper: {
       styleOverrides: {
-        outlined: {
-          padding: 2,
-        },
+        outlined: ({ theme: { spacing } }) => ({
+          padding: spacing(2),
+        }),
       },
     },
   },

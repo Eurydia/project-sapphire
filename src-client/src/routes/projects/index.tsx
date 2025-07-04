@@ -12,6 +12,7 @@ const RouteComponent: FC = memo(() => {
       {projects.map((project, index) => (
         <ProjectCard key={`project-entry[${index}]`} project={project} />
       ))}
+      {projects.length}
     </Stack>
   )
 })

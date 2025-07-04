@@ -1,10 +1,15 @@
+import { CssBaseline, ThemeProvider } from '@mui/material'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { theme } from '@/app/theme'
 
 export const Route = createRootRoute({
   component: () => (
     <>
-      <Outlet />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Outlet />
+      </ThemeProvider>
       <TanStackRouterDevtools />
     </>
   ),

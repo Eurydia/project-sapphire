@@ -32,9 +32,7 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <RouterProvider router={router} />
     </StrictMode>,
   )
 }
