@@ -10,6 +10,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
+import { AutocompleteTextField } from '../input/AutocompeleteTextField'
 import type { FC } from 'react'
 import type { CreateProjectDto } from '@/models/project/dto/create-project'
 import { createProjectDtoSchema } from '@/models/project/dto/create-project'
@@ -110,24 +111,12 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
             <>
               <Grid size={{ md: 3 }}>{`topics`}</Grid>
               <Grid size={{ md: 9 }}>
-                <Autocomplete
-                  options={options.topics}
-                  freeSolo
-                  fullWidth
-                  clearOnBlur
-                  defaultValue=""
-                  renderInput={(params) => (
-                    <TextField {...params} placeholder="Topics" />
-                  )}
+                <AutocompleteTextField
+                  onSelect={pushValue}
+                  options={options.technologies}
+                  disabledOptions={state.value}
                   onBlur={handleBlur}
-                  onChange={(_, value, reason) => {
-                    if (
-                      value !== null &&
-                      (reason === 'createOption' || reason === 'selectOption')
-                    ) {
-                      pushValue(value)
-                    }
-                  }}
+                  placeholder="Topics"
                 />
                 <Stack spacing={0.5} direction="row" flexWrap="wrap" useFlexGap>
                   {state.value.map((_, index) => (
@@ -150,30 +139,18 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
         <Field name="technologies" mode="array">
           {({ state, removeValue, pushValue, handleBlur }) => (
             <>
-              <Grid size={{ md: 3 }}>{`topics`}</Grid>
+              <Grid size={{ md: 3 }}>{`Technologies`}</Grid>
               <Grid size={{ md: 9 }}>
-                <Autocomplete
+                <AutocompleteTextField
+                  onSelect={pushValue}
                   options={options.technologies}
-                  freeSolo
-                  fullWidth
-                  clearOnBlur
-                  defaultValue=""
-                  renderInput={(params) => (
-                    <TextField {...params} placeholder="Technologies" />
-                  )}
+                  disabledOptions={state.value}
                   onBlur={handleBlur}
-                  onChange={(_, value, reason) => {
-                    if (
-                      value !== null &&
-                      (reason === 'createOption' || reason === 'selectOption')
-                    ) {
-                      pushValue(value)
-                    }
-                  }}
+                  placeholder="Technologies"
                 />
                 <Stack spacing={0.5} direction="row" flexWrap="wrap" useFlexGap>
                   {state.value.map((_, index) => (
-                    <Field key={index} name={`topics[${index}]`}>
+                    <Field key={index} name={`technologies[${index}]`}>
                       {(subfield) => (
                         <Chip
                           variant="outlined"
@@ -192,11 +169,18 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
       </Grid>
       <Grid size={{ md: 12 }}>
         <Subscribe
-          selector={({ isSubmitting, isValid }) => ({ isSubmitting, isValid })}
+          selector={({ isPristine, isSubmitting, isValid }) => ({
+            isPristine,
+            isSubmitting,
+            isValid,
+          })}
         >
-          {({ isSubmitting, isValid }) => (
+          {({ isSubmitting, isValid, isPristine }) => (
             <Toolbar>
-              <Button disabled={!isValid} onClick={() => handleSubmit()}>
+              <Button
+                disabled={isPristine || !isValid}
+                onClick={() => handleSubmit()}
+              >
                 {isSubmitting ? '...' : 'register'}
               </Button>
             </Toolbar>

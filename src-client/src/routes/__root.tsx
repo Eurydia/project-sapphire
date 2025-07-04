@@ -1,3 +1,4 @@
+import { ToastContainer } from 'react-toastify'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -10,6 +11,7 @@ export const Route = createRootRoute({
         <CssBaseline />
         <Outlet />
       </ThemeProvider>
+      <ToastContainer pauseOnFocusLoss={false} />
       <TanStackRouterDevtools />
     </>
   ),
