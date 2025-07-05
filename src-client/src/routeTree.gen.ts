@@ -13,6 +13,7 @@ import { Route as ProjectsRouteRouteImport } from './routes/projects/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ProjectsCreateRouteImport } from './routes/projects/create'
+import { Route as ProjectsUuidRouteRouteImport } from './routes/projects/$uuid/route'
 import { Route as ProjectsUuidIndexRouteImport } from './routes/projects/$uuid/index'
 
 const ProjectsRouteRoute = ProjectsRouteRouteImport.update({
@@ -35,18 +36,24 @@ const ProjectsCreateRoute = ProjectsCreateRouteImport.update({
   path: '/create',
   getParentRoute: () => ProjectsRouteRoute,
 } as any)
-const ProjectsUuidIndexRoute = ProjectsUuidIndexRouteImport.update({
-  id: '/$uuid/',
-  path: '/$uuid/',
+const ProjectsUuidRouteRoute = ProjectsUuidRouteRouteImport.update({
+  id: '/$uuid',
+  path: '/$uuid',
   getParentRoute: () => ProjectsRouteRoute,
+} as any)
+const ProjectsUuidIndexRoute = ProjectsUuidIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProjectsUuidRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/projects': typeof ProjectsRouteRouteWithChildren
+  '/projects/$uuid': typeof ProjectsUuidRouteRouteWithChildren
   '/projects/create': typeof ProjectsCreateRoute
   '/projects/': typeof ProjectsIndexRoute
-  '/projects/$uuid': typeof ProjectsUuidIndexRoute
+  '/projects/$uuid/': typeof ProjectsUuidIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -58,6 +65,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/projects': typeof ProjectsRouteRouteWithChildren
+  '/projects/$uuid': typeof ProjectsUuidRouteRouteWithChildren
   '/projects/create': typeof ProjectsCreateRoute
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$uuid/': typeof ProjectsUuidIndexRoute
@@ -67,15 +75,17 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/projects'
+    | '/projects/$uuid'
     | '/projects/create'
     | '/projects/'
-    | '/projects/$uuid'
+    | '/projects/$uuid/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/projects/create' | '/projects' | '/projects/$uuid'
   id:
     | '__root__'
     | '/'
     | '/projects'
+    | '/projects/$uuid'
     | '/projects/create'
     | '/projects/'
     | '/projects/$uuid/'
@@ -116,26 +126,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsCreateRouteImport
       parentRoute: typeof ProjectsRouteRoute
     }
-    '/projects/$uuid/': {
-      id: '/projects/$uuid/'
+    '/projects/$uuid': {
+      id: '/projects/$uuid'
       path: '/$uuid'
       fullPath: '/projects/$uuid'
-      preLoaderRoute: typeof ProjectsUuidIndexRouteImport
+      preLoaderRoute: typeof ProjectsUuidRouteRouteImport
       parentRoute: typeof ProjectsRouteRoute
+    }
+    '/projects/$uuid/': {
+      id: '/projects/$uuid/'
+      path: '/'
+      fullPath: '/projects/$uuid/'
+      preLoaderRoute: typeof ProjectsUuidIndexRouteImport
+      parentRoute: typeof ProjectsUuidRouteRoute
     }
   }
 }
 
-interface ProjectsRouteRouteChildren {
-  ProjectsCreateRoute: typeof ProjectsCreateRoute
-  ProjectsIndexRoute: typeof ProjectsIndexRoute
+interface ProjectsUuidRouteRouteChildren {
   ProjectsUuidIndexRoute: typeof ProjectsUuidIndexRoute
 }
 
+const ProjectsUuidRouteRouteChildren: ProjectsUuidRouteRouteChildren = {
+  ProjectsUuidIndexRoute: ProjectsUuidIndexRoute,
+}
+
+const ProjectsUuidRouteRouteWithChildren =
+  ProjectsUuidRouteRoute._addFileChildren(ProjectsUuidRouteRouteChildren)
+
+interface ProjectsRouteRouteChildren {
+  ProjectsUuidRouteRoute: typeof ProjectsUuidRouteRouteWithChildren
+  ProjectsCreateRoute: typeof ProjectsCreateRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
+}
+
 const ProjectsRouteRouteChildren: ProjectsRouteRouteChildren = {
+  ProjectsUuidRouteRoute: ProjectsUuidRouteRouteWithChildren,
   ProjectsCreateRoute: ProjectsCreateRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
-  ProjectsUuidIndexRoute: ProjectsUuidIndexRoute,
 }
 
 const ProjectsRouteRouteWithChildren = ProjectsRouteRoute._addFileChildren(

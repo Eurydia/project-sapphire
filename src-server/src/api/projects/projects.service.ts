@@ -32,20 +32,18 @@ export class ProjectsService {
   }
 
   async findAll() {
-    return this.projectRepo
-      .find({
+    return (
+      await this.projectRepo.find({
         order: { name: "ASC" },
         relations: {
           technologies: true,
           topics: true,
         },
       })
-      .then((res) =>
-        res.map((entry) => ({
-          ...entry,
-          metadata: getProjectRootMetadata(entry.root),
-        })),
-      );
+    ).map((entry) => ({
+      ...entry,
+      metadata: getProjectRootMetadata(entry.root),
+    }));
   }
 
   async findOne(uuid: string) {

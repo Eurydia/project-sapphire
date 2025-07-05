@@ -10,6 +10,11 @@ export const theme = createTheme({
         }),
       },
     },
+    MuiStack: {
+      defaultProps: {
+        useFlexGap: true,
+      },
+    },
   },
   palette: { mode: 'dark' },
 })

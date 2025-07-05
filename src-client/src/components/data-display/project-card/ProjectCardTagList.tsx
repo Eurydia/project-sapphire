@@ -15,7 +15,7 @@ export const ProjectCardTagList: FC<Props> = memo(
           <Typography>{label}</Typography>
         </Grid>
         <Grid size={{ md: 9 }}>
-          <Stack spacing={1} direction="row" useFlexGap flexWrap="wrap">
+          <Stack spacing={1} direction="row">
             {items.map((item, index) => (
               <Fragment key={`tag-item[${index}]`}>{children(item)}</Fragment>
             ))}

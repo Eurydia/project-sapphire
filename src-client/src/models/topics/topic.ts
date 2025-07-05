@@ -1,6 +1,6 @@
 import z from 'zod/v4'
 
-export const topicSchema = z.strictObject({
+export const topicSchema = z.object({
   uuid: z.uuid(),
   name: z.string().trim().nonempty(),
 })

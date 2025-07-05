@@ -8,7 +8,7 @@ const RouteComponent: FC = memo(() => {
     <Grid container spacing={1} sx={{ padding: 2 }}>
       <Grid size={{ md: 2 }}>
         <Paper variant="outlined">
-          <List disablePadding>
+          <List disablePadding dense>
             <ListItem>
               <ListItemText>
                 <Link to="/projects">{`List`}</Link>

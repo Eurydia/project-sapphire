@@ -12,8 +12,8 @@ export const getProjectRootMetadata = (path: string) => {
   }
 
   return {
-    ctime: stats.ctime,
-    atime: stats.atime,
+    ctime: stats.birthtime,
     mtime: stats.mtime,
+    atime: stats.atime,
   };
 };

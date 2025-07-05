@@ -4,7 +4,7 @@ import { Project } from "../projects/project.entity";
 @Entity()
 export class Topic {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  uuid: string;
 
   @Column({ type: "text" })
   name: string;
