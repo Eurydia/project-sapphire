@@ -1,15 +1,6 @@
 import { useForm } from '@tanstack/react-form'
 import { memo } from 'react'
-import {
-  Autocomplete,
-  Button,
-  Chip,
-  Grid,
-  Stack,
-  TextField,
-  Toolbar,
-  Typography,
-} from '@mui/material'
+import { Button, Chip, Grid, Stack, TextField, Toolbar } from '@mui/material'
 import { AutocompleteTextField } from '../input/AutocompeleteTextField'
 import type { FC } from 'react'
 import type { CreateProjectDto } from '@/models/project/dto/create-project'
@@ -25,15 +16,13 @@ type Props = {
 }
 export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
   const { Field, Subscribe, handleSubmit } = useForm({
-    defaultValues:
-      init ??
-      ({
-        description: '',
-        name: '',
-        root: '',
-        technologies: [],
-        topics: [],
-      } as CreateProjectDto),
+    defaultValues: init ?? {
+      description: '',
+      name: '',
+      root: '',
+      technologies: [],
+      topics: [],
+    },
     validators: { onChangeAsync: createProjectDtoSchema },
     onSubmit: ({ value }) => {
       action(value)
@@ -48,7 +37,6 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
         e.stopPropagation()
       }}
     >
-      <Typography>{`Create new project`}</Typography>
       <Grid container spacing={1}>
         <Field name="name">
           {({ state, handleChange, handleBlur }) => (
@@ -181,7 +169,7 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                 disabled={isPristine || !isValid}
                 onClick={() => handleSubmit()}
               >
-                {isSubmitting ? '...' : 'register'}
+                {isSubmitting ? '...' : 'confirm'}
               </Button>
             </Toolbar>
           )}

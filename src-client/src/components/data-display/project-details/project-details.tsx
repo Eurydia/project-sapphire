@@ -4,7 +4,6 @@ import {
   ListItem,
   ListItemText,
   Paper,
-  Skeleton,
   Stack,
   Typography,
 } from '@mui/material'
@@ -19,6 +18,11 @@ const Inner: FC<Props> = memo(({ fetcher }) => {
   return (
     <Paper variant="outlined">
       <Stack spacing={1}>
+        <Link to="/projects/$uuid/edit" params={{ uuid: project.uuid }}>
+          <Typography variant="subtitle1" component="div">
+            Edit
+          </Typography>
+        </Link>
         <Typography variant="h3">{project.name}</Typography>
         <Typography>{project.root}</Typography>
         {project.description !== '' && (

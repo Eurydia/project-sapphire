@@ -12,8 +12,8 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { CreateProjectDto } from "./dto/create-project.dto";
-import { Project } from "./project.entity";
 import { ProjectsService } from "./projects.service";
+import { UpdateProjectDto } from "./dto/update-project.dto";
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller("api/projects")
@@ -36,14 +36,9 @@ export class ProjectsController {
     return this.projectsSvc.findOne(uuid);
   }
 
-  @Get(":uuid/metadata")
-  findMetadata(@Param("uuid") uuid: string) {
-    return this.projectsSvc.getMetadata(uuid);
-  }
-
   @Put(":uuid")
-  update(@Param("uuid") uuid: string, @Body() data: Partial<Project>) {
-    return this.projectsSvc.update(uuid, data);
+  update(@Param("uuid") uuid: string, @Body() dto: UpdateProjectDto) {
+    return this.projectsSvc.update(uuid, dto);
   }
 
   @Delete(":uuid")

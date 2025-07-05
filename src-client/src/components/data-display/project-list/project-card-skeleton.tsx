@@ -1,8 +1,6 @@
-import { Link, Paper, Skeleton, Stack, Typography } from '@mui/material'
+import { Paper, Skeleton, Stack, Typography } from '@mui/material'
 import { memo } from 'react'
-import { uuid } from 'zod/v4'
 import type { FC } from 'react'
-import type { ProjectCardTagList } from '../project-card/ProjectCardTagList'
 
 export const ProjectCardSkeleton: FC = memo(() => {
   return (

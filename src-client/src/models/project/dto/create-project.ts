@@ -1,22 +1,30 @@
 import { z } from 'zod/v4'
+import { projectSchema } from '../project'
 
-export const createProjectDtoSchema = z.strictObject({
-  name: z.string().trim().nonempty(),
-  root: z.string().trim().nonempty(),
-  description: z.string().trim(),
-  technologies: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .nonempty()
-    .array()
-    .refine((arg) => new Set(arg).size === arg.length, ''),
-  topics: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .nonempty()
-    .array()
-    .refine((arg) => new Set(arg).size === arg.length, ''),
-})
+export const createProjectDtoSchema = projectSchema
+  .omit({
+    uuid: true,
+    topics: true,
+    technologies: true,
+  })
+  .extend({
+    topics: z
+      .string()
+      .trim()
+      .nonempty()
+      .array()
+      .refine(
+        (arg) => new Set(arg).size === arg.length,
+        'Topics must be unique',
+      ),
+    technologies: z
+      .string()
+      .trim()
+      .nonempty()
+      .array()
+      .refine(
+        (arg) => new Set(arg).size === arg.length,
+        'Technologies must be unique',
+      ),
+  })
 export type CreateProjectDto = z.infer<typeof createProjectDtoSchema>
