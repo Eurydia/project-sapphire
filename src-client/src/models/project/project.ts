@@ -9,13 +9,13 @@ export const projectSchema = z.object({
   uuid: z.uuid(),
   technologies: technologySchema.array(),
   topics: topicSchema.array(),
-  metadata: z
-    .object({
-      atime: z.iso.datetime(),
-      ctime: z.iso.datetime(),
-      mtime: z.iso.datetime(),
-    })
-    .nullable(),
 })
 
+export const projectMetadataSchema = z.object({
+  atime: z.iso.datetime(),
+  ctime: z.iso.datetime(),
+  mtime: z.iso.datetime(),
+})
+
+export type ProjectMetadata = z.infer<typeof projectMetadataSchema>
 export type Project = z.infer<typeof projectSchema>

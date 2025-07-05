@@ -1,9 +1,7 @@
 import { API_CLIENT } from './client'
 import type { CreateProjectDto } from '@/models/project/dto/create-project'
 import type { Project } from '@/models/project/project'
-import type { AxiosError } from 'axios'
-import type { ZodError } from 'zod/v4'
-import { projectSchema } from '@/models/project/project'
+import { projectMetadataSchema, projectSchema } from '@/models/project/project'
 
 export const fetchProjectAll = async () => {
   return API_CLIENT.get<Array<Project>>('/projects')
@@ -13,6 +11,11 @@ export const fetchProjectAll = async () => {
       return null
     })
 }
+
+export const fetchProjectMetadata = (uuid: string) =>
+  API_CLIENT.get(`/projects/${uuid}/metadata`)
+    .then(({ data }) => projectMetadataSchema.nullable().parseAsync(data))
+    .catch(() => null)
 
 export const fetchProject = (uuid: string) =>
   API_CLIENT.get(`/projects/${uuid}`)

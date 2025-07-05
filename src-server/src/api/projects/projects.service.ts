@@ -32,29 +32,41 @@ export class ProjectsService {
   }
 
   async findAll() {
-    return (
-      await this.projectRepo.find({
-        order: { name: "ASC" },
-        relations: {
-          technologies: true,
-          topics: true,
-        },
+    return this.projectRepo.find({
+      order: { name: "ASC" },
+      relations: {
+        technologies: true,
+        topics: true,
+      },
+    });
+  }
+
+  async getMetadata(uuid: string) {
+    return this.projectRepo
+      .findOne({
+        where: { uuid },
+        select: { root: true },
       })
-    ).map((entry) => ({
-      ...entry,
-      metadata: getProjectRootMetadata(entry.root),
-    }));
+      .then((res) => {
+        if (res === null) {
+          throw new NotFoundException("Project not found");
+        }
+        return getProjectRootMetadata(res.root);
+      });
   }
 
   async findOne(uuid: string) {
-    const project = await this.projectRepo.findOne({
-      where: { uuid },
-      relations: { technologies: true, topics: true },
-    });
-    if (project === null) {
-      throw new NotFoundException("Project not found");
-    }
-    return { ...project, metadata: getProjectRootMetadata(project.root) };
+    return this.projectRepo
+      .findOne({
+        where: { uuid },
+        relations: { technologies: true, topics: true },
+      })
+      .then((entry) => {
+        if (entry === null) {
+          throw new NotFoundException("Project not found");
+        }
+        return entry;
+      });
   }
 
   update(id: string, data: Partial<Project>) {

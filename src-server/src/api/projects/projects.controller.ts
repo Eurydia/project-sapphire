@@ -36,6 +36,11 @@ export class ProjectsController {
     return this.projectsSvc.findOne(uuid);
   }
 
+  @Get(":uuid/metadata")
+  findMetadata(@Param("uuid") uuid: string) {
+    return this.projectsSvc.getMetadata(uuid);
+  }
+
   @Put(":uuid")
   update(@Param("uuid") uuid: string, @Body() data: Partial<Project>) {
     return this.projectsSvc.update(uuid, data);
