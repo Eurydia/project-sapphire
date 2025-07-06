@@ -17,7 +17,7 @@ import { ProjectHelpersModule } from "./api/project-helpers/project-helpers.modu
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: "sqlite",
+      type: "better-sqlite3",
       database: "db.sqlite",
       entities: [__dirname + "/**/*.entity{.ts,.js}"],
       synchronize: true,

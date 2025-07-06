@@ -1,24 +1,18 @@
 services:
   server:
+    container_name: server
     build:
       context: ./src-server
       dockerfile: dockerfile
-    networks:
-      - app-net
+    ports:
+      - 8081:3000
 
   client:
+    container_name: client
     build:
       context: ./src-client
       dockerfile: dockerfile
+      args:
+        API_URL: http://localhost:8081/api
     ports:
       - 8080:80
-    environment:
-      - VITE_API_URL=http://backend:3000
-    depends_on:
-      - server
-    networks:
-      - app-net
-
-networks:
-  app-net:
-    driver: bridge
