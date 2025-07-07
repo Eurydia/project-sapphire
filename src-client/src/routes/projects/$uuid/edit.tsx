@@ -26,7 +26,7 @@ const RouteComponent: FC = memo(() => {
         }}
         action={(dto) =>
           putProject(uuid, dto)
-            .then(() => navigate({ to: '/projects/$uuid', params: { uuid } }))
+            .then(() => navigate({ to: '/projects' }))
             .then(() => toast.success('Saved changes'))
             .catch(() => toast.error('Failed to update project'))
         }

@@ -1,52 +1,82 @@
 import { Fragment, Suspense, memo, use } from 'react'
-import { Alert, Stack, Typography } from '@mui/material'
-import { Link } from '@tanstack/react-router'
-import { ProjectCard } from '../project-card/ProjectCard'
+import { Alert, Grid, Paper, Skeleton, Stack, Typography } from '@mui/material'
+import { ProjectCard } from '../project-card'
 import { ProjectCardSkeleton } from './project-card-skeleton'
 import type { FC } from 'react'
 import type { Project } from '@/models/project/project'
+import { StyledLink } from '@/components/navigation/styled-link'
 
 type InternalListProps = {
-  fetcher: Promise<Array<Project> | null>
+  dense?: boolean
+  fetcher: Promise<Array<Project> | unknown>
 }
-const Inner: FC<InternalListProps> = memo(({ fetcher }) => {
+const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
   const items = use(fetcher)
   return (
     <Fragment>
-      {items !== null &&
-        items.map((project, index) => (
-          <ProjectCard key={`project-entry[${index}]`} project={project} />
-        ))}
-      {items !== null && items.length === 0 && (
-        <Alert severity="info">
-          <Typography>{`No registered project`}</Typography>
-          <Link to={'/projects/create'}>{`create one`}</Link>
-        </Alert>
+      {Array.isArray(items) && (
+        <Fragment>
+          <Grid size={{ md: 3 }}>
+            <Paper variant="outlined"></Paper>
+          </Grid>
+          <Grid size={{ md: 'grow' }}>
+            <Stack spacing={1}>
+              {items.map((project, index) => (
+                <ProjectCard
+                  dense={dense}
+                  key={`project-entry[${index}]`}
+                  project={project}
+                />
+              ))}
+            </Stack>
+          </Grid>
+        </Fragment>
       )}
-      {items === null && (
-        <Alert severity="error">
-          <Typography>{`Something has gone wrong`}</Typography>
-        </Alert>
+      {Array.isArray(items) && items.length === 0 && (
+        <Grid size="grow">
+          <Alert severity="info">
+            <Typography>{`No registered project`}</Typography>
+            <StyledLink to={'/projects/create'}>{`create one`}</StyledLink>
+          </Alert>
+        </Grid>
+      )}
+      {!Array.isArray(items) && (
+        <Grid size="grow">
+          <Alert severity="error" variant="outlined">
+            <Typography>{String(items)}</Typography>
+          </Alert>
+        </Grid>
       )}
     </Fragment>
   )
 })
 
-type Props = { fetcher: Promise<Array<Project> | null> }
-export const ProjectList: FC<Props> = memo(({ fetcher: itemsPromise }) => {
+type Props = { dense?: boolean; fetcher: Promise<Array<Project> | unknown> }
+export const ProjectList: FC<Props> = memo(({ dense, fetcher }) => {
   return (
-    <Stack spacing={1}>
+    <Grid container spacing={1}>
       <Suspense
         fallback={
           <Fragment>
-            <ProjectCardSkeleton />
-            <ProjectCardSkeleton />
-            <ProjectCardSkeleton />
+            <Grid size={{ md: 3 }}>
+              <Paper variant="outlined">
+                <Stack spacing={0.5}>
+                  <Skeleton />
+                  <Skeleton />
+                  <Skeleton />
+                </Stack>
+              </Paper>
+            </Grid>
+            <Grid size="grow">
+              <ProjectCardSkeleton />
+              <ProjectCardSkeleton />
+              <ProjectCardSkeleton />
+            </Grid>
           </Fragment>
         }
       >
-        <Inner fetcher={itemsPromise} />
+        <Inner dense={dense} fetcher={fetcher} />
       </Suspense>
-    </Stack>
+    </Grid>
   )
 })

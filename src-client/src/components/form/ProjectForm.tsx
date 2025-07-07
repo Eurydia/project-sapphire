@@ -164,8 +164,9 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
           })}
         >
           {({ isSubmitting, isValid, isPristine }) => (
-            <Toolbar>
+            <Toolbar disableGutters variant="dense">
               <Button
+                variant="contained"
                 disabled={isPristine || !isValid}
                 onClick={() => handleSubmit()}
               >

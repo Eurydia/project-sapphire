@@ -7,6 +7,7 @@ import { TopicsService } from "../topics/topics.service";
 import { CreateProjectDto } from "./dto/create-project.dto";
 import { Project } from "./project.entity";
 import { UpdateProjectDto } from "./dto/update-project.dto";
+import { getProjectRootMetadata } from "src/common/utils/project-root-metadata.helper";
 
 @Injectable()
 export class ProjectsService {
@@ -32,20 +33,27 @@ export class ProjectsService {
   }
 
   async findAll() {
-    return this.projectRepo.find({
-      order: { name: "ASC" },
-      relations: {
-        technologies: true,
-        topics: true,
-      },
-    });
+    return (
+      await this.projectRepo.find({
+        order: { name: "ASC" },
+        relations: {
+          technologies: true,
+          topics: true,
+        },
+      })
+    ).map((p) => ({ ...p, metadata: getProjectRootMetadata(p) }));
   }
 
   async findOne(uuid: string) {
-    return this.projectRepo.findOne({
+    const p = await this.projectRepo.findOne({
       where: { uuid },
       relations: { technologies: true, topics: true },
     });
+    if (p === null) {
+      return null;
+    }
+
+    return { ...p, metadata: getProjectRootMetadata(p) };
   }
 
   async update(uuid: string, dto: UpdateProjectDto) {

@@ -24,9 +24,8 @@ export class TechnologiesService {
   }
 
   async createManyFromNames(entries: string[]) {
-    const dtoEntries = entries.map((name) => ({ name }));
     const existing = await this.repo.findBy({
-      name: In(dtoEntries),
+      name: In(entries),
     });
     const existingSet = new Set(existing.map((t) => t.name));
     const novel = entries.filter((name) => !existingSet.has(name));

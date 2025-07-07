@@ -1,4 +1,4 @@
-import { Suspense, memo, use } from 'react'
+import { memo } from 'react'
 import {
   List,
   ListItem,
@@ -8,13 +8,11 @@ import {
   Typography,
 } from '@mui/material'
 import { Link } from '@tanstack/react-router'
-import { ProjectMetadataDisplay } from './project-metadata-display'
 import type { FC } from 'react'
 import type { Project } from '@/models/project/project'
-import { fetchProjectMetadata } from '@/api/projects'
 
-const Inner: FC<Props> = memo(({ fetcher }) => {
-  const project = use(fetcher)
+type Props = { project: Project }
+export const ProjectDetails: FC<Props> = memo(({ project }) => {
   return (
     <Paper variant="outlined">
       <Stack spacing={1}>
@@ -28,7 +26,6 @@ const Inner: FC<Props> = memo(({ fetcher }) => {
         {project.description !== '' && (
           <Typography>{project.description}</Typography>
         )}
-        <ProjectMetadataDisplay fetcher={fetchProjectMetadata(project.uuid)} />
         <List>
           <ListItem>
             <ListItemText
@@ -65,14 +62,5 @@ const Inner: FC<Props> = memo(({ fetcher }) => {
         </List>
       </Stack>
     </Paper>
-  )
-})
-
-type Props = { fetcher: Promise<Project> }
-export const ProjectDetails: FC<Props> = memo(({ fetcher }) => {
-  return (
-    <Suspense>
-      <Inner fetcher={fetcher} />
-    </Suspense>
   )
 })

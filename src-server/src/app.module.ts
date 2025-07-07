@@ -9,7 +9,6 @@ import { TopicsModule } from "./api/topics/topics.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { LoggerMiddleware } from "./common/middlerware/logger.middleware";
-import { ProjectHelpersModule } from "./api/project-helpers/project-helpers.module";
 
 @Module({
   imports: [
@@ -18,7 +17,7 @@ import { ProjectHelpersModule } from "./api/project-helpers/project-helpers.modu
     }),
     TypeOrmModule.forRoot({
       type: "better-sqlite3",
-      database: "db.sqlite",
+      database: "./database/db.sqlite",
       entities: [__dirname + "/**/*.entity{.ts,.js}"],
       synchronize: true,
     }),
@@ -27,7 +26,6 @@ import { ProjectHelpersModule } from "./api/project-helpers/project-helpers.modu
     TopicsModule,
     ProjectBlobModule,
     ProjectTreeModule,
-    ProjectHelpersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,3 @@
-import moment from 'moment'
 import {
   Alert,
   AlertTitle,
@@ -22,7 +21,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
     if (dt === undefined) {
       return 'unknown'
     }
-    return moment(dt).fromNow()
+    return dt
   }, [])
 
   const items = useMemo(() => {
