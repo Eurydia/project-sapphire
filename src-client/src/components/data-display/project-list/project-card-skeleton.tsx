@@ -9,13 +9,13 @@ export const ProjectCardSkeleton: FC = memo(() => {
         <Typography variant="h5" sx={{ width: { md: '20%' } }}>
           <Skeleton />
         </Typography>
-        <Typography component="div">
+        <Typography>
           <Skeleton />
         </Typography>
-        <Typography component="div">
+        <Typography>
           <Skeleton />
         </Typography>
-        <Typography component="div" sx={{ width: { md: '75%' } }}>
+        <Typography sx={{ width: { md: '75%' } }}>
           <Skeleton />
         </Typography>
       </Stack>

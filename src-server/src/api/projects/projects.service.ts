@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { normalize } from "path";
 import { Repository } from "typeorm";
@@ -35,7 +35,7 @@ export class ProjectsService {
   async findAll() {
     return (
       await this.projectRepo.find({
-        order: { name: "ASC" },
+        order: { pinned: "DESC", name: "ASC" },
         relations: {
           technologies: true,
           topics: true,
@@ -50,10 +50,28 @@ export class ProjectsService {
       relations: { technologies: true, topics: true },
     });
     if (p === null) {
-      return null;
+      throw new NotFoundException();
     }
 
     return { ...p, metadata: getProjectRootMetadata(p) };
+  }
+
+  async pinProject(uuid: string) {
+    const project = await this.projectRepo.findOne({ where: { uuid } });
+    if (project === null) {
+      throw new NotFoundException();
+    }
+    project.pinned = true;
+    return this.projectRepo.save(project).then(() => project);
+  }
+
+  async unpinProject(uuid: string) {
+    const project = await this.projectRepo.findOne({ where: { uuid } });
+    if (project === null) {
+      throw new NotFoundException();
+    }
+    project.pinned = false;
+    return this.projectRepo.save(project).then(() => project);
   }
 
   async update(uuid: string, dto: UpdateProjectDto) {

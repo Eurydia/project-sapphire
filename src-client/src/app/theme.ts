@@ -54,6 +54,13 @@ export const theme = createTheme({
         spellCheck: 'false',
       },
     },
+    MuiIconButton: {
+      defaultProps: {
+        disableRipple: true,
+        disableFocusRipple: true,
+        disableTouchRipple: true,
+      },
+    },
   },
   palette: {
     mode: 'dark',

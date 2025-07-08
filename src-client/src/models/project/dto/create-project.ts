@@ -7,6 +7,7 @@ export const createProjectDtoSchema = projectSchema
     topics: true,
     technologies: true,
     metadata: true,
+    pinned: true,
   })
   .extend({
     topics: z

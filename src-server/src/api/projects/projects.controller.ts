@@ -41,6 +41,16 @@ export class ProjectsController {
     return this.projectsSvc.update(uuid, dto);
   }
 
+  @Post(":uuid/pin")
+  pinProject(@Param("uuid") uuid: string) {
+    return this.projectsSvc.pinProject(uuid);
+  }
+
+  @Post(":uuid/unpin")
+  unpinProject(@Param("uuid") uuid: string) {
+    return this.projectsSvc.unpinProject(uuid);
+  }
+
   @Delete(":uuid")
   remove(@Param("uuid") uuid: string) {
     return this.projectsSvc.delete(uuid);

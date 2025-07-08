@@ -16,6 +16,7 @@ export const projectSchema = z.object({
       mtime: z.object({ fromNow: z.string() }),
     })
     .nullable(),
+  pinned: z.boolean(),
 })
 
 export type Project = z.infer<typeof projectSchema>

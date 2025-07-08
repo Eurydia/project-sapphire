@@ -20,3 +20,9 @@ export const postProject = (dto: CreateProjectDto) =>
 
 export const putProject = (uuid: string, dto: UpdateProjectDto) =>
   API_CLIENT.put(`/projects/${uuid}`, dto)
+
+export const pinProject = (uuid: string) =>
+  API_CLIENT.post(`/projects/${uuid}/pin`)
+
+export const unpinProject = (uuid: string) =>
+  API_CLIENT.post(`/projects/${uuid}/unpin`)
