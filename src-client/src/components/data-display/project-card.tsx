@@ -1,9 +1,4 @@
-import {
-  EditOutlined,
-  FolderOutlined,
-  PushPin,
-  PushPinOutlined,
-} from '@mui/icons-material'
+import { EditOutlined, PushPin, PushPinOutlined } from '@mui/icons-material'
 import {
   Divider,
   IconButton,
@@ -19,7 +14,7 @@ import { TechTagList } from './tech-tag-list'
 import { TopicTagList } from './topic-tag-list'
 import type { FC } from 'react'
 import type { Project } from '@/models/project/project'
-import { openRootProject, pinProject, unpinProject } from '@/api/projects'
+import { pinProject, unpinProject } from '@/api/projects'
 
 type Props = { project: Project; dense?: boolean }
 export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
@@ -164,12 +159,6 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
             }
           >
             <EditOutlined />
-          </IconButton>
-          <IconButton
-            disabled={project.metadata === null}
-            onClick={() => openRootProject(project.uuid)}
-          >
-            <FolderOutlined />
           </IconButton>
         </Stack>
       </Stack>

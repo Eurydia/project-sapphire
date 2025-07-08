@@ -46,11 +46,6 @@ export class ProjectsController {
     return this.projectsSvc.pin(uuid);
   }
 
-  @Post(":uuid/open-root")
-  openRoot(@Param("uuid") uuid: string) {
-    return this.projectsSvc.openRoot(uuid);
-  }
-
   @Post(":uuid/unpin")
   unpin(@Param("uuid") uuid: string) {
     return this.projectsSvc.unpin(uuid);
