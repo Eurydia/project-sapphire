@@ -58,7 +58,6 @@ export const theme = createTheme({
       defaultProps: {
         disableRipple: true,
         disableFocusRipple: true,
-        disableTouchRipple: true,
       },
     },
   },

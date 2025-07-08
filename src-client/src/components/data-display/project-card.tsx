@@ -1,4 +1,9 @@
-import { EditOutlined, PushPin, PushPinOutlined } from '@mui/icons-material'
+import {
+  EditOutlined,
+  FolderOutlined,
+  PushPin,
+  PushPinOutlined,
+} from '@mui/icons-material'
 import {
   Divider,
   IconButton,
@@ -14,7 +19,7 @@ import { TechTagList } from './tech-tag-list'
 import { TopicTagList } from './topic-tag-list'
 import type { FC } from 'react'
 import type { Project } from '@/models/project/project'
-import { pinProject, unpinProject } from '@/api/projects'
+import { openRootProject, pinProject, unpinProject } from '@/api/projects'
 
 type Props = { project: Project; dense?: boolean }
 export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
@@ -147,12 +152,25 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
           )}
         </Stack>
         <Stack spacing={2} flexBasis={0} flexGrow={0} component="div">
-          <IconButton size="small" onClick={handleTogglePin}>
+          <IconButton onClick={handleTogglePin}>
             {project.pinned ? <PushPin /> : <PushPinOutlined />}
           </IconButton>
-          <StyledLink to="/projects/$uuid/edit" params={{ uuid: project.uuid }}>
+          <IconButton
+            onClick={() =>
+              router.navigate({
+                to: '/projects/$uuid/edit',
+                params: { uuid: project.uuid },
+              })
+            }
+          >
             <EditOutlined />
-          </StyledLink>
+          </IconButton>
+          <IconButton
+            disabled={project.metadata === null}
+            onClick={() => openRootProject(project.uuid)}
+          >
+            <FolderOutlined />
+          </IconButton>
         </Stack>
       </Stack>
     </Paper>

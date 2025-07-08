@@ -42,13 +42,18 @@ export class ProjectsController {
   }
 
   @Post(":uuid/pin")
-  pinProject(@Param("uuid") uuid: string) {
-    return this.projectsSvc.pinProject(uuid);
+  pin(@Param("uuid") uuid: string) {
+    return this.projectsSvc.pin(uuid);
+  }
+
+  @Post(":uuid/open-root")
+  openRoot(@Param("uuid") uuid: string) {
+    return this.projectsSvc.openRoot(uuid);
   }
 
   @Post(":uuid/unpin")
-  unpinProject(@Param("uuid") uuid: string) {
-    return this.projectsSvc.unpinProject(uuid);
+  unpin(@Param("uuid") uuid: string) {
+    return this.projectsSvc.unpin(uuid);
   }
 
   @Delete(":uuid")

@@ -26,3 +26,6 @@ export const pinProject = (uuid: string) =>
 
 export const unpinProject = (uuid: string) =>
   API_CLIENT.post(`/projects/${uuid}/unpin`)
+
+export const openRootProject = (uuid: string) =>
+  API_CLIENT.post(`/projects/${uuid}/open-root`)

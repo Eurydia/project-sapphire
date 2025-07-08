@@ -8,6 +8,7 @@ import { CreateProjectDto } from "./dto/create-project.dto";
 import { Project } from "./project.entity";
 import { UpdateProjectDto } from "./dto/update-project.dto";
 import { getProjectRootMetadata } from "src/common/utils/project-root-metadata.helper";
+import { exec } from "child_process";
 
 @Injectable()
 export class ProjectsService {
@@ -56,7 +57,7 @@ export class ProjectsService {
     return { ...p, metadata: getProjectRootMetadata(p) };
   }
 
-  async pinProject(uuid: string) {
+  async pin(uuid: string) {
     const project = await this.projectRepo.findOne({ where: { uuid } });
     if (project === null) {
       throw new NotFoundException();
@@ -65,13 +66,25 @@ export class ProjectsService {
     return this.projectRepo.save(project).then(() => project);
   }
 
-  async unpinProject(uuid: string) {
+  async unpin(uuid: string) {
     const project = await this.projectRepo.findOne({ where: { uuid } });
     if (project === null) {
       throw new NotFoundException();
     }
     project.pinned = false;
     return this.projectRepo.save(project).then(() => project);
+  }
+
+  async openRoot(uuid: string) {
+    const project = await this.projectRepo.findOne({ where: { uuid } });
+    if (project === null) {
+      throw new NotFoundException();
+    }
+    if (getProjectRootMetadata(project) === null) {
+      throw new NotFoundException();
+    }
+
+    exec(`start ${project.root}`); //too dangerous to keep
   }
 
   async update(uuid: string, dto: UpdateProjectDto) {
