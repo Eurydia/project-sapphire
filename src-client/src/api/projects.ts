@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import { API_CLIENT } from './client'
 import type { CreateProjectDto } from '@/models/project/dto/create-project'
 import type { UpdateProjectDto } from '@/models/project/dto/update-project'
@@ -7,7 +8,35 @@ import { projectSchema } from '@/models/project/project'
 export const fetchProjectAll = async () => {
   return API_CLIENT.get<Array<Project>>('/projects')
     .then(({ data }) => projectSchema.array().parseAsync(data))
-    .catch((err: unknown) => err)
+    .catch((err: unknown) =>
+      faker.helpers.multiple(
+        (): Project => ({
+          name: faker.lorem.word(),
+          root: faker.system.directoryPath(),
+          description: faker.lorem.sentences({ max: 3, min: 0 }),
+          uuid: faker.string.uuid(),
+          technologies: faker.helpers.multiple(
+            () => ({
+              color: faker.color.rgb(),
+              name: faker.lorem.word(),
+              uuid: faker.string.uuid(),
+            }),
+            { count: { min: 2, max: 5 } },
+          ),
+          topics: faker.helpers.multiple(
+            () => ({
+              color: faker.color.rgb(),
+              name: faker.lorem.word(),
+              uuid: faker.string.uuid(),
+            }),
+            { count: { min: 2, max: 5 } },
+          ),
+          metadata: null,
+          pinned: false,
+        }),
+        { count: 7 },
+      ),
+    )
 }
 
 export const fetchProject = (uuid: string) =>

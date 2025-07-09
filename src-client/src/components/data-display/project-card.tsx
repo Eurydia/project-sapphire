@@ -60,12 +60,14 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
                 <Typography
                   fontFamily={monospaceFontFamily}
                   variant="subtitle2"
+                  color="textSecondary"
                 >
                   {project.uuid}
                 </Typography>
                 <Typography
                   fontFamily={monospaceFontFamily}
                   variant="subtitle2"
+                  color="textSecondary"
                 >
                   {project.root}
                 </Typography>
@@ -102,16 +104,28 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
                   useFlexGap
                   flexWrap="wrap"
                 >
-                  <Typography fontFamily={monospaceFontFamily}>
+                  <Typography
+                    variant="subtitle2"
+                    color="textSecondary"
+                    fontFamily={monospaceFontFamily}
+                  >
                     {`${label}:`}
                   </Typography>
                   {value === undefined && (
-                    <Typography fontFamily={monospaceFontFamily} color="error">
+                    <Typography
+                      variant="subtitle2"
+                      fontFamily={monospaceFontFamily}
+                      color="error"
+                    >
                       {`unknown`}
                     </Typography>
                   )}
                   {value !== undefined && (
-                    <Typography fontFamily={monospaceFontFamily}>
+                    <Typography
+                      color="textSecondary"
+                      variant="subtitle2"
+                      fontFamily={monospaceFontFamily}
+                    >
                       {value}
                     </Typography>
                   )}
@@ -128,7 +142,9 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
                   useFlexGap
                   flexWrap="wrap"
                 >
-                  <Typography>{`tech(s):`}</Typography>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    {`tech(s):`}
+                  </Typography>
                   <TechTagList items={project.technologies} />
                 </Stack>
               )}
@@ -139,7 +155,9 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
                   useFlexGap
                   flexWrap="wrap"
                 >
-                  <Typography>{`topic(s):`}</Typography>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    {`topic(s):`}
+                  </Typography>
                   <TopicTagList items={project.topics} />
                 </Stack>
               )}

@@ -12,41 +12,44 @@ type InternalListProps = {
 }
 const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
   const items = use(fetcher)
+
+  if (!Array.isArray(items)) {
+    return (
+      <Grid size="grow">
+        <Alert severity="error" variant="outlined">
+          <Typography>{String(items)}</Typography>
+        </Alert>
+      </Grid>
+    )
+  }
+
+  if (items.length === 0) {
+    return (
+      <Grid size="grow">
+        <Alert severity="info">
+          <Typography>{`No registered project`}</Typography>
+          <StyledLink to={'/projects/create'}>{`create one`}</StyledLink>
+        </Alert>
+      </Grid>
+    )
+  }
+
   return (
     <Fragment>
-      {Array.isArray(items) && (
-        <Fragment>
-          <Grid size={{ md: 3 }}>
-            <Paper variant="outlined"></Paper>
-          </Grid>
-          <Grid size={{ md: 'grow' }}>
-            <Stack spacing={1}>
-              {items.map((project, index) => (
-                <ProjectCard
-                  dense={dense}
-                  key={`project-entry[${index}]`}
-                  project={project}
-                />
-              ))}
-            </Stack>
-          </Grid>
-        </Fragment>
-      )}
-      {Array.isArray(items) && items.length === 0 && (
-        <Grid size="grow">
-          <Alert severity="info">
-            <Typography>{`No registered project`}</Typography>
-            <StyledLink to={'/projects/create'}>{`create one`}</StyledLink>
-          </Alert>
-        </Grid>
-      )}
-      {!Array.isArray(items) && (
-        <Grid size="grow">
-          <Alert severity="error" variant="outlined">
-            <Typography>{String(items)}</Typography>
-          </Alert>
-        </Grid>
-      )}
+      <Grid size={{ md: 3 }}>
+        <Paper variant="outlined"></Paper>
+      </Grid>
+      <Grid size={{ md: 'grow' }}>
+        <Stack spacing={1}>
+          {items.map((project, index) => (
+            <ProjectCard
+              dense={dense}
+              key={`project-entry[${index}]`}
+              project={project}
+            />
+          ))}
+        </Stack>
+      </Grid>
     </Fragment>
   )
 })
