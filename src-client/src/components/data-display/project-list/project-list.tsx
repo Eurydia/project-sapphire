@@ -63,7 +63,7 @@ export const ProjectList: FC<Props> = memo(({ dense, fetcher }) => {
           <Fragment>
             <Grid size={{ md: 3 }}>
               <Paper variant="outlined">
-                <Stack spacing={0.5}>
+                <Stack spacing={1}>
                   <Skeleton />
                   <Skeleton />
                   <Skeleton />

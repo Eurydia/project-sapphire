@@ -1,6 +1,16 @@
+import { os } from '@neutralinojs/lib'
 import { useForm } from '@tanstack/react-form'
 import { memo } from 'react'
-import { Button, Chip, Grid, Stack, TextField, Toolbar } from '@mui/material'
+import {
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  Stack,
+  TextField,
+  Toolbar,
+} from '@mui/material'
+import { Add } from '@mui/icons-material'
 import { AutocompleteTextField } from '../input/AutocompeleteTextField'
 import type { FC } from 'react'
 import type { CreateProjectDto } from '@/models/project/dto/create-project'
@@ -72,6 +82,9 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                   value={state.value}
                   required
                 />
+                <IconButton onClick={() => os.showFolderDialog('Select dir')}>
+                  <Add />
+                </IconButton>
               </Grid>
             </>
           )}

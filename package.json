@@ -1,0 +1,13 @@
+{
+  "name": "sapphire",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "npx @neutralinojs/neu run -- --window-enable-inspector",
+    "build": "npx @neutralinojs/neu build --release"
+  },
+  "devDependencies": {
+    "@neutralinojs/neu": "^11.4.0"
+  }
+}
