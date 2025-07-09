@@ -4,9 +4,10 @@
   "defaultMode": "window",
   "documentRoot": "/src-client/dist/",
   "url": "/",
+  "enableExtensions": true,
   "enableServer": true,
   "enableNativeAPI": true,
-  "nativeAllowList": ["app.*"],
+  "nativeAllowList": ["app.*", "os.*", "extensions.*"],
   "modes": {
     "window": {
       "title": "Sapphire",
@@ -14,7 +15,9 @@
       "height": 500,
       "minWidth": 400,
       "minHeight": 200,
-      "icon": "/src-client/public/logo192.png"
+      "icon": "/src-client/public/logo192.png",
+      "injectGlobals": true,
+      "injectClientLibrary": true
     }
   },
   "cli": {
@@ -27,9 +30,15 @@
       "patchFile": "/src-client/index.html",
       "devUrl": "http://localhost:3000",
       "projectPath": "/src-client/",
-      "initCommand": "npm install",
+      "initCommand": "npm i",
       "devCommand": "npm run dev",
       "buildCommand": "npm run build"
     }
-  }
+  },
+  "extensions": [
+    {
+      "id": "js.sapphire.server",
+      "command": "node ${NL_PATH}/src-server/dist/main.js"
+    }
+  ]
 }

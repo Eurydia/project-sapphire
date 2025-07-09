@@ -37,7 +37,9 @@ const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
   return (
     <Fragment>
       <Grid size={{ md: 3 }}>
-        <Paper variant="outlined"></Paper>
+        <Paper variant="outlined">
+          <StyledLink to="/projects/create">Create</StyledLink>
+        </Paper>
       </Grid>
       <Grid size={{ md: 'grow' }}>
         <Stack spacing={1}>
