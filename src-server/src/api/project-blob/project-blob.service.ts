@@ -7,7 +7,7 @@ export class ProjectBlobService {
   constructor(private readonly projectsService: ProjectsService) {}
 
   async readFile(projectUUID: string, path: string[]) {
-    const project = await this.projectsService.findOne(projectUUID);
+    const project = await this.projectsService.getOne(projectUUID);
     if (project === null) {
       throw new NotFoundException("Project not found");
     }

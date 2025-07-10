@@ -32,7 +32,7 @@ export class ProjectsService {
     return this.projectRepo.save(project);
   }
 
-  async findAll() {
+  async getAll() {
     return (
       await this.projectRepo.find({
         order: { pinned: "DESC", name: "ASC" },
@@ -44,13 +44,13 @@ export class ProjectsService {
     ).map((p) => ({ ...p, metadata: getProjectRootMetadata(p) }));
   }
 
-  async findOne(uuid: string) {
+  async getOne(uuid: string) {
     const p = await this.projectRepo.findOne({
       where: { uuid },
       relations: { technologies: true, topics: true },
     });
     if (p === null) {
-      throw new NotFoundException();
+      return null;
     }
 
     return { ...p, metadata: getProjectRootMetadata(p) };
@@ -91,7 +91,7 @@ export class ProjectsService {
     });
   }
 
-  delete(id: string) {
-    return this.projectRepo.softDelete(id);
+  async delete(uuid: string) {
+    return this.projectRepo.softDelete({ uuid });
   }
 }

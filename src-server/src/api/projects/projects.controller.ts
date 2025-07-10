@@ -28,12 +28,12 @@ export class ProjectsController {
 
   @Get()
   findAll() {
-    return this.projectsSvc.findAll();
+    return this.projectsSvc.getAll();
   }
 
   @Get(":uuid")
   findOne(@Param("uuid") uuid: string) {
-    return this.projectsSvc.findOne(uuid);
+    return this.projectsSvc.getOne(uuid);
   }
 
   @Put(":uuid")

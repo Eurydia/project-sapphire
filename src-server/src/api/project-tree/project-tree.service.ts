@@ -17,7 +17,7 @@ export class ProjectTreeService {
   ) {}
 
   async readDir(projectUUID: string, path: string[]) {
-    const project = await this.projectsSvc.findOne(projectUUID);
+    const project = await this.projectsSvc.getOne(projectUUID);
     if (project === null) {
       throw new NotFoundException("Project not found");
     }
@@ -59,7 +59,7 @@ export class ProjectTreeService {
     path: string[],
     readmeFileName: string | null,
   ) {
-    const project = await this.projectsSvc.findOne(projectUUID);
+    const project = await this.projectsSvc.getOne(projectUUID);
     if (project === null) {
       throw new NotFoundException("Project not found");
     }
