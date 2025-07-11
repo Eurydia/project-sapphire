@@ -8,14 +8,12 @@ import { Project } from "./project.entity";
 import { ProjectsController } from "./projects.controller";
 import { ProjectsService } from "./projects.service";
 import { ProjectsGateway } from "./projects.gateway";
-import { NlCredentialModuleModule } from "src/nl-credential-module/nl-credential-module.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Project, Topic, Technology]),
     TopicsModule,
     TechnologiesModule,
-    NlCredentialModuleModule,
   ],
   providers: [ProjectsService, ProjectsGateway],
   controllers: [ProjectsController],

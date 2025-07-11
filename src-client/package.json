@@ -17,7 +17,6 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
-    "@neutralinojs/lib": "^6.1.0",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-form": "^1.12.4",
     "@tanstack/react-router": "^1.121.2",
@@ -43,7 +42,6 @@
     "react-toastify": "^11.0.5",
     "typescript": "^5.7.2",
     "vite": "^6.1.0",
-    "vitest": "^3.0.5",
-    "web-vitals": "^4.2.4"
+    "vitest": "^3.0.5"
   }
 }

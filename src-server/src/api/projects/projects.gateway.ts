@@ -3,9 +3,7 @@ import { Project } from "./project.entity";
 import { ProjectsService } from "./projects.service";
 import { UpdateProjectDto } from "./dto/update-project.dto";
 import { UpdateResult } from "typeorm";
-import { SecureGateway } from "src/secure-gateway/secure-gateway.decorator";
 
-@SecureGateway()
 export class ProjectsGateway {
   constructor(private readonly projectsSvc: ProjectsService) {}
 
