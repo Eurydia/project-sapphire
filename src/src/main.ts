@@ -1,12 +1,11 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
+import { initDataSource } from "./database/src";
 import {
-  getRegisteredChannels,
-  initDataSource,
-  registerIpcMainHandlers,
-} from "./database/src";
-export const channels = getRegisteredChannels();
+  getRegisteredDatasourceServiceChannels,
+  getRegisteredDatasourceServices,
+} from "./database/src/services/registry";
 
 if (started) {
   app.quit();
@@ -22,10 +21,12 @@ const createWindow = async () => {
     autoHideMenuBar: true,
   });
   ipcMain.handle("db:getRegisteredChannels", () =>
-    JSON.stringify(getRegisteredChannels())
+    JSON.stringify(getRegisteredDatasourceServiceChannels())
   );
   await initDataSource();
-  registerIpcMainHandlers();
+  for (const [channel, handler] of getRegisteredDatasourceServices()) {
+    ipcMain.handle(channel, (_, ...args) => handler(...args));
+  }
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);

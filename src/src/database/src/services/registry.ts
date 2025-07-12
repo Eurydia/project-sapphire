@@ -1,23 +1,30 @@
-import { ipcMain } from "electron";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Handler = (...args: any[]) => Promise<any>;
+const HANDLER_REGISTRY = new Map<string, Handler>();
 
-export type Handler = (...args: unknown[]) => Promise<unknown>;
+const classNameRegex = /^(.*?)(Service)$/;
 
-const handlerRegistry = new Map<string, Handler>();
+export const DatasourceService = () => {
+  return <T extends { constructor: { name: string } }>(
+    target: T,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) => {
+    const className = target.constructor.name;
+    if (!classNameRegex.test(className)) {
+      return;
+    }
+    const serviceName = className.replace(classNameRegex, "$1");
+    const channel = `${serviceName}:${String(propertyKey)}`;
 
-export const registerHandler = (handler: Handler) => {
-  const channel = handler.name;
-  if (handlerRegistry.has(channel)) {
-    throw new Error(`Handler with channel "${channel}" is already registered.`);
-  }
-  handlerRegistry.set(channel, handler);
+    HANDLER_REGISTRY.set(channel, descriptor.value);
+  };
 };
 
-export const registerIpcMainHandlers = () => {
-  for (const [channel, handler] of handlerRegistry.entries()) {
-    ipcMain.handle(channel, async (_, ...args) => handler(...args));
-  }
+export const getRegisteredDatasourceServices = () => {
+  return [...HANDLER_REGISTRY.entries()];
 };
 
-export const getRegisteredChannels = () => {
-  return [...handlerRegistry.keys()];
+export const getRegisteredDatasourceServiceChannels = () => {
+  return [...HANDLER_REGISTRY.keys()];
 };

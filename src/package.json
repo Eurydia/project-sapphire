@@ -1,13 +1,11 @@
 {
   "workspaces": [
     "src/renderer",
-    "src/database",
-    "src/database-sequelize"
+    "src/database"
   ],
   "name": "src",
   "productName": "src",
   "version": "1.0.0",
-  "description": "My Electron application description",
   "main": ".vite/build/main.js",
   "scripts": {
     "dev": "electron-forge start",
