@@ -1,5 +1,11 @@
 import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld("db", {
-  ping: () => ipcRenderer.invoke("ping"),
+ipcRenderer.invoke("db:getRegisteredChannels").then((channelsRaw: string) => {
+  const channels = JSON.parse(channelsRaw) as string[];
+
+  const api: Record<string, unknown> = {};
+  for (const channel of channels) {
+    api[channel] = (...args: unknown[]) => ipcRenderer.invoke(channel, ...args);
+  }
+  contextBridge.exposeInMainWorld("db", api);
 });

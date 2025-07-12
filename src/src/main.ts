@@ -1,6 +1,12 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
+import {
+  getRegisteredChannels,
+  initDataSource,
+  registerIpcMainHandlers,
+} from "./database/src";
+export const channels = getRegisteredChannels();
 
 if (started) {
   app.quit();
@@ -12,11 +18,15 @@ const createWindow = async () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true,
     },
     autoHideMenuBar: true,
   });
-  ipcMain.handle("ping", () => "pong");
+  ipcMain.handle("db:getRegisteredChannels", () =>
+    JSON.stringify(getRegisteredChannels())
+  );
+  await initDataSource();
+  registerIpcMainHandlers();
+
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
@@ -24,6 +34,7 @@ const createWindow = async () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     );
   }
+
   mainWindow.webContents.openDevTools();
 };
 

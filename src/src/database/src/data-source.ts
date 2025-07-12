@@ -1,4 +1,3 @@
-import { app } from "electron";
 import { join } from "node:path";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
@@ -8,7 +7,7 @@ import { Technology } from "./models/technology.entity";
 
 export const DATA_SOURCE = new DataSource({
   type: "sqlite",
-  database: join(app.getPath("userData"), "database", "database.dev.sqlite"),
+  database: join("database", "database.dev.sqlite"),
   synchronize: true,
   logging: false,
   entities: [Project, Topic, Technology],

@@ -1,6 +1,7 @@
 import { In } from "typeorm";
 import { Topic } from "../models/topic.entity";
 import { DATA_SOURCE } from "../data-source";
+import { registerHandler } from "./registry";
 
 const REPO = DATA_SOURCE.getRepository(Topic);
 
@@ -27,3 +28,7 @@ export const topic$createManyByNames = async (names: string[]) => {
 export const topic$getAll = async () => {
   return REPO.find();
 };
+
+registerHandler(topic$create);
+registerHandler(topic$createManyByNames);
+registerHandler(topic$getAll);

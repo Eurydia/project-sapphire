@@ -1,3 +1,4 @@
+import { registerHandler } from "./registry";
 import { In } from "typeorm";
 import { Technology } from "../models/technology.entity";
 import { DATA_SOURCE } from "../data-source";
@@ -28,3 +29,7 @@ export const technology$createManyByNames = async (names: string[]) => {
 export const technology$getAll = async () => {
   return REPO.find();
 };
+
+registerHandler(technology$create);
+registerHandler(technology$createManyByNames);
+registerHandler(technology$getAll);

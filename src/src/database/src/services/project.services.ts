@@ -1,3 +1,4 @@
+import { registerHandler } from "./registry";
 import { Project } from "../models/project.entity";
 import { existsSync, lstatSync } from "fs";
 import { isAbsolute } from "path";
@@ -120,3 +121,12 @@ export const project$update = async (
 export const project$softDelete = async (uuid: string) => {
   return REPO.softDelete({ uuid });
 };
+
+registerHandler(project$getMetadata);
+registerHandler(project$create);
+registerHandler(project$getAll);
+registerHandler(project$getByUuid);
+registerHandler(project$pin);
+registerHandler(project$unpin);
+registerHandler(project$update);
+registerHandler(project$softDelete);

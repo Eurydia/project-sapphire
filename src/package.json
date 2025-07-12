@@ -1,7 +1,8 @@
 {
   "workspaces": [
     "src/renderer",
-    "src/database"
+    "src/database",
+    "src/database-sequelize"
   ],
   "name": "src",
   "productName": "src",
