@@ -1,13 +1,22 @@
+import viteReact from "@vitejs/plugin-react";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import { defineConfig } from "vite";
 
 // https://vitejs.dev/config
 export default defineConfig({
+  plugins: [
+    tanstackRouter({
+      autoCodeSplitting: true,
+      routesDirectory: "./src/renderer/routes",
+      generatedRouteTree: "./src/renderer/routeTree.gen.ts",
+    }),
+    viteReact(),
+  ],
   build: {
     rollupOptions: {
       external: ["sqlite3"],
     },
     commonjsOptions: {
-      // also make sure Rollup’s commonjs plugin ignores it
       ignore: [
         "@google-cloud/spanner",
         "@sap/hana-client",
@@ -27,22 +36,6 @@ export default defineConfig({
         "typeorm-aurora-data-api-driver",
         "@sap/hana-client/extension/Stream",
         "sqlite3",
-        // "@google-cloud/spanner",
-        // "mongodb",
-        // "@sap/hana-client",
-        // "@sap/hana-client/extension/Stream",
-        // "hdb-pool",
-        // "mysql2",
-        // "oracledb",
-        // "pg",
-        // "pg-native",
-        // "pg-query-stream",
-        // "typeorm-aurora-data-api-driver",
-        // "redis",
-        // "ioredis",
-        // "better-sqlite3",
-        // "sql.js",
-        // "mssql",
       ],
     },
   },

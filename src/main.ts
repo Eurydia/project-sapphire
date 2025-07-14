@@ -1,11 +1,11 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
-import { initDataSource } from "./database/src";
 import {
   getRegisteredDatasourceServiceChannels,
   getRegisteredDatasourceServices,
-} from "./database/src/services/registry";
+} from "./node/database/services/registry";
+import { initDataSource } from "./node/database";
 
 if (started) {
   app.quit();
