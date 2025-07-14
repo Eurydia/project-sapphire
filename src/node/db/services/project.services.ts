@@ -1,17 +1,17 @@
-import { DatasourceService } from "./registry";
-import { Project } from "../models/project.entity";
 import { existsSync, lstatSync } from "fs";
-import { isAbsolute } from "path";
 import moment from "moment";
+import { isAbsolute } from "path";
 import { DATA_SOURCE } from "../data-source";
-import { TopicService } from "./topic.services";
+import { Project } from "../models/project.entity";
+import { DatasourceService } from "./registry";
 import { TechnologyService } from "./technology.services";
+import { TopicService } from "./topic.services";
 
 const REPO = DATA_SOURCE.getRepository(Project);
 const topicSvc = new TopicService();
 const techSvc = new TechnologyService();
 
-type Data = {
+type Dto = {
   name: string;
   root: string;
   description?: string;
@@ -50,7 +50,7 @@ export class ProjectService {
     description,
     technologies: techRaw,
     topcis: topicRaw,
-  }: Data) {
+  }: Dto) {
     const technologies = await techSvc.createManyByNames(techRaw ?? []);
     const topics = await topicSvc.createManyByNames(topicRaw ?? []);
 
@@ -85,7 +85,7 @@ export class ProjectService {
   }
 
   @DatasourceService()
-  async project$pin(uuid: string) {
+  async pin(uuid: string) {
     const project = await REPO.findOne({ where: { uuid } });
     if (project === null) {
       return null;
@@ -95,7 +95,7 @@ export class ProjectService {
   }
 
   @DatasourceService()
-  async project$unpin(uuid: string) {
+  async unpin(uuid: string) {
     const project = await REPO.findOne({ where: { uuid } });
     if (project === null) {
       return null;
@@ -107,7 +107,7 @@ export class ProjectService {
   @DatasourceService()
   async update(
     uuid: string,
-    { name, root, description, technologies: techRaw, topcis: topicRaw }: Data
+    { name, root, description, technologies: techRaw, topcis: topicRaw }: Dto
   ) {
     const project = await REPO.findOne({
       where: { uuid },

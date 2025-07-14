@@ -1,13 +1,11 @@
-import { z } from 'zod/v4'
-import { projectSchema } from '../project'
+import { z } from "zod/v4";
+import { projectSchema } from "../project";
 
 export const createProjectDtoSchema = projectSchema
-  .omit({
-    uuid: true,
-    topics: true,
-    technologies: true,
-    metadata: true,
-    pinned: true,
+  .pick({
+    name: true,
+    root: true,
+    description: true,
   })
   .extend({
     topics: z
@@ -17,7 +15,7 @@ export const createProjectDtoSchema = projectSchema
       .array()
       .refine(
         (arg) => new Set(arg).size === arg.length,
-        'Topics must be unique',
+        "Topics must be unique"
       ),
     technologies: z
       .string()
@@ -26,7 +24,7 @@ export const createProjectDtoSchema = projectSchema
       .array()
       .refine(
         (arg) => new Set(arg).size === arg.length,
-        'Technologies must be unique',
+        "Technologies must be unique"
       ),
-  })
-export type CreateProjectDto = z.infer<typeof createProjectDtoSchema>
+  });
+export type CreateProjectDto = z.infer<typeof createProjectDtoSchema>;

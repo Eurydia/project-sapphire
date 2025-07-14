@@ -1,17 +1,17 @@
-import { Fragment, Suspense, memo, use } from 'react'
-import { Alert, Grid, Paper, Skeleton, Stack, Typography } from '@mui/material'
-import { ProjectCard } from '../project-card'
-import { ProjectCardSkeleton } from './project-card-skeleton'
-import type { FC } from 'react'
-import type { Project } from 'models/project/project'
-import { StyledLink } from 'components/navigation/styled-link'
+import { Alert, Grid, Paper, Skeleton, Stack, Typography } from "@mui/material";
+import type { FC } from "react";
+import { Fragment, Suspense, memo, use } from "react";
+import { ProjectCard } from "~/components/data-display/project-card";
+import { StyledLink } from "~/components/navigation/styled-link";
+import type { Project } from "~/models/project/project";
+import { ProjectCardSkeleton } from "./project-card-skeleton";
 
 type InternalListProps = {
-  dense?: boolean
-  fetcher: Promise<Array<Project> | unknown>
-}
+  dense?: boolean;
+  fetcher: Promise<Array<Project> | unknown>;
+};
 const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
-  const items = use(fetcher)
+  const items = use(fetcher);
 
   if (!Array.isArray(items)) {
     return (
@@ -20,7 +20,7 @@ const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
           <Typography>{String(items)}</Typography>
         </Alert>
       </Grid>
-    )
+    );
   }
 
   if (items.length === 0) {
@@ -28,10 +28,10 @@ const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
       <Grid size="grow">
         <Alert severity="info">
           <Typography>{`No registered project`}</Typography>
-          <StyledLink to={'/projects/create'}>{`create one`}</StyledLink>
+          <StyledLink to={"/projects/create"}>{`create one`}</StyledLink>
         </Alert>
       </Grid>
-    )
+    );
   }
 
   return (
@@ -41,7 +41,7 @@ const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
           <StyledLink to="/projects/create">Create</StyledLink>
         </Paper>
       </Grid>
-      <Grid size={{ md: 'grow' }}>
+      <Grid size={{ md: "grow" }}>
         <Stack spacing={1}>
           {items.map((project, index) => (
             <ProjectCard
@@ -53,10 +53,10 @@ const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
         </Stack>
       </Grid>
     </Fragment>
-  )
-})
+  );
+});
 
-type Props = { dense?: boolean; fetcher: Promise<Array<Project> | unknown> }
+type Props = { dense?: boolean; fetcher: Promise<Array<Project> | unknown> };
 export const ProjectList: FC<Props> = memo(({ dense, fetcher }) => {
   return (
     <Grid container spacing={1}>
@@ -73,9 +73,11 @@ export const ProjectList: FC<Props> = memo(({ dense, fetcher }) => {
               </Paper>
             </Grid>
             <Grid size="grow">
-              <ProjectCardSkeleton />
-              <ProjectCardSkeleton />
-              <ProjectCardSkeleton />
+              <Stack spacing={1}>
+                <ProjectCardSkeleton />
+                <ProjectCardSkeleton />
+                <ProjectCardSkeleton />
+              </Stack>
             </Grid>
           </Fragment>
         }
@@ -83,5 +85,5 @@ export const ProjectList: FC<Props> = memo(({ dense, fetcher }) => {
         <Inner dense={dense} fetcher={fetcher} />
       </Suspense>
     </Grid>
-  )
-})
+  );
+});

@@ -1,4 +1,8 @@
-import { EditOutlined, PushPin, PushPinOutlined } from '@mui/icons-material'
+import { TopicTagList } from "@/web/components/data-display/topic-tag-list";
+import { StyledLink } from "@/web/components/navigation/styled-link";
+import { pinProject, unpinProject } from "@/web/db/projects";
+import type { Project } from "@/web/models/project/project";
+import { EditOutlined, PushPin, PushPinOutlined } from "@mui/icons-material";
 import {
   Divider,
   IconButton,
@@ -6,45 +10,41 @@ import {
   Stack,
   Typography,
   useTheme,
-} from '@mui/material'
-import { Fragment, memo, useCallback, useMemo } from 'react'
-import { useRouter } from '@tanstack/react-router'
-import { StyledLink } from '../navigation/styled-link'
-import { TechTagList } from './tech-tag-list'
-import { TopicTagList } from './topic-tag-list'
-import type { FC } from 'react'
-import type { Project } from 'models/project/project'
-import { pinProject, unpinProject } from 'api/projects'
+} from "@mui/material";
+import { useRouter } from "@tanstack/react-router";
+import type { FC } from "react";
+import { Fragment, memo, useCallback, useMemo } from "react";
+import { TechTagList } from "~/components/data-display/tech-tag-list";
 
-type Props = { project: Project; dense?: boolean }
+type Props = { project: Project; dense?: boolean };
 export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
   const {
     typography: { monospaceFontFamily, serifFontFamily },
-  } = useTheme()
+  } = useTheme();
 
-  const router = useRouter()
+  const router = useRouter();
 
   const metadataItems = useMemo(() => {
     return [
-      { label: 'created', value: project.metadata?.ctime.fromNow },
+      { label: "created", value: project.metadata?.ctime.fromNow },
       {
-        label: 'accessed',
+        label: "accessed",
         value: project.metadata?.atime.fromNow,
       },
       {
-        label: 'modified',
+        label: "modified",
         value: project.metadata?.mtime.fromNow,
       },
-    ]
-  }, [project.metadata])
+    ];
+  }, [project.metadata]);
 
   const handleTogglePin = useCallback(() => {
     if (project.pinned) {
-      unpinProject(project.uuid).then(() => router.invalidate())
+      unpinProject(project.uuid).then(() => router.invalidate());
     } else {
-      pinProject(project.uuid).then(() => router.invalidate())
+      pinProject(project.uuid).then(() => router.invalidate());
     }
-  }, [project.pinned, project.uuid, router])
+  }, [project.pinned, project.uuid, router]);
 
   return (
     <Paper variant="outlined">
@@ -79,16 +79,16 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
               fontFamily={serifFontFamily}
               variant="h4"
               component="div"
-              sx={{ width: 'fit-content' }}
+              sx={{ width: "fit-content" }}
             >
               <StyledLink
-                to={'/projects/$uuid/edit'}
+                to={"/projects/$uuid/edit"}
                 params={{ uuid: project.uuid }}
               >
                 {project.name}
               </StyledLink>
             </Typography>
-            {project.description !== '' && (
+            {project.description !== "" && (
               <Typography fontFamily={serifFontFamily}>
                 {project.description}
               </Typography>
@@ -171,7 +171,7 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
           <IconButton
             onClick={() =>
               router.navigate({
-                to: '/projects/$uuid/edit',
+                to: "/projects/$uuid/edit",
                 params: { uuid: project.uuid },
               })
             }
@@ -181,5 +181,5 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
         </Stack>
       </Stack>
     </Paper>
-  )
-})
+  );
+});

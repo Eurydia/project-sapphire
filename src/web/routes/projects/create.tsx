@@ -1,15 +1,19 @@
 import { Paper } from "@mui/material";
 import { createFileRoute } from "@tanstack/react-router";
+import type { FC } from "react";
 import { memo } from "react";
 import { toast } from "react-toastify";
-import type { FC } from "react";
+import { ProjectForm } from "~/components/form/ProjectForm";
+import { postProject } from "~/db/projects";
+import { fetchTechnologyAll } from "~/db/technologies";
+import { fetchTopicAll } from "~/db/topics";
 
 const RouteComponent: FC = memo(() => {
-  // const { options } = Route.useLoaderData();
-  // const navigate = Route.useNavigate();
+  const { options } = Route.useLoaderData();
+  const navigate = Route.useNavigate();
   return (
     <Paper variant="outlined">
-      {/* <ProjectForm
+      <ProjectForm
         action={(dto) =>
           postProject(dto)
             .then(() => navigate({ to: "/projects" }))
@@ -17,7 +21,7 @@ const RouteComponent: FC = memo(() => {
             .catch(() => toast.error("Failed to add project"))
         }
         options={options}
-      /> */}
+      />
     </Paper>
   );
 });
@@ -25,11 +29,11 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/create")({
   component: RouteComponent,
   loader: async () => {
-    // return {
-    //   options: {
-    //     topics: (await fetchTopicAll()).map(({ name }) => name),
-    //     technologies: (await fetchTechnologyAll()).map(({ name }) => name),
-    //   },
-    // };
+    return {
+      options: {
+        topics: (await fetchTopicAll()).map(({ name }) => name),
+        technologies: (await fetchTechnologyAll()).map(({ name }) => name),
+      },
+    };
   },
 });

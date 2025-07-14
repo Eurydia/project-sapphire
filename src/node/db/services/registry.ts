@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Handler = (...args: any[]) => Promise<any>;
-const HANDLER_REGISTRY = new Map<string, Handler>();
+const REGISTRY = new Map<string, Map<string, Handler>>();
 
 const classNameRegex = /^(.*?)(Service)$/;
 
@@ -14,17 +14,24 @@ export const DatasourceService = () => {
     if (!classNameRegex.test(className)) {
       return;
     }
-    const serviceName = className.replace(classNameRegex, "$1");
-    const channel = `${serviceName}:${String(propertyKey)}`;
 
-    HANDLER_REGISTRY.set(channel, descriptor.value);
+    const provider = className.replace(classNameRegex, "$1");
+
+    if (!REGISTRY.has(provider)) {
+      REGISTRY.set(provider, new Map<string, Handler>());
+    }
+
+    REGISTRY.get(provider)!.set(String(propertyKey), descriptor.value);
   };
 };
 
 export const getRegisteredDatasourceServices = () => {
-  return [...HANDLER_REGISTRY.entries()];
+  return [...REGISTRY.entries()];
 };
 
 export const getRegisteredDatasourceServiceChannels = () => {
-  return [...HANDLER_REGISTRY.keys()];
+  return [...REGISTRY.keys()].map((provider) => ({
+    provider,
+    services: [...REGISTRY.get(provider)!.keys()],
+  }));
 };

@@ -10,5 +10,12 @@
     "**/node_modules": true,
     "**/bower_components": true,
     "**/*.code-search": true
+  },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.sortImports": "explicit",
+    "source.removeUnusedImports": "explicit",
+    "source.fixAll.ts": "explicit"
   }
 }

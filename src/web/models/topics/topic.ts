@@ -1,13 +1,9 @@
-import z from 'zod/v4'
-import { isHexColor } from '../common/hex-color'
+import z from "zod/v4";
 
-export const topicSchema = z.object({
+export const topicSchema = z.looseObject({
   uuid: z.uuid(),
   name: z.string().trim().nonempty(),
-  color: z
-    .string()
-    .trim()
-    .refine((arg) => isHexColor(arg), 'color is not a vlid hex code'),
-})
+  color: z.string().trim(),
+});
 
-export type Topic = z.infer<typeof topicSchema>
+export type Topic = z.infer<typeof topicSchema>;

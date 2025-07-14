@@ -1,14 +1,16 @@
-import viteReact from "@vitejs/plugin-react";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import viteTsPath from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config
 export default defineConfig({
   plugins: [
+    viteTsPath(),
     tanstackRouter({
       autoCodeSplitting: true,
-      routesDirectory: "./src/renderer/routes",
-      generatedRouteTree: "./src/renderer/routeTree.gen.ts",
+      routesDirectory: "./src/web/routes",
+      generatedRouteTree: "./src/web/routeTree.gen.ts",
     }),
     viteReact(),
   ],

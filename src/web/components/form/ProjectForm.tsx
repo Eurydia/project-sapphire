@@ -1,40 +1,42 @@
-import { useForm } from '@tanstack/react-form'
-import { memo } from 'react'
-import { Button, Chip, Grid, Stack, TextField, Toolbar } from '@mui/material'
-import { AutocompleteTextField } from '../input/AutocompeleteTextField'
-import type { FC } from 'react'
-import type { CreateProjectDto } from 'models/project/dto/create-project'
-import { createProjectDtoSchema } from 'models/project/dto/create-project'
+import { Button, Chip, Grid, Stack, TextField, Toolbar } from "@mui/material";
+import { useForm } from "@tanstack/react-form";
+import type { FC } from "react";
+import { memo } from "react";
+import { AutocompleteTextField } from "~/components/input/AutocompeleteTextField";
+import {
+  type CreateProjectDto,
+  createProjectDtoSchema,
+} from "~/models/project/dto/create-project";
 
 type Props = {
-  init?: CreateProjectDto
-  action: (value: CreateProjectDto) => unknown
+  init?: CreateProjectDto;
+  action: (value: CreateProjectDto) => unknown;
   options: {
-    topics: Array<string>
-    technologies: Array<string>
-  }
-}
+    topics: Array<string>;
+    technologies: Array<string>;
+  };
+};
 export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
   const { Field, Subscribe, handleSubmit } = useForm({
     defaultValues: init ?? {
-      description: '',
-      name: '',
-      root: '',
+      description: "",
+      name: "",
+      root: "",
       technologies: [],
       topics: [],
     },
     validators: { onChangeAsync: createProjectDtoSchema },
     onSubmit: ({ value }) => {
-      action(value)
+      action(value);
     },
-  })
+  });
   return (
     <Stack
       component="form"
       noValidate
       onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
       }}
     >
       <Grid container spacing={1}>
@@ -114,7 +116,7 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                           variant="outlined"
                           label={subfield.state.value}
                           onDelete={() => removeValue(index)}
-                          sx={{ widthh: 'fit-content' }}
+                          sx={{ widthh: "fit-content" }}
                         />
                       )}
                     </Field>
@@ -144,7 +146,7 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                           variant="outlined"
                           label={subfield.state.value}
                           onDelete={() => removeValue(index)}
-                          sx={{ widthh: 'fit-content' }}
+                          sx={{ widthh: "fit-content" }}
                         />
                       )}
                     </Field>
@@ -170,12 +172,12 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                 disabled={isPristine || !isValid}
                 onClick={() => handleSubmit()}
               >
-                {isSubmitting ? '...' : 'confirm'}
+                {isSubmitting ? "..." : "confirm"}
               </Button>
             </Toolbar>
           )}
         </Subscribe>
       </Grid>
     </Stack>
-  )
-})
+  );
+});

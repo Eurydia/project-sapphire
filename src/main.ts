@@ -1,11 +1,11 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import path from "node:path";
-import started from "electron-squirrel-startup";
+import { initDataSource } from "@/node/db";
 import {
   getRegisteredDatasourceServiceChannels,
   getRegisteredDatasourceServices,
-} from "./node/database/services/registry";
-import { initDataSource } from "./node/database";
+} from "@/node/db/services/registry";
+import { app, BrowserWindow, ipcMain } from "electron";
+import started from "electron-squirrel-startup";
+import path from "node:path";
 
 if (started) {
   app.quit();
@@ -24,8 +24,12 @@ const createWindow = async () => {
     JSON.stringify(getRegisteredDatasourceServiceChannels())
   );
   await initDataSource();
-  for (const [channel, handler] of getRegisteredDatasourceServices()) {
-    ipcMain.handle(channel, (_, ...args) => handler(...args));
+  for (const [provider, handlers] of getRegisteredDatasourceServices()) {
+    for (const [service, handler] of handlers.entries()) {
+      ipcMain.handle(`${provider}:${service}`, (_, ...args) =>
+        handler(...args)
+      );
+    }
   }
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -36,7 +40,7 @@ const createWindow = async () => {
     );
   }
 
-  mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools({ mode: "detach" });
 };
 
 // This method will be called when Electron has finished
