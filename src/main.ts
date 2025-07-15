@@ -1,11 +1,8 @@
-import { initDataSource } from "@/node/db";
-import {
-  getRegisteredDatasourceServiceChannels,
-  getRegisteredDatasourceServices,
-} from "@/node/db/services/registry";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";
 import path from "node:path";
+import "./node/db/main";
+import "./node/fs/main";
 
 if (started) {
   app.quit();
@@ -20,17 +17,6 @@ const createWindow = async () => {
     },
     autoHideMenuBar: true,
   });
-  ipcMain.handle("db:getRegisteredChannels", () =>
-    JSON.stringify(getRegisteredDatasourceServiceChannels())
-  );
-  await initDataSource();
-  for (const [provider, handlers] of getRegisteredDatasourceServices()) {
-    for (const [service, handler] of handlers.entries()) {
-      ipcMain.handle(`${provider}:${service}`, (_, ...args) =>
-        handler(...args)
-      );
-    }
-  }
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);

@@ -1,5 +1,5 @@
-import { createProjectDtoSchema } from './create-project'
-import type { z } from 'zod/v4'
+import type { z } from "zod/v4";
+import { projectDtoSchema } from "./create-project";
 
-export const updateProjectDtoSchema = createProjectDtoSchema
-export type UpdateProjectDto = z.infer<typeof updateProjectDtoSchema>
+export const updateProjectDtoSchema = projectDtoSchema;
+export type UpdateProjectDto = z.infer<typeof updateProjectDtoSchema>;

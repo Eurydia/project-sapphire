@@ -11,9 +11,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-
     "jsx": "react-jsx",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "ES2023.Array"],
     "types": ["vite/client"],
 
     /* Bundler mode */
@@ -29,8 +28,7 @@
     "noUncheckedSideEffectImports": true,
     "strictPropertyInitialization": false,
     "paths": {
-      "~/*": ["./src/web/*"],
-      "@/*": ["./src/*"]
+      "~/*": ["./src/web/*"]
     }
   },
   "include": [

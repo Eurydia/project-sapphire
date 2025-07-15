@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 import { projectSchema } from "../project";
 
-export const createProjectDtoSchema = projectSchema
+export const projectDtoSchema = projectSchema
   .pick({
     name: true,
     root: true,
@@ -27,4 +27,4 @@ export const createProjectDtoSchema = projectSchema
         "Technologies must be unique"
       ),
   });
-export type CreateProjectDto = z.infer<typeof createProjectDtoSchema>;
+export type ProjectDto = z.infer<typeof projectDtoSchema>;

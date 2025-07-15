@@ -3,17 +3,17 @@ import type { FC } from "react";
 import { Fragment, Suspense, memo, use } from "react";
 import { ProjectCard } from "~/components/data-display/project-card";
 import { StyledLink } from "~/components/navigation/styled-link";
-import type { Project } from "~/models/project/project";
+import type { ProjectWithRootMetadata } from "~/models/project/project";
 import { ProjectCardSkeleton } from "./project-card-skeleton";
 
 type InternalListProps = {
   dense?: boolean;
-  fetcher: Promise<Array<Project> | unknown>;
+  fetcher: Promise<Array<ProjectWithRootMetadata> | null>;
 };
 const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
   const items = use(fetcher);
 
-  if (!Array.isArray(items)) {
+  if (items === null) {
     return (
       <Grid size="grow">
         <Alert severity="error" variant="outlined">
@@ -56,7 +56,10 @@ const Inner: FC<InternalListProps> = memo(({ dense, fetcher }) => {
   );
 });
 
-type Props = { dense?: boolean; fetcher: Promise<Array<Project> | unknown> };
+type Props = {
+  dense?: boolean;
+  fetcher: Promise<Array<ProjectWithRootMetadata> | null>;
+};
 export const ProjectList: FC<Props> = memo(({ dense, fetcher }) => {
   return (
     <Grid container spacing={1}>

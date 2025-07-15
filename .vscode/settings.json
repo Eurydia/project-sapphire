@@ -11,11 +11,19 @@
     "**/bower_components": true,
     "**/*.code-search": true
   },
-  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifier": "shortest",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.sortImports": "explicit",
-    "source.removeUnusedImports": "explicit",
     "source.fixAll.ts": "explicit"
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/.hg/store/**": true
+  },
+  "files.readonlyInclude": {
+    "**/*.gen.ts": true,
+    "**/*.gen.d.ts": true
   }
 }

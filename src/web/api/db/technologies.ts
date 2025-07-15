@@ -1,6 +1,7 @@
 import { technologySchema } from "~/models/technologies/technologies";
 
 export const fetchTechnologyAll = () =>
-  window.db.Technology.getAll()
+  window.db$tech
+    .getAll()
     .then((resp) => technologySchema.array().parseAsync(resp))
     .catch(() => []);

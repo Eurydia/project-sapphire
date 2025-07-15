@@ -2,8 +2,8 @@ import { Box, Stack, TextField } from "@mui/material";
 import { createFileRoute } from "@tanstack/react-router";
 import type { FC } from "react";
 import { memo } from "react";
+import { listProject, withRootMetadata } from "~/api/db/projects";
 import { ProjectList } from "~/components/data-display/project-list/project-list";
-import { fetchProjectAll } from "~/db/projects";
 
 const RouteComponent: FC = memo(() => {
   const { projects } = Route.useLoaderData();
@@ -21,6 +21,12 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/")({
   component: RouteComponent,
   loader: () => {
-    return { projects: fetchProjectAll() };
+    return {
+      projects: listProject()
+        .then((resp) => {
+          return Promise.all(resp.map((entry) => withRootMetadata(entry)));
+        })
+        .catch(() => null),
+    };
   },
 });

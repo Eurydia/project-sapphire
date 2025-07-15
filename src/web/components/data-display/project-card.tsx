@@ -1,8 +1,9 @@
-import { TopicTagList } from "@/web/components/data-display/topic-tag-list";
-import { StyledLink } from "@/web/components/navigation/styled-link";
-import { pinProject, unpinProject } from "@/web/db/projects";
-import type { Project } from "@/web/models/project/project";
-import { EditOutlined, PushPin, PushPinOutlined } from "@mui/icons-material";
+import {
+  EditOutlined,
+  FolderOpenOutlined,
+  PushPin,
+  PushPinOutlined,
+} from "@mui/icons-material";
 import {
   Divider,
   IconButton,
@@ -14,9 +15,17 @@ import {
 import { useRouter } from "@tanstack/react-router";
 import type { FC } from "react";
 import { Fragment, memo, useCallback, useMemo } from "react";
+import { pinProject, unpinProject } from "~/api/db/projects";
+import { openPath } from "~/api/fs";
 import { TechTagList } from "~/components/data-display/tech-tag-list";
+import { TopicTagList } from "~/components/data-display/topic-tag-list";
+import { StyledLink } from "~/components/navigation/styled-link";
+import type { ProjectWithRootMetadata } from "~/models/project/project";
 
-type Props = { project: Project; dense?: boolean };
+type Props = {
+  project: ProjectWithRootMetadata;
+  dense?: boolean;
+};
 export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
   const {
     typography: { monospaceFontFamily, serifFontFamily },
@@ -177,6 +186,9 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
             }
           >
             <EditOutlined />
+          </IconButton>
+          <IconButton onClick={() => openPath(project.root)}>
+            <FolderOpenOutlined />
           </IconButton>
         </Stack>
       </Stack>

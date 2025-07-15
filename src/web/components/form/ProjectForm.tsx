@@ -1,16 +1,26 @@
-import { Button, Chip, Grid, Stack, TextField, Toolbar } from "@mui/material";
+import { FolderOutlined } from "@mui/icons-material";
+import {
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Toolbar,
+} from "@mui/material";
 import { useForm } from "@tanstack/react-form";
 import type { FC } from "react";
 import { memo } from "react";
 import { AutocompleteTextField } from "~/components/input/AutocompeleteTextField";
 import {
-  type CreateProjectDto,
-  createProjectDtoSchema,
+  type ProjectDto,
+  projectDtoSchema,
 } from "~/models/project/dto/create-project";
 
 type Props = {
-  init?: CreateProjectDto;
-  action: (value: CreateProjectDto) => unknown;
+  init?: ProjectDto;
+  action: (value: ProjectDto) => unknown;
   options: {
     topics: Array<string>;
     technologies: Array<string>;
@@ -18,14 +28,16 @@ type Props = {
 };
 export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
   const { Field, Subscribe, handleSubmit } = useForm({
-    defaultValues: init ?? {
-      description: "",
-      name: "",
-      root: "",
-      technologies: [],
-      topics: [],
-    },
-    validators: { onChangeAsync: createProjectDtoSchema },
+    defaultValues:
+      init ??
+      ({
+        description: "",
+        name: "",
+        root: "",
+        technologies: [],
+        topics: [],
+      } as ProjectDto),
+    validators: { onChangeAsync: projectDtoSchema.parseAsync },
     onSubmit: ({ value }) => {
       action(value);
     },
@@ -73,6 +85,17 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                   onChange={(e) => handleChange(e.target.value)}
                   value={state.value}
                   required
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={async () => console.debug()}>
+                            <FolderOutlined />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </Grid>
             </>
@@ -97,34 +120,41 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
           )}
         </Field>
         <Field name="topics" mode="array">
-          {({ state, removeValue, pushValue, handleBlur }) => (
-            <>
-              <Grid size={{ md: 3 }}>{`topics`}</Grid>
-              <Grid size={{ md: 9 }}>
-                <AutocompleteTextField
-                  onSelect={pushValue}
-                  options={options.technologies}
-                  disabledOptions={state.value}
-                  onBlur={handleBlur}
-                  placeholder="Topics"
-                />
-                <Stack spacing={0.5} direction="row" flexWrap="wrap" useFlexGap>
-                  {state.value.map((_, index) => (
-                    <Field key={index} name={`topics[${index}]`}>
-                      {(subfield) => (
-                        <Chip
-                          variant="outlined"
-                          label={subfield.state.value}
-                          onDelete={() => removeValue(index)}
-                          sx={{ widthh: "fit-content" }}
-                        />
-                      )}
-                    </Field>
-                  ))}
-                </Stack>
-              </Grid>
-            </>
-          )}
+          {({ state, removeValue, pushValue, handleBlur }) => {
+            return (
+              <>
+                <Grid size={{ md: 3 }}>{`topics`}</Grid>
+                <Grid size={{ md: 9 }}>
+                  <AutocompleteTextField
+                    onSelect={pushValue}
+                    options={options.technologies}
+                    disabledOptions={state.value}
+                    onBlur={handleBlur}
+                    placeholder="Topics"
+                  />
+                  <Stack
+                    spacing={0.5}
+                    direction="row"
+                    flexWrap="wrap"
+                    useFlexGap
+                  >
+                    {state.value.map((_, index) => (
+                      <Field key={index} name={`topics[${index}]`}>
+                        {(subfield) => (
+                          <Chip
+                            variant="outlined"
+                            label={subfield.state.value}
+                            onDelete={() => removeValue(index)}
+                            sx={{ widthh: "fit-content" }}
+                          />
+                        )}
+                      </Field>
+                    ))}
+                  </Stack>
+                </Grid>
+              </>
+            );
+          }}
         </Field>
         <Field name="technologies" mode="array">
           {({ state, removeValue, pushValue, handleBlur }) => (
