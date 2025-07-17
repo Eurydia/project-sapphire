@@ -3,10 +3,10 @@
     "src/renderer",
     "src/database"
   ],
-  "description": "Sapphire",
-  "name": "sapphire",
-  "productName": "Sapphire",
-  "version": "1.0.0",
+  "description": "A non-intrusive Obsidian-style augmentation for offline-first, file-based notetaking system.",
+  "name": "project-sapphire",
+  "productName": "Project Sapphire",
+  "version": "0.0.1",
   "main": ".vite/build/main.js",
   "scripts": {
     "dev": "electron-forge start -- --inspect-electron",
@@ -19,7 +19,7 @@
   "keywords": [],
   "author": {
     "name": "Eurydia",
-    "email": "crossdeltavi@gmail.com"
+    "email": "tphuttharaksabusiness@gmail.com"
   },
   "license": "MIT",
   "devDependencies": {

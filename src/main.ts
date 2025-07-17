@@ -1,5 +1,4 @@
 import { app, BrowserWindow } from "electron";
-import log from "electron-log";
 import started from "electron-squirrel-startup";
 import path from "node:path";
 import { initDbServices } from "./node/db/main";
@@ -18,6 +17,14 @@ const createWindow = async () => {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
+    icon: path.join(
+      app.getAppPath(),
+      "src",
+      "node",
+      "assets",
+      "icons",
+      "icon.ico"
+    ),
   });
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -37,7 +44,7 @@ const createWindow = async () => {
 app.on("ready", createWindow);
 app.whenReady().then(initFsServices);
 app.whenReady().then(initDbServices);
-app.whenReady().then(() => log.info("app ready"));
+
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.

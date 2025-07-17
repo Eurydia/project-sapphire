@@ -11,13 +11,24 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     ignore: [/node_modules\/(?!(better-sqlite3|bindings|file-uri-to-path)\/)/],
+    icon: "src/node/assets/icons/icon",
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      authors: "Eurydia (GitHub)",
+      createStartMenuShortcut: true,
+      shortcutFolderName: "Project Sapphire",
+      shortcutName: "Project Sapphire",
+      setupIcon: "./src/node/assets/icons/icon.ico",
+    }),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({}),
-    new MakerDeb({}),
+    new MakerDeb({
+      options: {
+        icon: "./src/node/assets/icons/icon.png",
+      },
+    }),
   ],
   plugins: [
     {
