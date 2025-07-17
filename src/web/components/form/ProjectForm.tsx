@@ -12,11 +12,9 @@ import {
 import { useForm } from "@tanstack/react-form";
 import type { FC } from "react";
 import { memo } from "react";
+import { openDirDialog } from "~/api/fs";
 import { AutocompleteTextField } from "~/components/input/AutocompeleteTextField";
-import {
-  type ProjectDto,
-  projectDtoSchema,
-} from "~/models/project/dto/create-project";
+import { type ProjectDto } from "~/models/project/dto/create-project";
 
 type Props = {
   init?: ProjectDto;
@@ -37,7 +35,6 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
         technologies: [],
         topics: [],
       } as ProjectDto),
-    validators: { onChangeAsync: projectDtoSchema.parseAsync },
     onSubmit: ({ value }) => {
       action(value);
     },
@@ -55,8 +52,8 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
         <Field name="name">
           {({ state, handleChange, handleBlur }) => (
             <>
-              <Grid size={{ md: 3 }}>{`Name`}</Grid>
-              <Grid size={{ md: 9 }}>
+              <Grid size={3}>{`Name`}</Grid>
+              <Grid size={9}>
                 <TextField
                   fullWidth
                   multiline
@@ -74,8 +71,8 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
         <Field name="root">
           {({ state, handleChange, handleBlur }) => (
             <>
-              <Grid size={{ md: 3 }}>{`root`}</Grid>
-              <Grid size={{ md: 9 }}>
+              <Grid size={3}>{`root`}</Grid>
+              <Grid size={9}>
                 <TextField
                   fullWidth
                   multiline
@@ -89,7 +86,22 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                     input: {
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton onClick={async () => console.debug()}>
+                          <IconButton
+                            onClick={() =>
+                              openDirDialog().then(
+                                ({ canceled, filePaths }) => {
+                                  if (canceled) {
+                                    return;
+                                  }
+                                  const path = filePaths.at(0);
+                                  if (path === undefined) {
+                                    return;
+                                  }
+                                  handleChange(path);
+                                }
+                              )
+                            }
+                          >
                             <FolderOutlined />
                           </IconButton>
                         </InputAdornment>
@@ -104,8 +116,8 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
         <Field name="description">
           {({ state, handleChange, handleBlur }) => (
             <>
-              <Grid size={{ md: 3 }}>{`description`}</Grid>
-              <Grid size={{ md: 9 }}>
+              <Grid size={3}>{`description`}</Grid>
+              <Grid size={9}>
                 <TextField
                   fullWidth
                   multiline
@@ -120,11 +132,11 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
           )}
         </Field>
         <Field name="topics" mode="array">
-          {({ state, removeValue, pushValue, handleBlur }) => {
-            return (
-              <>
-                <Grid size={{ md: 3 }}>{`topics`}</Grid>
-                <Grid size={{ md: 9 }}>
+          {({ state, removeValue, pushValue, handleBlur }) => (
+            <>
+              <Grid size={3}>{`topics`}</Grid>
+              <Grid size={9}>
+                <Stack spacing={0.5} direction="column">
                   <AutocompleteTextField
                     onSelect={pushValue}
                     options={options.technologies}
@@ -151,36 +163,43 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                       </Field>
                     ))}
                   </Stack>
-                </Grid>
-              </>
-            );
-          }}
+                </Stack>
+              </Grid>
+            </>
+          )}
         </Field>
         <Field name="technologies" mode="array">
           {({ state, removeValue, pushValue, handleBlur }) => (
             <>
-              <Grid size={{ md: 3 }}>{`Technologies`}</Grid>
-              <Grid size={{ md: 9 }}>
-                <AutocompleteTextField
-                  onSelect={pushValue}
-                  options={options.technologies}
-                  disabledOptions={state.value}
-                  onBlur={handleBlur}
-                  placeholder="Technologies"
-                />
-                <Stack spacing={0.5} direction="row" flexWrap="wrap" useFlexGap>
-                  {state.value.map((_, index) => (
-                    <Field key={index} name={`technologies[${index}]`}>
-                      {(subfield) => (
-                        <Chip
-                          variant="outlined"
-                          label={subfield.state.value}
-                          onDelete={() => removeValue(index)}
-                          sx={{ widthh: "fit-content" }}
-                        />
-                      )}
-                    </Field>
-                  ))}
+              <Grid size={3}>{`Technologies`}</Grid>
+              <Grid size={9}>
+                <Stack spacing={0.5}>
+                  <AutocompleteTextField
+                    onSelect={pushValue}
+                    options={options.technologies}
+                    disabledOptions={state.value}
+                    onBlur={handleBlur}
+                    placeholder="Technologies"
+                  />
+                  <Stack
+                    spacing={0.5}
+                    direction="row"
+                    flexWrap="wrap"
+                    useFlexGap
+                  >
+                    {state.value.map((_, index) => (
+                      <Field key={index} name={`technologies[${index}]`}>
+                        {(subfield) => (
+                          <Chip
+                            variant="outlined"
+                            label={subfield.state.value}
+                            onDelete={() => removeValue(index)}
+                            sx={{ widthh: "fit-content" }}
+                          />
+                        )}
+                      </Field>
+                    ))}
+                  </Stack>
                 </Stack>
               </Grid>
             </>

@@ -1,23 +1,13 @@
-import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
-import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import viteTsPath from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config
 export default defineConfig({
-  plugins: [
-    viteTsPath(),
-    tanstackRouter({
-      autoCodeSplitting: true,
-      routesDirectory: "./src/web/routes",
-      generatedRouteTree: "./src/web/routeTree.gen.ts",
-    }),
-    viteReact(),
-  ],
+  plugins: [viteTsPath(), viteReact()],
   build: {
     rollupOptions: {
-      external: ["sqlite3"],
+      external: ["better-sqlite3"],
     },
     commonjsOptions: {
       ignore: [

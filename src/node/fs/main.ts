@@ -12,4 +12,4 @@ const fs = {
 };
 export default fs;
 
-registerIpcMainServices(fs, "fs");
+export const initFsServices = () => registerIpcMainServices(fs, "fs");

@@ -4,7 +4,4 @@ export const Route = createFileRoute("/")({
   beforeLoad: () => {
     throw redirect({ to: "/projects" });
   },
-  notFoundComponent: () => {
-    throw redirect({ to: "/projects" });
-  },
 });

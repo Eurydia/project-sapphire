@@ -10,6 +10,7 @@ import {
   Paper,
   Stack,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { useRouter } from "@tanstack/react-router";
@@ -29,7 +30,9 @@ type Props = {
 export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
   const {
     typography: { monospaceFontFamily, serifFontFamily },
+    breakpoints,
   } = useTheme();
+  const isSmallScreen = useMediaQuery(breakpoints.down("md"));
 
   const router = useRouter();
 
@@ -58,9 +61,14 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
   return (
     <Paper variant="outlined">
       <Stack
-        direction="row"
+        direction={{ xs: "column-reverse", md: "row" }}
         spacing={2}
-        divider={<Divider flexItem orientation="vertical" />}
+        divider={
+          <Divider
+            flexItem
+            orientation={isSmallScreen ? "horizontal" : "vertical"}
+          />
+        }
       >
         <Stack spacing={3} flexBasis={0} flexGrow={1} component="div">
           {dense && (
@@ -173,7 +181,13 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
             </Stack>
           )}
         </Stack>
-        <Stack spacing={2} flexBasis={0} flexGrow={0} component="div">
+        <Stack
+          spacing={2}
+          flexBasis={0}
+          flexGrow={0}
+          component="div"
+          direction={{ xs: "row", md: "column" }}
+        >
           <IconButton onClick={handleTogglePin}>
             {project.pinned ? <PushPin /> : <PushPinOutlined />}
           </IconButton>

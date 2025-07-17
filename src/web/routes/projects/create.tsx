@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { FC } from "react";
 import { memo } from "react";
 import { toast } from "react-toastify";
-import { postProject } from "~/api/db/projects";
-import { fetchTechnologyAll } from "~/api/db/technologies";
-import { fetchTopicAll } from "~/api/db/topics";
+import { createProject } from "~/api/db/projects";
+import { listTech } from "~/api/db/technologies";
+import { listTopic } from "~/api/db/topics";
 import { ProjectForm } from "~/components/form/ProjectForm";
 
 const RouteComponent: FC = memo(() => {
@@ -15,7 +15,7 @@ const RouteComponent: FC = memo(() => {
     <Paper variant="outlined">
       <ProjectForm
         action={(dto) =>
-          postProject(dto)
+          createProject(dto)
             .then(() => navigate({ to: "/projects" }))
             .then(() => toast.success("Project added"))
             .catch(() => toast.error("Failed to add project"))
@@ -31,8 +31,8 @@ export const Route = createFileRoute("/projects/create")({
   loader: async () => {
     return {
       options: {
-        topics: (await fetchTopicAll()).map(({ name }) => name),
-        technologies: (await fetchTechnologyAll()).map(({ name }) => name),
+        topics: (await listTopic()).map(({ name }) => name),
+        technologies: (await listTech()).map(({ name }) => name),
       },
     };
   },

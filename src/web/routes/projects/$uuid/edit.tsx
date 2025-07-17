@@ -1,9 +1,12 @@
 import { Paper } from "@mui/material";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import type { FC } from "react";
 import { memo } from "react";
 import { toast } from "react-toastify";
-import type { FC } from "react";
-// import { ProjectForm } from "@/renderer/components/form/ProjectForm";
+import { getProjectByUuid, updateProject } from "~/api/db/projects";
+import { listTech } from "~/api/db/technologies";
+import { listTopic } from "~/api/db/topics";
+import { ProjectForm } from "~/components/form/ProjectForm";
 
 const RouteComponent: FC = memo(() => {
   const { project, options } = Route.useLoaderData();
@@ -12,7 +15,7 @@ const RouteComponent: FC = memo(() => {
 
   return (
     <Paper variant="outlined">
-      {/* <ProjectForm
+      <ProjectForm
         init={{
           description: project.description,
           name: project.name,
@@ -20,15 +23,14 @@ const RouteComponent: FC = memo(() => {
           technologies: project.technologies.map(({ name }) => name),
           topics: project.topics.map(({ name }) => name),
         }}
-        action={
-          (dto) => {}
-          // putProject(uuid, dto)
-          //   .then(() => navigate({ to: "/projects" }))
-          //   .then(() => toast.success("Saved changes"))
-          //   .catch(() => toast.error("Failed to update project"))
+        action={(dto) =>
+          updateProject(uuid, dto)
+            .then(() => navigate({ to: "/projects" }))
+            .then(() => toast.success("update saved"))
+            .catch(() => toast.error("update failed"))
         }
         options={options}
-      /> */}
+      />
     </Paper>
   );
 });
@@ -36,17 +38,18 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/$uuid/edit")({
   component: RouteComponent,
   loader: async ({ params: { uuid } }) => {
-    return notFound();
-    // if ((await fetchProject(uuid)) === null) {
-    //   throw notFound();
-    // }
+    const project = await getProjectByUuid(uuid);
 
-    // return {
-    //   project: (await fetchProject(uuid)) as Project,
-    //   options: {
-    //     topics: (await fetchTopicAll()).map(({ name }) => name),
-    //     technologies: (await fetchTechnologyAll()).map(({ name }) => name),
-    //   },
-    // };
+    if (project === null) {
+      throw notFound();
+    }
+
+    return {
+      project,
+      options: {
+        topics: (await listTopic()).map(({ name }) => name),
+        technologies: (await listTech()).map(({ name }) => name),
+      },
+    };
   },
 });

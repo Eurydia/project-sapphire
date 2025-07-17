@@ -1,3 +1,4 @@
+import { z } from "zod/v4";
 import {
   projectDtoSchema,
   type ProjectDto,
@@ -5,8 +6,6 @@ import {
 import {
   projectRootMetadataSchema,
   projectSchema,
-  projectWithRootMetadataSchema,
-  type Project,
 } from "~/models/project/project";
 
 export const getProjectRootMetadata = (uuid: string) =>
@@ -15,22 +14,48 @@ export const getProjectRootMetadata = (uuid: string) =>
     .then(projectRootMetadataSchema.nullable().parseAsync);
 
 export const listProject = async () =>
-  window.db$project.getAll().then(projectSchema.array().parseAsync);
+  window.db$project
+    .getAll()
+    .then(projectSchema.array().parseAsync)
+    .then((items) =>
+      Promise.all(
+        items.map(async (item) => ({
+          ...item,
+          metadata: await getProjectRootMetadata(item.uuid).catch(() => null),
+        }))
+      )
+    )
+    .catch(() => null);
 
-export const withRootMetadata = (project: Project) =>
-  getProjectRootMetadata(project.uuid)
-    .then((metadata) => ({
-      ...project,
-      metadata,
+export const getProjectByUuid = (uuid: string) =>
+  window.db$project
+    .getByUuid(uuid)
+    .then(projectSchema.parseAsync)
+    .then((p) => ({
+      ...p,
+      metadata: getProjectRootMetadata(p.uuid).catch(() => null),
     }))
-    .then(projectWithRootMetadataSchema.parseAsync);
+    .catch(() => null);
 
-export const postProject = (dto: ProjectDto) =>
+export const createProject = (dto: ProjectDto) =>
   window.db$project.create(dto).then(projectDtoSchema.parseAsync);
 
-// export const putProject = (uuid: string, dto: UpdateProjectDto) =>
-//   API_CLIENT.put(`/projects/${uuid}`, dto);
+export const updateProject = (uuid: string, dto: ProjectDto) =>
+  window.db$project.update(uuid, dto);
 
 export const pinProject = (uuid: string) => window.db$project.pin(uuid);
 
 export const unpinProject = (uuid: string) => window.db$project.unpin(uuid);
+
+export const getProjectTableShape = () =>
+  window.db$project
+    .getTableShape()
+    .then((res) => {
+      return z
+        .object({
+          columns: z.object({ name: z.string(), type: z.string() }).array(),
+          relations: z.object({ name: z.string(), type: z.string() }).array(),
+        })
+        .parseAsync(res);
+    })
+    .catch(() => null);

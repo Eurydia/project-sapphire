@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProjectsRouteRouteImport } from './routes/projects/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TopicsIndexRouteImport } from './routes/topics/index'
 import { Route as TechnologiesIndexRouteImport } from './routes/technologies/index'
@@ -18,6 +19,11 @@ import { Route as ProjectsUuidRouteRouteImport } from './routes/projects/$uuid/r
 import { Route as ProjectsUuidIndexRouteImport } from './routes/projects/$uuid/index'
 import { Route as ProjectsUuidEditRouteImport } from './routes/projects/$uuid/edit'
 
+const ProjectsRouteRoute = ProjectsRouteRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -34,19 +40,19 @@ const TechnologiesIndexRoute = TechnologiesIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
-  id: '/projects/',
-  path: '/projects/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProjectsRouteRoute,
 } as any)
 const ProjectsCreateRoute = ProjectsCreateRouteImport.update({
-  id: '/projects/create',
-  path: '/projects/create',
-  getParentRoute: () => rootRouteImport,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => ProjectsRouteRoute,
 } as any)
 const ProjectsUuidRouteRoute = ProjectsUuidRouteRouteImport.update({
-  id: '/projects/$uuid',
-  path: '/projects/$uuid',
-  getParentRoute: () => rootRouteImport,
+  id: '/$uuid',
+  path: '/$uuid',
+  getParentRoute: () => ProjectsRouteRoute,
 } as any)
 const ProjectsUuidIndexRoute = ProjectsUuidIndexRouteImport.update({
   id: '/',
@@ -61,9 +67,10 @@ const ProjectsUuidEditRoute = ProjectsUuidEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/projects': typeof ProjectsRouteRouteWithChildren
   '/projects/$uuid': typeof ProjectsUuidRouteRouteWithChildren
   '/projects/create': typeof ProjectsCreateRoute
-  '/projects': typeof ProjectsIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
   '/technologies': typeof TechnologiesIndexRoute
   '/topics': typeof TopicsIndexRoute
   '/projects/$uuid/edit': typeof ProjectsUuidEditRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/projects': typeof ProjectsRouteRouteWithChildren
   '/projects/$uuid': typeof ProjectsUuidRouteRouteWithChildren
   '/projects/create': typeof ProjectsCreateRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -93,9 +101,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/projects'
     | '/projects/$uuid'
     | '/projects/create'
-    | '/projects'
+    | '/projects/'
     | '/technologies'
     | '/topics'
     | '/projects/$uuid/edit'
@@ -112,6 +121,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/projects'
     | '/projects/$uuid'
     | '/projects/create'
     | '/projects/'
@@ -123,15 +133,20 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ProjectsUuidRouteRoute: typeof ProjectsUuidRouteRouteWithChildren
-  ProjectsCreateRoute: typeof ProjectsCreateRoute
-  ProjectsIndexRoute: typeof ProjectsIndexRoute
+  ProjectsRouteRoute: typeof ProjectsRouteRouteWithChildren
   TechnologiesIndexRoute: typeof TechnologiesIndexRoute
   TopicsIndexRoute: typeof TopicsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -155,24 +170,24 @@ declare module '@tanstack/react-router' {
     }
     '/projects/': {
       id: '/projects/'
-      path: '/projects'
-      fullPath: '/projects'
+      path: '/'
+      fullPath: '/projects/'
       preLoaderRoute: typeof ProjectsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProjectsRouteRoute
     }
     '/projects/create': {
       id: '/projects/create'
-      path: '/projects/create'
+      path: '/create'
       fullPath: '/projects/create'
       preLoaderRoute: typeof ProjectsCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProjectsRouteRoute
     }
     '/projects/$uuid': {
       id: '/projects/$uuid'
-      path: '/projects/$uuid'
+      path: '/$uuid'
       fullPath: '/projects/$uuid'
       preLoaderRoute: typeof ProjectsUuidRouteRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProjectsRouteRoute
     }
     '/projects/$uuid/': {
       id: '/projects/$uuid/'
@@ -204,11 +219,25 @@ const ProjectsUuidRouteRouteChildren: ProjectsUuidRouteRouteChildren = {
 const ProjectsUuidRouteRouteWithChildren =
   ProjectsUuidRouteRoute._addFileChildren(ProjectsUuidRouteRouteChildren)
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+interface ProjectsRouteRouteChildren {
+  ProjectsUuidRouteRoute: typeof ProjectsUuidRouteRouteWithChildren
+  ProjectsCreateRoute: typeof ProjectsCreateRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
+}
+
+const ProjectsRouteRouteChildren: ProjectsRouteRouteChildren = {
   ProjectsUuidRouteRoute: ProjectsUuidRouteRouteWithChildren,
   ProjectsCreateRoute: ProjectsCreateRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
+}
+
+const ProjectsRouteRouteWithChildren = ProjectsRouteRoute._addFileChildren(
+  ProjectsRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  ProjectsRouteRoute: ProjectsRouteRouteWithChildren,
   TechnologiesIndexRoute: TechnologiesIndexRoute,
   TopicsIndexRoute: TopicsIndexRoute,
 }

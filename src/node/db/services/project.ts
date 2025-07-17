@@ -1,7 +1,6 @@
 import { existsSync, lstatSync } from "fs";
 import moment from "moment";
 import { isAbsolute } from "path";
-import { DataSource } from "typeorm";
 import { DATA_SOURCE } from "../data-source";
 import { Project } from "../models/project.entity";
 import { TECH_SERVICES } from "./technology";
@@ -122,20 +121,18 @@ const softDelete = async (uuid: string) => {
   return REPO.softDelete(uuid);
 };
 
-const getTableShape = () => {
+const getTableShape = async () => {
   const metadata = DATA_SOURCE.getMetadata(Project);
-  console.debug(metadata.columns, metadata.relations);
-  return metadata.columns
-    .map((col) => ({
+  return {
+    columns: metadata.columns.map((col) => ({
       type: col.type.toString(),
       name: col.propertyName,
-    }))
-    .concat(
-      metadata.relations.map((rel) => ({
-        name: rel.propertyName,
-        type: rel.joinTableName,
-      }))
-    );
+    })),
+    relations: metadata.relations.map((rel) => ({
+      name: rel.propertyName,
+      type: rel.inverseEntityMetadata.targetName,
+    })),
+  };
 };
 
 export const PROJECT_SERVICES = {

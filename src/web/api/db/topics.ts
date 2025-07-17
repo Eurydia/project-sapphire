@@ -1,7 +1,7 @@
 import { topicSchema } from "~/models/topics/topic";
 
-export const fetchTopicAll = () =>
+export const listTopic = () =>
   window.db$topic
     .getAll()
-    .then((resp) => topicSchema.array().parseAsync(resp))
+    .then(topicSchema.array().parseAsync)
     .catch(() => []);

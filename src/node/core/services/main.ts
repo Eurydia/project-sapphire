@@ -1,4 +1,4 @@
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
 import { writeFileSync } from "fs";
 import { join } from "path";
 
@@ -17,20 +17,10 @@ export const registerIpcMainServices = (
     JSON.stringify(Object.keys(serviceProvider))
   );
 
-  if (!import.meta.env.DEV) {
-    return;
-  }
-  writeFileSync(
-    join(
-      __dirname,
-      "..",
-      "..",
-      "src",
-      "web",
-      "types",
-      `${providerName}.gen.d.ts`
-    ),
-    `export declare global {
+  if (import.meta.env.DEV) {
+    writeFileSync(
+      join(app.getAppPath(), "src", "web", "types", `${providerName}.gen.d.ts`),
+      `export declare global {
       interface Window {
         ["${providerName}"]: {
           ${Object.keys(serviceProvider)
@@ -39,5 +29,6 @@ export const registerIpcMainServices = (
         }
       }
     }`
-  );
+    );
+  }
 };

@@ -13,9 +13,8 @@
   },
   "typescript.preferences.importModuleSpecifier": "shortest",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
     "source.sortImports": "explicit",
-    "source.fixAll.ts": "explicit"
+    "source.removeUnusedImports": "explicit"
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
