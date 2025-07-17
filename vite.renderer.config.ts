@@ -1,12 +1,12 @@
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 import { defineConfig } from "vite";
-
+import tsPath from "vite-tsconfig-paths";
 // https://vitejs.dev/config
 export default defineConfig({
   plugins: [
+    tsPath(),
     tanstackRouter({
       autoCodeSplitting: true,
       routesDirectory: "./src/web/routes",
@@ -18,11 +18,12 @@ export default defineConfig({
     alias: [
       {
         find: "~",
-        replacement: resolve(
-          dirname(fileURLToPath(import.meta.url)),
-          "./src/web"
-        ),
+        replacement: resolve(__dirname, "./src/web"),
       },
     ],
+  },
+  build: {
+    outDir: `.vite/renderer`,
+    emptyOutDir: true,
   },
 });

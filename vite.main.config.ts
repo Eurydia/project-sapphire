@@ -1,10 +1,9 @@
-import viteReact from "@vitejs/plugin-react";
+import { swcPlugin } from "electron-vite";
 import { defineConfig } from "vite";
-import viteTsPath from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config
 export default defineConfig({
-  plugins: [viteTsPath(), viteReact()],
+  plugins: [swcPlugin()],
   build: {
     rollupOptions: {
       external: ["better-sqlite3"],

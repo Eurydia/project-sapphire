@@ -8,7 +8,7 @@ import {
 import { Technology } from "./technology.entity";
 import { Topic } from "./topic.entity";
 
-@Entity()
+@Entity("projects")
 export class Project {
   @PrimaryGeneratedColumn("uuid")
   uuid: string;

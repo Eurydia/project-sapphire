@@ -1,8 +1,5 @@
 import { z } from "zod/v4";
-import {
-  projectDtoSchema,
-  type ProjectDto,
-} from "~/models/project/dto/create-project";
+import { type ProjectDto } from "~/models/project/dto/create-project";
 import {
   projectRootMetadataSchema,
   projectSchema,
@@ -38,7 +35,7 @@ export const getProjectByUuid = (uuid: string) =>
     .catch(() => null);
 
 export const createProject = (dto: ProjectDto) =>
-  window.db$project.create(dto).then(projectDtoSchema.parseAsync);
+  window.db$project.create(dto).then(projectSchema.parseAsync);
 
 export const updateProject = (uuid: string, dto: ProjectDto) =>
   window.db$project.update(uuid, dto);

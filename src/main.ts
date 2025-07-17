@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from "electron";
+import log from "electron-log";
 import started from "electron-squirrel-startup";
 import path from "node:path";
 import { initDbServices } from "./node/db/main";
@@ -17,22 +18,17 @@ const createWindow = async () => {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
-    icon: path.join(
-      app.getAppPath(),
-      "src",
-      "node",
-      "assets",
-      "icons",
-      "icon.ico"
-    ),
   });
 
+  log.info(
+    `path.join(__dirname, "preload.js"): ${path.join(__dirname, "preload.js")}`
+  );
+  // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    );
+    mainWindow.loadFile(path.join(__dirname, `../renderer/index.html`));
+    log.info(`__dirname: ${__dirname}`);
   }
 
   mainWindow.webContents.openDevTools({ mode: "detach" });

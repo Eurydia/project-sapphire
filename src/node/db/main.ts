@@ -1,4 +1,5 @@
 import log from "electron-log";
+import "reflect-metadata";
 import { registerIpcMainServices } from "../core/services/main";
 import { DATA_SOURCE } from "./data-source";
 import { PROJECT_SERVICES } from "./services/project";

@@ -1,6 +1,4 @@
-import { app, ipcMain } from "electron";
-import { writeFileSync } from "fs";
-import { join } from "path";
+import { ipcMain } from "electron";
 
 export type ServiceProvider = Record<string, (...args: any[]) => Promise<any>>;
 
@@ -17,18 +15,26 @@ export const registerIpcMainServices = (
     JSON.stringify(Object.keys(serviceProvider))
   );
 
-  if (import.meta.env.DEV) {
-    writeFileSync(
-      join(app.getAppPath(), "src", "web", "types", `${providerName}.gen.d.ts`),
-      `export declare global {
-      interface Window {
-        ["${providerName}"]: {
-          ${Object.keys(serviceProvider)
-            .map((svc) => `${svc}: (...args: any[]) => Promise<unknown>`)
-            .join(",")}
-        }
-      }
-    }`
-    );
-  }
+  // if (!app.isPackaged) {
+  //   writeFileSync(
+  //     join(
+  //       __dirname,
+  //       "..",
+  //       "..",
+  //       "src",
+  //       "web",
+  //       "types",
+  //       `${providerName}.gen.d.ts`
+  //     ),
+  //     `export declare global {
+  //     interface Window {
+  //       ["${providerName}"]: {
+  //         ${Object.keys(serviceProvider)
+  //           .map((svc) => `${svc}: (...args: any[]) => Promise<unknown>`)
+  //           .join(",")}
+  //       }
+  //     }
+  //   }`
+  //   );
+  // }
 };

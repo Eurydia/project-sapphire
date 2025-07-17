@@ -130,7 +130,7 @@ const getTableShape = async () => {
     })),
     relations: metadata.relations.map((rel) => ({
       name: rel.propertyName,
-      type: rel.inverseEntityMetadata.targetName,
+      type: rel.inverseEntityMetadata.tableName,
     })),
   };
 };

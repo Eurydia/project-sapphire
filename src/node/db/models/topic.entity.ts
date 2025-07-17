@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Project } from "./project.entity";
 
-@Entity()
+@Entity("topics")
 export class Topic {
   @PrimaryGeneratedColumn("uuid")
   uuid: string;

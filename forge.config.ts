@@ -21,6 +21,8 @@ const config: ForgeConfig = {
       shortcutFolderName: "Project Sapphire",
       shortcutName: "Project Sapphire",
       setupIcon: "./src/node/assets/icons/icon.ico",
+      iconUrl:
+        "https://raw.githubusercontent.com/Eurydia/project-sapphire/refs/heads/main/src/node/assets/icons/icon.ico",
     }),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({}),
