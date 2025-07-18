@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import type { FC } from 'react'
 import { memo } from 'react'
 import { listProjects } from '~/db/projects'
-import { ProjectList } from '~/components/data-display/project-list/project-list'
+import { ProjectList } from '~/components/data-display/project-list'
 
 const RouteComponent: FC = memo(() => {
   const { projects } = Route.useLoaderData()

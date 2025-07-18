@@ -1,5 +1,5 @@
 import { Skeleton, Stack, Typography } from '@mui/material'
-import { memo, Suspense, use, useMemo, type FC } from 'react'
+import { Fragment, memo, Suspense, use, useMemo, type FC } from 'react'
 import { getProjectRootMetadata } from '~/db/projects'
 
 type InnerProps = {
@@ -9,7 +9,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
   const metadataItems = use(fetcher)
 
   return (
-    <Stack>
+    <Fragment>
       {metadataItems.map(({ label, value }, index) => (
         <Stack key={`item-${index}`} spacing={1} flexDirection="row" useFlexGap flexWrap="wrap">
           <Typography variant="subtitle2" color="textSecondary">
@@ -27,7 +27,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
           )}
         </Stack>
       ))}
-    </Stack>
+    </Fragment>
   )
 })
 
@@ -53,23 +53,31 @@ export const ProjectCardMetadata: FC<Props> = memo(({ root }) => {
   }, [root])
 
   return (
-    <Suspense
-      fallback={
-        <Stack>
-          {['created', 'accessed', 'modified'].map((label, index) => (
-            <Stack key={`item-${index}`} spacing={1} flexDirection="row" useFlexGap flexWrap="wrap">
-              <Typography variant="subtitle2" color="textSecondary">
-                {`${label}:`}
-              </Typography>
-              <Typography color="textSecondary" variant="subtitle2" width="50%">
-                <Skeleton />
-              </Typography>
-            </Stack>
-          ))}
-        </Stack>
-      }
-    >
-      <Inner fetcher={fetcher} />
-    </Suspense>
+    <Stack>
+      <Suspense
+        fallback={
+          <Fragment>
+            {['created', 'accessed', 'modified'].map((label, index) => (
+              <Stack
+                key={`item-${index}`}
+                spacing={1}
+                flexDirection="row"
+                useFlexGap
+                flexWrap="wrap"
+              >
+                <Typography variant="subtitle2" color="textSecondary">
+                  {`${label}:`}
+                </Typography>
+                <Typography color="textSecondary" variant="subtitle2" width="50%">
+                  <Skeleton />
+                </Typography>
+              </Stack>
+            ))}
+          </Fragment>
+        }
+      >
+        <Inner fetcher={fetcher} />
+      </Suspense>
+    </Stack>
   )
 })

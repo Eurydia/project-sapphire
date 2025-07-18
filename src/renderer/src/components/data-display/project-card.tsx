@@ -11,11 +11,13 @@ import {
 import { useRouter } from '@tanstack/react-router'
 import type { FC } from 'react'
 import { Fragment, memo, useCallback } from 'react'
-import { pinProject, unpinProject } from '~/db/projects'
 import { openPath } from '~/api/fs'
 import { StyledLink } from '~/components/navigation/styled-link'
 import type { Project } from '~/db/models/project/project'
+import { pinProject, unpinProject } from '~/db/projects'
 import { ProjectCardMetadata } from './project-card-metadata'
+import { ProjectCardTechList } from './project-card-tech-list'
+import { ProjectCardTopicList } from './project-card-topic-list'
 
 type Props = {
   project: Project
@@ -95,27 +97,12 @@ export const ProjectCard: FC<Props> = memo(({ project, dense }) => {
               <Typography fontFamily={serifFontFamily}>{project.description}</Typography>
             )}
           </Stack>
+
           <ProjectCardMetadata root={project.root} />
-          {/* {project.technologies.length > 0 && project.topics.length > 0 && (
-            <Stack spacing={0.5}>
-              {project.technologies.length > 0 && (
-                <Stack spacing={1} flexDirection="row" useFlexGap flexWrap="wrap">
-                  <Typography variant="subtitle2" color="textSecondary">
-                    {`tech(s):`}
-                  </Typography>
-                  <TechTagList items={project.technologies} />
-                </Stack>
-              )}
-              {project.topics.length > 0 && (
-                <Stack spacing={1} flexDirection="row" useFlexGap flexWrap="wrap">
-                  <Typography variant="subtitle2" color="textSecondary">
-                    {`topic(s):`}
-                  </Typography>
-                  <TopicTagList items={project.topics} />
-                </Stack>
-              )}
-            </Stack>
-          )} */}
+          <Stack spacing={0.5}>
+            <ProjectCardTechList techUuids={project.techUuids} />
+            <ProjectCardTopicList topicUuids={project.topicUuids} />
+          </Stack>
         </Stack>
         <Stack
           spacing={2}

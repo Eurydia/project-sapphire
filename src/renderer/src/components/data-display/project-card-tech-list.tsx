@@ -2,11 +2,11 @@ import { Chip, darken, Skeleton, Stack, Typography, useTheme } from '@mui/materi
 import { useNavigate } from '@tanstack/react-router'
 import type { FC } from 'react'
 import { Fragment, memo, Suspense, use, useCallback, useMemo } from 'react'
-import type { Topic } from '~/db/models/topic/topic'
-import { listTopicManyByUuids } from '~/db/topics'
+import type { Technology } from '~/db/models/technology/technology'
+import { listTechManyByUuids } from '~/db/technologies'
 
 type InnerProps = {
-  fetcher: Promise<Topic[]>
+  fetcher: Promise<Technology[]>
 }
 const Inner: FC<InnerProps> = memo(({ fetcher }) => {
   const { palette } = useTheme()
@@ -15,7 +15,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
 
   const onClickHandleProvider = useCallback(
     (uuid: string) => () => {
-      navigate({ to: '/topics', hash: uuid })
+      navigate({ to: '/technologies', hash: uuid })
     },
     [navigate]
   )
@@ -46,17 +46,17 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
 })
 
 type Props = {
-  topicUuids: string[]
+  techUuids: string[]
 }
-export const ProjectCardTopicList: FC<Props> = memo(({ topicUuids }) => {
+export const ProjectCardTechList: FC<Props> = memo(({ techUuids }) => {
   const fetcher = useMemo(() => {
-    return listTopicManyByUuids(topicUuids)
-  }, [topicUuids])
+    return listTechManyByUuids(techUuids)
+  }, [techUuids])
 
   return (
     <Stack spacing={0.5} useFlexGap flexWrap="wrap" direction="row">
       <Typography variant="subtitle2" color="textSecondary">
-        {`topics(s):`}
+        {`tech(s):`}
       </Typography>
       <Suspense
         fallback={
