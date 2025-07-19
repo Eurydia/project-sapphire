@@ -20,7 +20,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
     [navigate]
   )
   if (items.length === 0) {
-    return <Typography variant="subtitle2" color="textSecondary">{`no set`}</Typography>
+    return <Typography variant="subtitle2" color="textSecondary">{`not set`}</Typography>
   }
   return (
     <Fragment>
@@ -54,16 +54,16 @@ export const ProjectCardTechList: FC<Props> = memo(({ techUuids }) => {
   }, [techUuids])
 
   return (
-    <Stack spacing={0.5} useFlexGap flexWrap="wrap" direction="row">
+    <Stack spacing={0.5} useFlexGap flexWrap="wrap" direction="row" alignItems="center">
       <Typography variant="subtitle2" color="textSecondary">
         {`tech(s):`}
       </Typography>
       <Suspense
         fallback={
           <Fragment>
-            <Skeleton variant="circular" />
-            <Skeleton variant="circular" />
-            <Skeleton variant="circular" />
+            <Skeleton variant="circular" width={20} height={20} />
+            <Skeleton variant="circular" width={20} height={20} />
+            <Skeleton variant="circular" width={20} height={20} />
           </Fragment>
         }
       >

@@ -10,8 +10,9 @@ export const listTechManyByUuids = async (uuids: string[]) => {
   const db = await getDb()
   const tx = db.transaction('technologies', 'readonly')
   const store = tx.objectStore('technologies')
-
   const result = await Promise.allSettled(uuids.map((uuid) => store.get(uuid)))
+  await tx.done
+
   const entries: Technology[] = []
   for (const entry of result) {
     if (entry.status === 'rejected') {
@@ -28,9 +29,13 @@ export const listTechManyByUuids = async (uuids: string[]) => {
 export const listManyTechByName = async (names: string[]) => {
   const db = await getDb()
   const tx = db.transaction('technologies', 'readonly')
+
   const idx = tx.objectStore('technologies').index('by-name')
 
   const result = await Promise.allSettled(names.map((name) => idx.get(name)))
+
+  await tx.done
+
   const entries: Technology[] = []
   for (const entry of result) {
     if (entry.status === 'rejected') {
@@ -45,12 +50,12 @@ export const listManyTechByName = async (names: string[]) => {
 }
 
 export const addTechManyByName = async (names: string[]) => {
-  const db = await getDb()
-  const tx = db.transaction('technologies', 'readwrite')
-  const store = tx.objectStore('technologies')
   const knownEntries = await listManyTechByName(names)
   const knownNames = new Set(knownEntries.map(({ name }) => name))
 
+  const db = await getDb()
+  const tx = db.transaction('technologies', 'readwrite')
+  const store = tx.objectStore('technologies')
   const newEntries: Technology[] = []
   for (const name of names) {
     if (knownNames.has(name)) {

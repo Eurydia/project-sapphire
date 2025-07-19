@@ -1,8 +1,7 @@
 import z from 'zod/v4'
 import { projectSchema } from '../project'
-import { ar } from 'zod/v4/locales'
 
-export const createProjectDtoSchema = projectSchema
+export const ProjectDtoSchema = projectSchema
   .pick({
     description: true,
     name: true,
@@ -24,4 +23,4 @@ export const createProjectDtoSchema = projectSchema
       .array()
       .refine((args) => new Set(args).size === args.length, 'topics must be unique')
   })
-export type CreateProjectDto = z.infer<typeof createProjectDtoSchema>
+export type ProjectDto = z.infer<typeof ProjectDtoSchema>

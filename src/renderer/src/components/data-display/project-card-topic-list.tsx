@@ -20,7 +20,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
     [navigate]
   )
   if (items.length === 0) {
-    return <Typography variant="subtitle2" color="textSecondary">{`no set`}</Typography>
+    return <Typography variant="subtitle2" color="textSecondary">{`not set`}</Typography>
   }
   return (
     <Fragment>
@@ -32,8 +32,8 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
             backgroundColor: color,
             color: palette.getContrastText(color),
             '&:hover': {
-              backgroundColor: darken(color, 0.5),
-              color: palette.getContrastText(darken(color, 0.5))
+              backgroundColor: darken(color, 0.01),
+              color: palette.getContrastText(darken(color, 0.05))
             }
           }}
           component="div"
@@ -54,16 +54,16 @@ export const ProjectCardTopicList: FC<Props> = memo(({ topicUuids }) => {
   }, [topicUuids])
 
   return (
-    <Stack spacing={0.5} useFlexGap flexWrap="wrap" direction="row">
+    <Stack spacing={0.5} useFlexGap flexWrap="wrap" direction="row" alignItems="center">
       <Typography variant="subtitle2" color="textSecondary">
         {`topics(s):`}
       </Typography>
       <Suspense
         fallback={
           <Fragment>
-            <Skeleton variant="circular" />
-            <Skeleton variant="circular" />
-            <Skeleton variant="circular" />
+            <Skeleton variant="circular" width={20} height={20} />
+            <Skeleton variant="circular" width={20} height={20} />
+            <Skeleton variant="circular" width={20} height={20} />
           </Fragment>
         }
       >

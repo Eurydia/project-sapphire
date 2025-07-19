@@ -10,8 +10,9 @@ export const listManyTopicsByName = async (names: string[]) => {
   const db = await getDb()
   const tx = db.transaction('topics', 'readonly')
   const idx = tx.objectStore('topics').index('by-name')
-
   const result = await Promise.allSettled(names.map((name) => idx.get(name)))
+  await tx.done
+
   const entries: Topic[] = []
   for (const entry of result) {
     if (entry.status === 'rejected') {
@@ -26,12 +27,12 @@ export const listManyTopicsByName = async (names: string[]) => {
 }
 
 export const addTopicManyByName = async (names: string[]) => {
-  const db = await getDb()
-  const tx = db.transaction('topics', 'readwrite')
-  const store = tx.objectStore('topics')
   const knownEntries = await listManyTopicsByName(names)
   const knownNames = new Set(knownEntries.map(({ name }) => name))
 
+  const db = await getDb()
+  const tx = db.transaction('topics', 'readwrite')
+  const store = tx.objectStore('topics')
   const newEntries: Topic[] = []
   for (const name of names) {
     if (knownNames.has(name)) {
@@ -42,7 +43,6 @@ export const addTopicManyByName = async (names: string[]) => {
 
   const addResults = await Promise.allSettled(newEntries.map((entry) => store.add(entry)))
   await tx.done
-
   const addedUuids: string[] = []
   for (const result of addResults) {
     if (result.status === 'rejected') {
@@ -58,8 +58,8 @@ export const listTopicManyByUuids = async (uuids: string[]) => {
   const db = await getDb()
   const tx = db.transaction('topics', 'readonly')
   const store = tx.objectStore('topics')
-
   const result = await Promise.allSettled(uuids.map((uuid) => store.get(uuid)))
+  await tx.done
   const entries: Topic[] = []
   for (const entry of result) {
     if (entry.status === 'rejected') {

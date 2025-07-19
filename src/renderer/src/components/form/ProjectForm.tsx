@@ -14,17 +14,17 @@ import type { FC } from 'react'
 import { memo } from 'react'
 import { openDirDialog } from '~/api/fs'
 import { AutocompleteTextField } from '~/components/input/AutocompeleteTextField'
-import type { CreateProjectDto } from '~/db/models/project/dto/create-project'
+import type { ProjectDto } from '~/db/models/project/dto/project-dto'
 
 type Props = {
-  init?: CreateProjectDto
-  action: (value: CreateProjectDto) => unknown
-  options: {
+  init?: ProjectDto
+  action: (value: ProjectDto) => unknown
+  formOptions: {
     topics: Array<string>
     technologies: Array<string>
   }
 }
-export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
+export const ProjectForm: FC<Props> = memo(({ init, action, formOptions }) => {
   const { Field, Subscribe, handleSubmit } = useForm({
     defaultValues:
       init ??
@@ -34,7 +34,7 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
         root: '',
         techNames: [],
         topicNames: []
-      } as CreateProjectDto),
+      } as ProjectDto),
     onSubmit: ({ value }) => {
       action(value)
     }
@@ -137,7 +137,7 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                 <Stack spacing={0.5} direction="column">
                   <AutocompleteTextField
                     onSelect={pushValue}
-                    options={options.technologies}
+                    options={formOptions.technologies}
                     disabledOptions={state.value}
                     onBlur={handleBlur}
                     placeholder="Topics"
@@ -169,7 +169,7 @@ export const ProjectForm: FC<Props> = memo(({ init, action, options }) => {
                 <Stack spacing={0.5}>
                   <AutocompleteTextField
                     onSelect={pushValue}
-                    options={options.technologies}
+                    options={formOptions.technologies}
                     disabledOptions={state.value}
                     onBlur={handleBlur}
                     placeholder="Technologies"

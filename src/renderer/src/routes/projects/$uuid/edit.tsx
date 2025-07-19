@@ -1,15 +1,19 @@
-import { Paper } from '@mui/material'
-import { createFileRoute, notFound } from '@tanstack/react-router'
-import type { FC } from 'react'
-import { memo } from 'react'
-import { toast } from 'react-toastify'
-import { getProjectByUuid, updateProject } from '~/db/projects'
-import { listTech } from '~/db/technologies'
-import { listTopic } from '~/db/topics'
-import { ProjectForm } from '~/components/form/ProjectForm'
+import { Paper } from "@mui/material"
+import {
+  createFileRoute,
+  notFound,
+} from "@tanstack/react-router"
+import type { FC } from "react"
+import { memo } from "react"
+import { toast } from "react-toastify"
+import { ProjectForm } from "~/components/form/ProjectForm"
+import { getProjectByUuid, upsertProject } from "~/db/projects"
+import { listTech, listTechManyByUuids } from "~/db/technologies"
+import { listTopic, listTopicManyByUuids } from "~/db/topics"
 
 const RouteComponent: FC = memo(() => {
-  const { project, options } = Route.useLoaderData()
+  const { project, techNames, topicNames, formOptions } =
+    Route.useLoaderData()
   const navigate = Route.useNavigate()
   const { uuid } = Route.useParams()
 
@@ -20,36 +24,45 @@ const RouteComponent: FC = memo(() => {
           description: project.description,
           name: project.name,
           root: project.root,
-          technologies: project.technologies.map(({ name }) => name),
-          topics: project.topics.map(({ name }) => name)
+          techNames,
+          topicNames,
         }}
         action={(dto) =>
-          updateProject(uuid, dto)
-            .then(() => navigate({ to: '/projects' }))
-            .then(() => toast.success('update saved'))
-            .catch(() => toast.error('update failed'))
+          upsertProject(uuid, dto)
+            .then(() => navigate({ to: "/projects" }))
+            .then(() => toast.success("update saved"))
+            .catch(() => toast.error("update failed"))
         }
-        options={options}
+        formOptions={formOptions}
       />
     </Paper>
   )
 })
 
-export const Route = createFileRoute('/projects/$uuid/edit')({
+export const Route = createFileRoute("/projects/$uuid/edit")({
   component: RouteComponent,
   loader: async ({ params: { uuid } }) => {
     const project = await getProjectByUuid(uuid)
 
-    if (project === null) {
+    if (project === undefined) {
       throw notFound()
     }
 
+    const techNames = (
+      await listTechManyByUuids(project.techUuids)
+    ).map(({ name }) => name)
+    const topicNames = (
+      await listTopicManyByUuids(project.topicUuids)
+    ).map(({ name }) => name)
+
     return {
       project,
-      options: {
+      techNames,
+      topicNames,
+      formOptions: {
         topics: (await listTopic()).map(({ name }) => name),
-        technologies: (await listTech()).map(({ name }) => name)
-      }
+        technologies: (await listTech()).map(({ name }) => name),
+      },
     }
-  }
+  },
 })

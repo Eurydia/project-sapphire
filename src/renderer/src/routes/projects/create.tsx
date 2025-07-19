@@ -3,10 +3,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import type { FC } from 'react'
 import { memo } from 'react'
 import { toast } from 'react-toastify'
+import { ProjectForm } from '~/components/form/ProjectForm'
 import { createProject } from '~/db/projects'
 import { listTech } from '~/db/technologies'
 import { listTopic } from '~/db/topics'
-import { ProjectForm } from '~/components/form/ProjectForm'
 
 const RouteComponent: FC = memo(() => {
   const { options } = Route.useLoaderData()
@@ -17,10 +17,13 @@ const RouteComponent: FC = memo(() => {
         action={(dto) =>
           createProject(dto)
             .then(() => navigate({ to: '/projects' }))
-            .then(() => toast.success('Project added'))
-            .catch(() => toast.error('Failed to add project'))
+            .then(() => toast.success('project added'))
+            .catch((err) => {
+              console.debug(err)
+              toast.error('failed to add project')
+            })
         }
-        options={options}
+        formOptions={options}
       />
     </Paper>
   )
