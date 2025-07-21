@@ -7,7 +7,9 @@ export const globalStyle = (
         scrollbarColor: `${lighten(theme.palette.background.paper, 0.2)} transparent`,
       } as CSSStyleDeclaration,
       "::-webkit-scrollbar-button": {
-        color: "red",
+        display: "none",
+        width: 0,
+        height: 0,
       },
     })}
   />

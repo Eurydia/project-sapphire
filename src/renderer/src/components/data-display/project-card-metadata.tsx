@@ -1,17 +1,73 @@
-import { Skeleton, Stack, Typography } from '@mui/material'
-import { Fragment, memo, Suspense, use, useMemo, type FC } from 'react'
-import { getProjectRootMetadata } from '~/db/projects'
+import { Skeleton, Stack, Typography } from "@mui/material"
+import { isLeft } from "fp-ts/lib/Either"
+import {
+  Fragment,
+  memo,
+  Suspense,
+  use,
+  useEffect,
+  useMemo,
+  type FC,
+} from "react"
+import type { Project } from "~/db/models/project/project"
+import { getProjectRootMetadata } from "~/db/projects"
+import { useLoggerStore } from "~/stores/useLoggerStore"
 
 type InnerProps = {
-  fetcher: Promise<{ label: string; value: string | undefined }[]>
+  fetcher: Promise<
+    Awaited<ReturnType<typeof getProjectRootMetadata>>
+  >
 }
 const Inner: FC<InnerProps> = memo(({ fetcher }) => {
-  const metadataItems = use(fetcher)
+  const { logNotice, logWarn } = useLoggerStore()
+  const result = use(fetcher)
+
+  useEffect(() => {
+    if (isLeft(result)) {
+      logWarn(
+        `failed to fetch project root metadata: ${String(result.left)}`,
+      )
+    } else {
+      logNotice(`fetched project root metadata ok`)
+    }
+  }, [result, logNotice, logWarn])
+
+  const items: { label: string; value?: string }[] =
+    useMemo(() => {
+      if (isLeft(result)) {
+        return [
+          { label: "created" },
+          { label: "accessed" },
+          { label: "modified" },
+        ]
+      }
+      const { ctime, atime, mtime } = result.right
+      return [
+        {
+          label: "created",
+          value: `${ctime.fromNow} (${ctime.exact})`,
+        },
+        {
+          label: "accessed",
+          value: `${atime.fromNow} (${atime.exact})`,
+        },
+        {
+          label: "modified",
+          value: `${mtime.fromNow} (${mtime.exact})`,
+        },
+      ]
+    }, [result])
 
   return (
     <Fragment>
-      {metadataItems.map(({ label, value }, index) => (
-        <Stack key={`item-${index}`} spacing={1} flexDirection="row" useFlexGap flexWrap="wrap">
+      {items.map(({ label, value }, index) => (
+        <Stack
+          key={`item-${index}`}
+          spacing={1}
+          flexDirection="row"
+          useFlexGap
+          flexWrap="wrap"
+        >
           <Typography variant="subtitle2" color="textSecondary">
             {`${label}:`}
           </Typography>
@@ -21,7 +77,10 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
             </Typography>
           )}
           {value !== undefined && (
-            <Typography color="textSecondary" variant="subtitle2">
+            <Typography
+              color="textSecondary"
+              variant="subtitle2"
+            >
               {value}
             </Typography>
           )}
@@ -32,52 +91,48 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
 })
 
 type Props = {
-  root: string
+  project: Project & {
+    metadata: ReturnType<typeof getProjectRootMetadata>
+  }
 }
-export const ProjectCardMetadata: FC<Props> = memo(({ root }) => {
-  const fetcher = useMemo(async () => {
-    return getProjectRootMetadata(root).then((metadata) => [
-      {
-        label: 'created',
-        value: metadata === null ? undefined : `${metadata.ctime.fromNow} (${metadata.ctime.exact})`
-      },
-      {
-        label: 'accessed',
-        value: metadata === null ? undefined : `${metadata.atime.fromNow} (${metadata.atime.exact})`
-      },
-      {
-        label: 'modified',
-        value: metadata === null ? undefined : `${metadata.mtime.fromNow} (${metadata.mtime.exact})`
-      }
-    ])
-  }, [root])
-
-  return (
-    <Stack>
-      <Suspense
-        fallback={
-          <Fragment>
-            {['created', 'accessed', 'modified'].map((label, index) => (
-              <Stack
-                key={`item-${index}`}
-                spacing={1}
-                flexDirection="row"
-                useFlexGap
-                flexWrap="wrap"
-              >
-                <Typography variant="subtitle2" color="textSecondary">
-                  {`${label}:`}
-                </Typography>
-                <Typography color="textSecondary" variant="subtitle2" width="50%">
-                  <Skeleton />
-                </Typography>
-              </Stack>
-            ))}
-          </Fragment>
-        }
-      >
-        <Inner fetcher={fetcher} />
-      </Suspense>
-    </Stack>
-  )
-})
+export const ProjectCardMetadata: FC<Props> = memo(
+  ({ project: { uuid, metadata } }) => {
+    return (
+      <Stack>
+        <Suspense
+          fallback={
+            <Fragment>
+              {["created", "accessed", "modified"].map(
+                (label, index) => (
+                  <Stack
+                    key={`item-${index}`}
+                    spacing={1}
+                    flexDirection="row"
+                    useFlexGap
+                    flexWrap="wrap"
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      color="textSecondary"
+                    >
+                      {`${label}:`}
+                    </Typography>
+                    <Typography
+                      color="textSecondary"
+                      variant="subtitle2"
+                      width="50%"
+                    >
+                      <Skeleton />
+                    </Typography>
+                  </Stack>
+                ),
+              )}
+            </Fragment>
+          }
+        >
+          <Inner fetcher={metadata} />
+        </Suspense>
+      </Stack>
+    )
+  },
+)

@@ -1,47 +1,64 @@
 import moment from "moment"
+import {
+  isLeft,
+  left,
+  right,
+  type Either,
+} from "fp-ts/lib/Either"
 import { v4 } from "uuid"
-import { z } from "zod/v4"
 import { getDb } from "./db"
 import { type ProjectDto } from "./models/project/dto/project-dto"
+import {
+  projectSchema,
+  type Project,
+} from "./models/project/project"
 import { addTechManyByName } from "./technologies"
 import { addTopicManyByName } from "./topics"
+import { statDir } from "~/api/fs"
 
-export const listProjects = async () => {
-  return (await getDb()).getAll("projects")
+export const listProjects = async (): Promise<
+  Either<
+    Error,
+    (Project & {
+      metadata: ReturnType<typeof getProjectRootMetadata>
+    })[]
+  >
+> => {
+  return getDb()
+    .then((db) => db.getAll("projects"))
+    .then((result) => projectSchema.array().parseAsync(result))
+    .then((result) =>
+      right(
+        result.map((item) => ({
+          ...item,
+          metadata: getProjectRootMetadata(item.root),
+        })),
+      ),
+    )
+    .catch((err) => left<Error>(err))
 }
 
 export const getProjectRootMetadata = async (root: string) => {
-  const respond = await window.fs.statDir(root)
-  const result = z
-    .object({
-      birthtimeMs: z.number().nonnegative(),
-      atimeMs: z.number().nonnegative(),
-      mtimeMs: z.number().nonnegative(),
+  return statDir(root).then((result) => {
+    if (isLeft(result)) {
+      return result
+    }
+    const { atimeMs, birthtimeMs, mtimeMs } = result.right
+    return right({
+      ctime: {
+        fromNow: moment(birthtimeMs).fromNow(),
+        exact: moment(birthtimeMs).toLocaleString(),
+      },
+      mtime: {
+        fromNow: moment(mtimeMs).fromNow(),
+        exact: moment(mtimeMs).toLocaleString(),
+      },
+      atime: {
+        fromNow: moment(atimeMs).fromNow(),
+        exact: moment(atimeMs).toLocaleString(),
+      },
     })
-
-    .safeParse(respond)
-  if (!result.success) {
-    return null
-  }
-
-  if (result.data === null) {
-    return null
-  }
-  const { atimeMs, birthtimeMs, mtimeMs } = result.data
-  return {
-    ctime: {
-      fromNow: moment(birthtimeMs).fromNow(),
-      exact: moment(birthtimeMs).toLocaleString(),
-    },
-    mtime: {
-      fromNow: moment(mtimeMs).fromNow(),
-      exact: moment(mtimeMs).toLocaleString(),
-    },
-    atime: {
-      fromNow: moment(atimeMs).fromNow(),
-      exact: moment(atimeMs).toLocaleString(),
-    },
-  }
+  })
 }
 
 export const getProjectByUuid = async (uuid: string) => {

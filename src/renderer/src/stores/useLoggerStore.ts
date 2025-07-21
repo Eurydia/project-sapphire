@@ -1,5 +1,7 @@
 import { create } from "zustand"
+import { subscribeWithSelector } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
+
 export const LogLevel = {
   trace: "trace",
   info: "info",
@@ -25,6 +27,7 @@ type Action = {
     },
   ) => T
   logNotice: (msg: string) => void
+  logWarn: (msg: string) => void
   logInfo: (msg: string) => void
   logError: (msg: string) => void
 }
@@ -39,33 +42,40 @@ const newLog = (
 })
 
 export const useLoggerStore = create<State & Action>()(
-  immer((set) => ({
-    logs: [] as State["logs"],
-    beforePromise: (
-      p,
-      msg,
-      options = { level: LogLevel.info },
-    ) => {
-      set(
-        (state) =>
-          void state.logs.push(newLog(msg, options.level)),
-      )
-      return p
-    },
-    logError: (msg) =>
-      set(
-        (draft) =>
-          void draft.logs.push(newLog(msg, LogLevel.error)),
-      ),
-    logNotice: (msg) =>
-      set(
-        (draft) =>
-          void draft.logs.push(newLog(msg, LogLevel.notice)),
-      ),
-    logInfo: (msg) =>
-      set(
-        (draft) =>
-          void draft.logs.push(newLog(msg, LogLevel.info)),
-      ),
-  })),
+  immer(
+    subscribeWithSelector((set) => ({
+      logs: [] as State["logs"],
+      beforePromise: (
+        p,
+        msg,
+        options = { level: LogLevel.info },
+      ) => {
+        set(
+          (state) =>
+            void state.logs.push(newLog(msg, options.level)),
+        )
+        return p
+      },
+      logError: (msg) =>
+        set(
+          (state) =>
+            void state.logs.push(newLog(msg, LogLevel.error)),
+        ),
+      logNotice: (msg) =>
+        set(
+          (draft) =>
+            void draft.logs.push(newLog(msg, LogLevel.notice)),
+        ),
+      logInfo: (msg) =>
+        set(
+          (state) =>
+            void state.logs.push(newLog(msg, LogLevel.info)),
+        ),
+      logWarn: (msg) =>
+        set(
+          (state) =>
+            void state.logs.push(newLog(msg, LogLevel.warn)),
+        ),
+    })),
+  ),
 )

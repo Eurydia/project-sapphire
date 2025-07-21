@@ -1,5 +1,5 @@
-import { CssBaseline, Grid, ThemeProvider } from "@mui/material"
-import { Outlet, createRootRoute } from "@tanstack/react-router"
+import { CssBaseline, ThemeProvider } from "@mui/material"
+import { createRootRoute, Outlet } from "@tanstack/react-router"
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 import { ToastContainer } from "react-toastify"
 import { globalStyle } from "~/app/global-style"
@@ -13,14 +13,9 @@ export const Route = createRootRoute({
         <ThemeProvider theme={theme}>
           {globalStyle}
           <CssBaseline />
-          <Grid container spacing={1}>
-            <Grid size={{ md: "grow" }}>
-              <Outlet />
-            </Grid>
-            <Grid size={{ md: 12 }} sx={{ height: "200px" }}>
-              <LogInspector />
-            </Grid>
-          </Grid>
+          <LogInspector>
+            <Outlet />
+          </LogInspector>
         </ThemeProvider>
         <ToastContainer pauseOnFocusLoss={false} />
         <TanStackRouterDevtools position="top-left" />

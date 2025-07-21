@@ -1,4 +1,4 @@
-import { Stack, TextField } from "@mui/material"
+import { Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import type { FC } from "react"
 import { memo } from "react"
@@ -14,8 +14,7 @@ const RouteComponent: FC = memo(() => {
 
   return (
     <Stack spacing={1}>
-      <TextField fullWidth size="small" />
-      <ProjectList dense items={projects} />
+      <ProjectList fetcher={projects} />
     </Stack>
   )
 })
@@ -23,17 +22,16 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/")({
   component: RouteComponent,
   loader: async () => {
-    const { beforePromise, logNotice } =
-      useLoggerStore.getState()
+    const { beforePromise } = useLoggerStore.getState()
+
     return {
-      projects: await beforePromise(
+      projects: beforePromise(
         listProjects(),
         "fetching projects",
-        { level: LogLevel.info },
-      ).then((res) => {
-        logNotice(`fetched ok with ${res.length} items`)
-        return res
-      }),
+        {
+          level: LogLevel.notice,
+        },
+      ),
     }
   },
 })

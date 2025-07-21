@@ -27,6 +27,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "allowUnreachableCode": true,
     "composite": true,
     "baseUrl": ".",
     "paths": {

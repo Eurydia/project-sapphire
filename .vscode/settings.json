@@ -23,7 +23,7 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.sortImports": "explicit",
-    "source.organizeImports": "explicit"
+    "source.organizeImports": "explicit",
+    "source.sortImports": "explicit"
   }
 }

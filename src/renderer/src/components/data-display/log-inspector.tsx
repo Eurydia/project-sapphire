@@ -1,31 +1,175 @@
-import { Box, Stack, Typography } from "@mui/material"
-import { memo, type FC } from "react"
-import { useLoggerStore } from "~/stores/useLoggerStore"
+import {
+  Box,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  lighten,
+  Stack,
+  styled,
+  Toolbar,
+  Typography,
+  useTheme,
+} from "@mui/material"
+import {
+  memo,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+  type ReactNode,
+} from "react"
+import {
+  Panel,
+  PanelGroup,
+  PanelResizeHandle,
+} from "react-resizable-panels"
+import {
+  LogLevel,
+  useLoggerStore,
+} from "~/stores/useLoggerStore"
 
-export const LogInspector: FC = memo(() => {
+const StyledHandle = styled(PanelResizeHandle)(
+  ({
+    theme: {
+      palette: {
+        divider,
+        background: { paper },
+      },
+    },
+  }) => ({
+    backgroundColor: divider,
+    width: "auto",
+    height: 5,
+    "&[data-resize-handle-state=drag]": {
+      backgroundColor: lighten(paper, 0.4),
+    },
+  }),
+)
+
+type Props = { children: ReactNode }
+export const LogInspector: FC<Props> = memo(({ children }) => {
+  const ref = useRef<HTMLDivElement>(undefined)
   const logs = useLoggerStore((state) => state.logs)
+  const {
+    palette: { divider },
+  } = useTheme()
+  const colormap: { [k in keyof typeof LogLevel]: string } =
+    useMemo(() => {
+      return {
+        error: "#E53935",
+        warn: "#FB8C00",
+        info: "#43A047",
+        notice: "#00ACC1",
+        trace: "#1E88E5",
+      }
+    }, [])
+
+  const [levels, setLevels] = useState({
+    error: true,
+    warn: true,
+    info: true,
+    notice: true,
+  })
+
+  const unSub = useLoggerStore.subscribe(
+    (state) => state.logs,
+    () => {
+      console.debug("changed")
+      if (ref.current === undefined) {
+        return
+      }
+      ref.current.scrollTo({ top: ref.current.scrollHeight })
+    },
+  )
+
+  const logItems = useMemo(() => {
+    return logs.filter((log) => levels[log.level])
+  }, [logs, levels])
+
   return (
     <Box
       sx={{
-        overflow: "auto",
-        top: "auto",
-        bottom: 0,
-        position: "fixed",
+        height: "100vh",
         width: "100%",
-        padding: 2,
-        height: "200px",
-        borderWidth: "1px 0px 0px 0px",
-        borderStyle: "solid",
-        borderColor: "divider",
       }}
     >
-      <Stack>
-        {logs.map(({ datetime, level, msg }, index) => (
-          <Stack key={`${datetime}-${index}`}>
-            <Typography>{`[${level}] ${datetime}: ${msg}`}</Typography>
-          </Stack>
-        ))}
-      </Stack>
+      <PanelGroup direction="vertical">
+        <Panel defaultSize={30}>{children}</Panel>
+        <StyledHandle />
+        <Panel defaultSize={15} maxSize={80} minSize={15}>
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Toolbar variant="dense">
+              {Object.entries(levels).map(([key, value]) => (
+                <FormControlLabel
+                  key={`level-selector-${key}`}
+                  control={
+                    <Checkbox
+                      checked={value}
+                      onChange={(_, value) =>
+                        setLevels((prev) => {
+                          const next = { ...prev }
+                          next[key] = value
+                          return next
+                        })
+                      }
+                    />
+                  }
+                  label={key}
+                />
+              ))}
+            </Toolbar>
+            <Divider flexItem />
+            <Box
+              component="div"
+              ref={ref}
+              sx={{
+                overflow: "auto",
+                flexBasis: 0,
+                flexGrow: 1,
+                padding: 2,
+                scrollbarGutter: "stable",
+                scrollbarColor: "transparent transparent",
+                "&:hover": {
+                  scrollbarColor: `${divider} transparent`,
+                },
+              }}
+            >
+              <Stack>
+                {logItems.map(
+                  ({ datetime, level, msg }, index) => {
+                    return (
+                      <Stack key={`${datetime}-${index}`}>
+                        <Stack spacing={1} flexDirection="row">
+                          <Typography
+                            color="textSecondary"
+                            whiteSpace="nowrap"
+                          >
+                            {`${datetime}`}
+                          </Typography>
+                          <Typography
+                            fontWeight="900"
+                            color={colormap[level]}
+                            whiteSpace="nowrap"
+                          >
+                            {`[${level}]`}
+                          </Typography>
+                          <Typography>{`${msg}`}</Typography>
+                        </Stack>
+                      </Stack>
+                    )
+                  },
+                )}
+              </Stack>
+            </Box>
+          </Box>
+        </Panel>
+      </PanelGroup>
     </Box>
   )
 })
