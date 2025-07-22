@@ -1,4 +1,8 @@
 import {
+  VisibilityOffRounded,
+  VisibilityRounded,
+} from "@mui/icons-material"
+import {
   Box,
   Checkbox,
   Divider,
@@ -51,7 +55,7 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
   const ref = useRef<HTMLDivElement>(undefined)
   const logs = useLoggerStore((state) => state.logs)
   const {
-    palette: { divider },
+    palette: { divider, text },
   } = useTheme()
   const colormap: { [k in keyof typeof LogLevel]: string } =
     useMemo(() => {
@@ -71,10 +75,9 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
     notice: true,
   })
 
-  const unSub = useLoggerStore.subscribe(
+  useLoggerStore.subscribe(
     (state) => state.logs,
     () => {
-      console.debug("changed")
       if (ref.current === undefined) {
         return
       }
@@ -94,7 +97,11 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
       }}
     >
       <PanelGroup direction="vertical">
-        <Panel defaultSize={30}>{children}</Panel>
+        <Panel defaultSize={30}>
+          <Box sx={{ height: "100%", overflow: "auto" }}>
+            {children}
+          </Box>
+        </Panel>
         <StyledHandle />
         <Panel defaultSize={15} maxSize={80} minSize={15}>
           <Box
@@ -110,6 +117,13 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
                   key={`level-selector-${key}`}
                   control={
                     <Checkbox
+                      disableTouchRipple
+                      icon={<VisibilityOffRounded />}
+                      checkedIcon={
+                        <VisibilityRounded
+                          htmlColor={text.primary}
+                        />
+                      }
                       checked={value}
                       onChange={(_, value) =>
                         setLevels((prev) => {
@@ -120,6 +134,15 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
                       }
                     />
                   }
+                  slotProps={{
+                    typography: {
+                      sx: {
+                        textDecorationLine: value
+                          ? undefined
+                          : "line-through",
+                      },
+                    },
+                  }}
                   label={key}
                 />
               ))}

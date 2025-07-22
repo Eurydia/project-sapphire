@@ -15,9 +15,13 @@ export const Route = createRootRoute({
           <CssBaseline />
           <LogInspector>
             <Outlet />
+            <ToastContainer
+              toastStyle={{ fontFamily: "monospace" }}
+              pauseOnFocusLoss={false}
+              position="bottom-left"
+            />
           </LogInspector>
         </ThemeProvider>
-        <ToastContainer pauseOnFocusLoss={false} />
         <TanStackRouterDevtools position="top-left" />
       </>
     )

@@ -9,14 +9,15 @@ import {
   useMemo,
   type FC,
 } from "react"
-import type { Project } from "~/db/models/project/project"
+import type {
+  Project,
+  ProjectWithMetadata,
+} from "~/db/models/project/project"
 import { getProjectRootMetadata } from "~/db/projects"
 import { useLoggerStore } from "~/stores/useLoggerStore"
 
 type InnerProps = {
-  fetcher: Promise<
-    Awaited<ReturnType<typeof getProjectRootMetadata>>
-  >
+  fetcher: ProjectWithMetadata["metadata"]
 }
 const Inner: FC<InnerProps> = memo(({ fetcher }) => {
   const { logNotice, logWarn } = useLoggerStore()
@@ -72,8 +73,8 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
             {`${label}:`}
           </Typography>
           {value === undefined && (
-            <Typography variant="subtitle2" color="error">
-              {`unknown`}
+            <Typography variant="subtitle2" color="warning">
+              {`unavailable`}
             </Typography>
           )}
           {value !== undefined && (
@@ -96,7 +97,7 @@ type Props = {
   }
 }
 export const ProjectCardMetadata: FC<Props> = memo(
-  ({ project: { uuid, metadata } }) => {
+  ({ project: { metadata } }) => {
     return (
       <Stack>
         <Suspense
@@ -120,7 +121,6 @@ export const ProjectCardMetadata: FC<Props> = memo(
                     <Typography
                       color="textSecondary"
                       variant="subtitle2"
-                      width="50%"
                     >
                       <Skeleton />
                     </Typography>

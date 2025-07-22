@@ -1,5 +1,5 @@
 import {
-  EditOutlined,
+  EditRounded,
   FolderOpenOutlined,
   PushPin,
   PushPinOutlined,
@@ -16,159 +16,179 @@ import {
 import { useRouter } from "@tanstack/react-router"
 import type { FC } from "react"
 import { Fragment, memo, useCallback } from "react"
+import { toast } from "react-toastify"
 import { openPath } from "~/api/fs"
 import { StyledLink } from "~/components/navigation/styled-link"
-import type { Project } from "~/db/models/project/project"
-import {
-  getProjectRootMetadata,
-  pinProject,
-  unpinProject,
-} from "~/db/projects"
+import type { ProjectWithMetadata } from "~/db/models/project/project"
+import { pinProject, unpinProject } from "~/db/projects"
+import { useLoggerStore } from "~/stores/useLoggerStore"
 import { ProjectCardMetadata } from "./project-card-metadata"
 import { ProjectCardTechList } from "./project-card-tech-list"
 import { ProjectCardTopicList } from "./project-card-topic-list"
 
 type Props = {
-  project: Project & {
-    metadata: ReturnType<typeof getProjectRootMetadata>
-  }
-  dense?: boolean
+  project: ProjectWithMetadata
 }
-export const ProjectCard: FC<Props> = memo(
-  ({ project, dense }) => {
-    const {
-      typography: { monospaceFontFamily, serifFontFamily },
-      breakpoints,
-    } = useTheme()
-    const isSmallScreen = useMediaQuery(breakpoints.down("md"))
+export const ProjectCard: FC<Props> = memo(({ project }) => {
+  const {
+    typography: { monospaceFontFamily, serifFontFamily },
+    breakpoints,
+  } = useTheme()
+  const isSmallScreen = useMediaQuery(breakpoints.down("md"))
+  const { logWarn, logNotice } = useLoggerStore()
+  const router = useRouter()
 
-    const router = useRouter()
+  const handleTogglePin = useCallback(() => {
+    if (project.pinned === 0) {
+      logNotice(`unpinning project {uuid: ${project.uuid}}`)
+      unpinProject(project.uuid).then(
+        () => {
+          logNotice(
+            `project {uuid: ${project.uuid}} is no longer pinned`,
+          )
+          toast.success("project is no longer pinned")
+          router.invalidate()
+        },
+        (err) => {
+          logWarn(
+            `failed to unpin project {uuid: ${project.uuid}}; ${err}`,
+          )
+          toast.warn("failed to unpin project")
+        },
+      )
+    } else {
+      logNotice(`pinning project {uuid: ${project.uuid}}`)
+      pinProject(project.uuid).then(
+        () => {
+          logNotice(
+            `project {uuid: ${project.uuid}} is now pinned`,
+          )
+          toast.success("project is now pinned")
+          router.invalidate()
+        },
+        (err) => {
+          logWarn(
+            `failed to pin project {uuid: ${project.uuid}}; ${err}`,
+          )
+          toast.warn("failed to pin project")
+        },
+      )
+    }
+  }, [project.pinned, project.uuid, router, logNotice, logWarn])
 
-    // const metadataItems = useMemo(() => {
-    //   return [
-    //     { label: 'created', value: project.metadata?.ctime.fromNow },
-    //     {
-    //       label: 'accessed',
-    //       value: project.metadata?.atime.fromNow
-    //     },
-    //     {
-    //       label: 'modified',
-    //       value: project.metadata?.mtime.fromNow
-    //     }
-    //   ]
-    // }, [project.metadata])
+  const handleOpenRoot = useCallback(() => {
+    logNotice(`opening root for project ${project.uuid}`)
+    openPath(project.root).then(
+      () => {
+        logNotice(`opened project root`)
+        toast.success("opened in system explorer")
+      },
+      (err) => {
+        logWarn(`failed to open project root: ${err}`)
+        toast.warn("failed to openz")
+      },
+    )
+  }, [project.root, project.uuid, logWarn, logNotice])
 
-    const handleTogglePin = useCallback(() => {
-      if (project.pinned) {
-        unpinProject(project.uuid).then(() =>
-          router.invalidate(),
-        )
-      } else {
-        pinProject(project.uuid).then(() => router.invalidate())
-      }
-    }, [project.pinned, project.uuid, router])
-
-    return (
-      <Paper variant="outlined">
+  return (
+    <Paper variant="outlined">
+      <Stack
+        direction={{ xs: "column-reverse", md: "row" }}
+        spacing={2}
+        divider={
+          <Divider
+            flexItem
+            orientation={
+              isSmallScreen ? "horizontal" : "vertical"
+            }
+          />
+        }
+      >
         <Stack
-          direction={{ xs: "column-reverse", md: "row" }}
-          spacing={2}
-          divider={
-            <Divider
-              flexItem
-              orientation={
-                isSmallScreen ? "horizontal" : "vertical"
-              }
-            />
-          }
+          spacing={3}
+          flexBasis={0}
+          flexGrow={1}
+          component="div"
         >
-          <Stack
-            spacing={3}
-            flexBasis={0}
-            flexGrow={1}
-            component="div"
-          >
-            {dense && (
-              <Stack>
-                <Fragment>
-                  <Typography
-                    fontFamily={monospaceFontFamily}
-                    variant="subtitle2"
-                    color="textSecondary"
-                  >
-                    {project.uuid}
-                  </Typography>
-                  <Typography
-                    fontFamily={monospaceFontFamily}
-                    variant="subtitle2"
-                    color="textSecondary"
-                  >
-                    {project.root}
-                  </Typography>
-                </Fragment>
-              </Stack>
-            )}
-            <Stack>
+          <Stack>
+            <Fragment>
               <Typography
-                fontFamily={serifFontFamily}
-                variant="h4"
-                component="div"
-                sx={{ width: "fit-content" }}
+                fontFamily={monospaceFontFamily}
+                variant="subtitle2"
+                color="textSecondary"
               >
-                <StyledLink
-                  to={"/projects/$uuid/edit"}
-                  params={{ uuid: project.uuid }}
-                >
-                  {project.name}
-                </StyledLink>
+                {project.uuid}
               </Typography>
-              {project.description !== "" && (
-                <Typography fontFamily={serifFontFamily}>
-                  {project.description}
-                </Typography>
-              )}
-            </Stack>
-
-            <ProjectCardMetadata project={project} />
-            <Stack spacing={0.5}>
-              <ProjectCardTechList
-                techUuids={project.techUuids}
-              />
-              <ProjectCardTopicList
-                topicUuids={project.topicUuids}
-              />
-            </Stack>
+              <Typography
+                fontFamily={monospaceFontFamily}
+                variant="subtitle2"
+                color="textSecondary"
+              >
+                {project.root}
+              </Typography>
+            </Fragment>
           </Stack>
-          <Stack
-            spacing={2}
-            flexBasis={0}
-            flexGrow={0}
-            component="div"
-            direction={{ xs: "row", md: "column" }}
-          >
-            <IconButton onClick={handleTogglePin}>
-              {project.pinned ? (
-                <PushPin />
-              ) : (
-                <PushPinOutlined />
-              )}
-            </IconButton>
-            <IconButton
-              onClick={() =>
-                router.navigate({
-                  to: "/projects/$uuid/edit",
-                  params: { uuid: project.uuid },
-                })
-              }
+          <Stack>
+            <Typography
+              fontFamily={serifFontFamily}
+              variant="h4"
+              component="div"
+              sx={{
+                width: "fit-content",
+                textWrap: "pretty",
+                wordBreak: "break-all",
+              }}
             >
-              <EditOutlined />
-            </IconButton>
-            <IconButton onClick={() => openPath(project.root)}>
-              <FolderOpenOutlined />
-            </IconButton>
+              <StyledLink
+                to={"/projects/$uuid/edit"}
+                params={{ uuid: project.uuid }}
+              >
+                {project.name}
+              </StyledLink>
+            </Typography>
+            {project.description !== "" && (
+              <Typography fontFamily={serifFontFamily}>
+                {project.description}
+              </Typography>
+            )}
+          </Stack>
+
+          <ProjectCardMetadata project={project} />
+          <Stack spacing={0.5}>
+            <ProjectCardTechList techUuids={project.techUuids} />
+            <ProjectCardTopicList
+              topicUuids={project.topicUuids}
+            />
           </Stack>
         </Stack>
-      </Paper>
-    )
-  },
-)
+        <Stack
+          spacing={2}
+          flexBasis={0}
+          flexGrow={0}
+          direction={{ xs: "row", md: "column" }}
+        >
+          <IconButton onClick={handleTogglePin}>
+            {project.pinned === 0 ? (
+              <PushPin />
+            ) : (
+              <PushPinOutlined />
+            )}
+          </IconButton>
+          <IconButton
+            onClick={() =>
+              router.navigate({
+                to: "/projects/$uuid/edit",
+                params: { uuid: project.uuid },
+              })
+            }
+          >
+            <EditRounded />
+          </IconButton>
+          <IconButton onClick={handleOpenRoot}>
+            <FolderOpenOutlined />
+          </IconButton>
+        </Stack>
+      </Stack>
+    </Paper>
+  )
+})

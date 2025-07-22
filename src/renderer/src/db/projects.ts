@@ -1,40 +1,36 @@
-import moment from "moment"
 import {
   isLeft,
   left,
   right,
   type Either,
 } from "fp-ts/lib/Either"
+import moment from "moment"
 import { v4 } from "uuid"
+import { statDir } from "~/api/fs"
 import { getDb } from "./db"
 import { type ProjectDto } from "./models/project/dto/project-dto"
 import {
   projectSchema,
-  type Project,
+  type ProjectWithMetadata,
 } from "./models/project/project"
 import { addTechManyByName } from "./technologies"
 import { addTopicManyByName } from "./topics"
-import { statDir } from "~/api/fs"
 
 export const listProjects = async (): Promise<
-  Either<
-    Error,
-    (Project & {
-      metadata: ReturnType<typeof getProjectRootMetadata>
-    })[]
-  >
+  Either<Error, ProjectWithMetadata[]>
 > => {
   return getDb()
-    .then((db) => db.getAll("projects"))
+    .then((db) =>
+      db.getAllFromIndex("projects", "by-pinned_name"),
+    )
     .then((result) => projectSchema.array().parseAsync(result))
     .then((result) =>
-      right(
-        result.map((item) => ({
-          ...item,
-          metadata: getProjectRootMetadata(item.root),
-        })),
-      ),
+      result.map((item) => ({
+        ...item,
+        metadata: getProjectRootMetadata(item.root),
+      })),
     )
+    .then((result) => right(result))
     .catch((err) => left<Error>(err))
 }
 
@@ -78,7 +74,7 @@ export const createProject = async (dto: ProjectDto) => {
     root: dto.root,
     techUuids,
     topicUuids,
-    pinned: false,
+    pinned: 1,
     uuid: v4(),
   })
 
@@ -94,7 +90,7 @@ export const pinProject = async (uuid: string) => {
   if (project === undefined) {
     return null
   }
-  project.pinned = true
+  project.pinned = 0
   await store.put(project)
   await tx.done
   return project
@@ -107,9 +103,9 @@ export const unpinProject = async (uuid: string) => {
 
   const project = await store.get(uuid)
   if (project === undefined) {
-    return null
+    throw new Error(`Project with uuid '${uuid}' does not exist`)
   }
-  project.pinned = false
+  project.pinned = 1
   await store.put(project)
   await tx.done
   return project
@@ -131,7 +127,7 @@ export const upsertProject = async (
     name: dto.name,
     root: dto.root,
     description: dto.description,
-    pinned: project === undefined ? false : project.pinned,
+    pinned: project === undefined ? 1 : project.pinned,
     techUuids,
     topicUuids,
     uuid,

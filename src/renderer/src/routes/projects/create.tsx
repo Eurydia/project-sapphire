@@ -7,7 +7,6 @@ import { ProjectForm } from "~/components/form/ProjectForm"
 import { createProject } from "~/db/projects"
 import { listTech } from "~/db/technologies"
 import { listTopic } from "~/db/topics"
-import { useLoggerStore } from "~/stores/useLoggerStore"
 
 const RouteComponent: FC = memo(() => {
   const { options } = Route.useLoaderData()
@@ -34,8 +33,6 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/create")({
   component: RouteComponent,
   loader: async () => {
-    const { logNotice } = useLoggerStore.getState()
-    logNotice("landed on '/project/create'")
     return {
       options: {
         topics: (await listTopic()).map(({ name }) => name),
