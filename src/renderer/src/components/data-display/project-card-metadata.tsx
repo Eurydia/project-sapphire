@@ -33,31 +33,33 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
     }
   }, [result, logNotice, logWarn])
 
-  const items: { label: string; value?: string }[] =
-    useMemo(() => {
-      if (isLeft(result)) {
-        return [
-          { label: "created" },
-          { label: "accessed" },
-          { label: "modified" },
-        ]
-      }
-      const { ctime, atime, mtime } = result.right
+  const items: {
+    label: string
+    value?: { fromNow: string; exact: string }
+  }[] = useMemo(() => {
+    if (isLeft(result)) {
       return [
-        {
-          label: "created",
-          value: `${ctime.fromNow} (${ctime.exact})`,
-        },
-        {
-          label: "accessed",
-          value: `${atime.fromNow} (${atime.exact})`,
-        },
-        {
-          label: "modified",
-          value: `${mtime.fromNow} (${mtime.exact})`,
-        },
+        { label: "created" },
+        { label: "accessed" },
+        { label: "modified" },
       ]
-    }, [result])
+    }
+    const { ctime, atime, mtime } = result.right
+    return [
+      {
+        label: "created",
+        value: ctime,
+      },
+      {
+        label: "accessed",
+        value: atime,
+      },
+      {
+        label: "modified",
+        value: mtime,
+      },
+    ]
+  }, [result])
 
   return (
     <Fragment>
@@ -82,7 +84,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
               color="textSecondary"
               variant="subtitle2"
             >
-              {value}
+              {`${value.fromNow} @ ${value.exact}`}
             </Typography>
           )}
         </Stack>

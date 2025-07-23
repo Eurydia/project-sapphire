@@ -52,7 +52,7 @@ const StyledHandle = styled(PanelResizeHandle)(
 
 type Props = { children: ReactNode }
 export const LogInspector: FC<Props> = memo(({ children }) => {
-  const ref = useRef<HTMLDivElement>(undefined)
+  const ref = useRef<HTMLDivElement>(null)
   const logs = useLoggerStore((state) => state.logs)
   const {
     palette: { divider, text },
@@ -78,7 +78,7 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
   useLoggerStore.subscribe(
     (state) => state.logs,
     () => {
-      if (ref.current === undefined) {
+      if (ref.current === null) {
         return
       }
       ref.current.scrollTo({ top: ref.current.scrollHeight })
@@ -98,7 +98,17 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
     >
       <PanelGroup direction="vertical">
         <Panel defaultSize={30}>
-          <Box sx={{ height: "100%", overflow: "auto" }}>
+          <Box
+            sx={{
+              height: "100%",
+              overflow: "auto",
+              scrollbarGutter: "stable",
+              scrollbarColor: "transparent transparent",
+              "&:hover": {
+                scrollbarColor: `${divider} transparent`,
+              },
+            }}
+          >
             {children}
           </Box>
         </Panel>

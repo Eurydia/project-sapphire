@@ -1,29 +1,29 @@
-import { alpha, createTheme, lighten } from "@mui/material";
+import { createTheme } from "@mui/material"
 
 declare module "@mui/material/styles" {
   interface Palette {
     link: {
-      normal: string;
-      visited: string;
-      hover: string;
-    };
+      normal: string
+      visited: string
+      hover: string
+    }
   }
 
   interface PaletteOptions {
     link?: {
-      normal: string;
-      visited: string;
-      hover: string;
-    };
+      normal: string
+      visited: string
+      hover: string
+    }
   }
   interface TypographyVariantsOptions {
-    monospaceFontFamily: string;
-    serifFontFamily: string;
+    monospaceFontFamily: string
+    serifFontFamily: string
   }
 
   interface TypographyVariants {
-    monospaceFontFamily: string;
-    serifFontFamily: string;
+    monospaceFontFamily: string
+    serifFontFamily: string
   }
 }
 
@@ -67,16 +67,16 @@ export const theme = createTheme({
     },
   },
   palette: {
-    mode: "dark",
+    mode: "light",
     text: {
-      primary: alpha("#fff", 0.8),
-      secondary: alpha("#fff", 0.7),
-      disabled: alpha("#fff", 0.6),
+      // primary: alpha("#fff", 0.8),
+      // secondary: alpha("#fff", 0.7),
+      // disabled: alpha("#fff", 0.6),
     },
     link: {
-      normal: alpha("#fff", 0.8),
-      visited: alpha("#fff", 0.8),
-      hover: alpha(lighten("#696969", 0.5), 0.8),
+      // normal: alpha("#fff", 0.8),
+      // visited: alpha("#fff", 0.8),
+      // hover: alpha(lighten("#696969", 0.5), 0.8),
     },
   },
-});
+})

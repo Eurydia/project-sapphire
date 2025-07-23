@@ -1,6 +1,6 @@
 import {
   EditRounded,
-  FolderOpenOutlined,
+  FolderRounded,
   PushPin,
   PushPinOutlined,
 } from "@mui/icons-material"
@@ -152,7 +152,6 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
               </Typography>
             )}
           </Stack>
-
           <ProjectCardMetadata project={project} />
           <Stack spacing={0.5}>
             <ProjectCardTechList techUuids={project.techUuids} />
@@ -185,7 +184,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
             <EditRounded />
           </IconButton>
           <IconButton onClick={handleOpenRoot}>
-            <FolderOpenOutlined />
+            <FolderRounded />
           </IconButton>
         </Stack>
       </Stack>

@@ -1,4 +1,3 @@
-import { Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import type { Either } from "fp-ts/lib/Either"
 import type { FC } from "react"
@@ -11,11 +10,7 @@ import { useLoggerStore } from "~/stores/useLoggerStore"
 const RouteComponent: FC = memo(() => {
   const { projects } = Route.useLoaderData()
 
-  return (
-    <Stack spacing={1}>
-      <ProjectList fetcher={projects} />
-    </Stack>
-  )
+  return <ProjectList fetcher={projects} />
 })
 
 export const Route = createFileRoute("/projects/")({
