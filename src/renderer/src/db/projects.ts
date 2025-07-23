@@ -139,5 +139,5 @@ export const upsertProject = async (
     await store.put(entry)
   }
   await tx.done
-  return entry
+  return uuid
 }
