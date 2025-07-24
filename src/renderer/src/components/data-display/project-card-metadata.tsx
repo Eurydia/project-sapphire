@@ -14,18 +14,19 @@ import { useLoggerStore } from "~/stores/useLoggerStore"
 
 type InnerProps = {
   fetcher: ProjectWithMetadata["metadata"]
+  uuid: ProjectWithMetadata["uuid"]
 }
-const Inner: FC<InnerProps> = memo(({ fetcher }) => {
+const Inner: FC<InnerProps> = memo(({ fetcher, uuid }) => {
   const { logNotice, logWarn } = useLoggerStore()
   const result = use(fetcher)
 
   useEffect(() => {
     if (isLeft(result)) {
       logWarn(
-        `failed to fetch project root metadata: ${String(result.left)}`,
+        `failed to resolve metadata promise for ${uuid}: ${String(result.left)}`,
       )
     } else {
-      logNotice(`fetched project root metadata ok`)
+      logNotice(`resolved metadata promise for ${uuid}`)
     }
   }, [result, logNotice, logWarn])
 
@@ -93,7 +94,7 @@ type Props = {
   project: ProjectWithMetadata
 }
 export const ProjectCardMetadata: FC<Props> = memo(
-  ({ project: { metadata } }) => {
+  ({ project: { metadata, uuid } }) => {
     return (
       <Stack>
         <Suspense
@@ -126,7 +127,7 @@ export const ProjectCardMetadata: FC<Props> = memo(
             </Fragment>
           }
         >
-          <Inner fetcher={metadata} />
+          <Inner fetcher={metadata} uuid={uuid} />
         </Suspense>
       </Stack>
     )

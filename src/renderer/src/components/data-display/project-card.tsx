@@ -85,7 +85,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
       },
       (err) => {
         logWarn(`failed to open project root: ${err}`)
-        toast.warn("failed to openz")
+        toast.warn("failed to open root")
       },
     )
   }, [project.root, project.uuid, logWarn, logNotice])

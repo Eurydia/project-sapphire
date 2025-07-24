@@ -7,29 +7,18 @@ import {
 } from "@mui/material"
 import { isLeft, type Either } from "fp-ts/lib/Either"
 import type { FC } from "react"
-import { Fragment, memo, Suspense, use, useEffect } from "react"
+import { Fragment, memo, Suspense, use } from "react"
 import { ProjectCard } from "~/components/data-display/project-card"
 import { StyledLink } from "~/components/navigation/styled-link"
 import type { ProjectWithMetadata } from "~/db/models/project/project"
-import { useLoggerStore } from "~/stores/useLoggerStore"
 import { ProjectCardSkeleton } from "./project-card-skeleton"
 
 type InnerProps = {
   fetcher: Props["fetcher"]
 }
 const Inner: FC<InnerProps> = memo(({ fetcher }) => {
-  const { logError, logNotice } = useLoggerStore()
   const result = use(fetcher)
 
-  useEffect(() => {
-    if (isLeft(result)) {
-      logError(
-        `failed to fetch projects: ${String(result.left)}`,
-      )
-    } else {
-      logNotice(`done fetching projects`)
-    }
-  }, [result, logError, logNotice])
   if (isLeft(result)) {
     return (
       <Grid size="grow">
