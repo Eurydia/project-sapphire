@@ -1,5 +1,5 @@
 import { Paper } from "@mui/material"
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import type { FC } from "react"
 import { memo, useCallback } from "react"
 import { toast } from "react-toastify"
@@ -33,7 +33,6 @@ const RouteComponent: FC = memo(() => {
   )
   return (
     <Paper variant="outlined">
-      <Link to="/projects">Back</Link>
       <ProjectForm action={handleSubmit} formOptions={options} />
     </Paper>
   )

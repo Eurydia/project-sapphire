@@ -9,11 +9,7 @@ import {
   useMemo,
   type FC,
 } from "react"
-import type {
-  Project,
-  ProjectWithMetadata,
-} from "~/db/models/project/project"
-import { getProjectRootMetadata } from "~/db/projects"
+import type { ProjectWithMetadata } from "~/db/models/project/project"
 import { useLoggerStore } from "~/stores/useLoggerStore"
 
 type InnerProps = {
@@ -94,9 +90,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
 })
 
 type Props = {
-  project: Project & {
-    metadata: ReturnType<typeof getProjectRootMetadata>
-  }
+  project: ProjectWithMetadata
 }
 export const ProjectCardMetadata: FC<Props> = memo(
   ({ project: { metadata } }) => {

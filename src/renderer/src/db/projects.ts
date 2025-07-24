@@ -58,7 +58,9 @@ export const getProjectRootMetadata = async (root: string) => {
 }
 
 export const getProjectByUuid = async (uuid: string) => {
-  return (await getDb()).get("projects", uuid)
+  return (await getDb())
+    .get("projects", uuid)
+    .then(projectSchema.parseAsync)
 }
 
 export const createProject = async (dto: ProjectDto) => {

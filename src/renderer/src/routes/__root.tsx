@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify"
 import { globalStyle } from "~/app/global-style"
 import { theme } from "~/app/theme"
 import { LogInspector } from "~/components/data-display/log-inspector"
+import { NavBreadcrumbs } from "~/components/navigation/nav-breacrumb"
 
 export const Route = createRootRoute({
   component: () => {
@@ -14,6 +15,7 @@ export const Route = createRootRoute({
           {globalStyle}
           <CssBaseline />
           <LogInspector>
+            <NavBreadcrumbs />
             <Outlet />
             <ToastContainer
               toastStyle={{ fontFamily: "monospace" }}
@@ -22,7 +24,7 @@ export const Route = createRootRoute({
             />
           </LogInspector>
         </ThemeProvider>
-        <TanStackRouterDevtools position="top-left" />
+        <TanStackRouterDevtools position="top-right" />
       </>
     )
   },
