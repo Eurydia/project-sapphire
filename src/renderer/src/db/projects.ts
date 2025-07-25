@@ -8,22 +8,72 @@ import moment from "moment"
 import { v4 } from "uuid"
 import { statDir } from "~/api/fs"
 import { getDb } from "./db"
-import { type ProjectDto } from "./models/project/dto/project-dto"
+import {
+  type ProjectDto,
+  type ProjectQuery,
+} from "./models/project/dto/project-dto"
 import {
   projectSchema,
   type ProjectWithMetadata,
 } from "./models/project/project"
-import { addTechManyByName } from "./technologies"
-import { addTopicManyByName } from "./topics"
+import {
+  addTechManyByName,
+  listTechManyByUuids,
+} from "./technologies"
+import {
+  addTopicManyByName,
+  listTopicManyByUuids,
+} from "./topics"
 
-export const listProjects = async (): Promise<
-  Either<Error, ProjectWithMetadata[]>
-> => {
+export const listProjects = async (
+  query: ProjectQuery | undefined = undefined,
+): Promise<Either<Error, ProjectWithMetadata[]>> => {
   return getDb()
     .then((db) =>
       db.getAllFromIndex("projects", "by-pinned_name"),
     )
     .then((result) => projectSchema.array().parseAsync(result))
+    .then(async (result) => {
+      if (query === undefined) {
+        return result
+      }
+      console.debug(JSON.stringify(query))
+      const names = new Set(query.names)
+      const topicTags = new Set(query.topicTags)
+      const techTags = new Set(query.techTags)
+      const items: typeof result = []
+      for (const item of result) {
+        if (names.size > 0 && !names.has(item.name)) {
+          continue
+        }
+
+        const topics = await listTopicManyByUuids(
+          item.topicUuids,
+        )
+          .then((result) => result.map(({ name }) => name))
+          .then((result) => new Set(result))
+
+        if (
+          topicTags.size > 0 &&
+          [...topicTags].some((tag) => !topics.has(tag))
+        ) {
+          continue
+        }
+
+        const tech = await listTechManyByUuids(item.techUuids)
+          .then((result) => result.map(({ name }) => name))
+          .then((result) => new Set(result))
+
+        if (
+          techTags.size > 0 &&
+          [...techTags].some((tag) => !tech.has(tag))
+        ) {
+          continue
+        }
+        items.push(item)
+      }
+      return items
+    })
     .then((result) =>
       result.map((item) => ({
         ...item,

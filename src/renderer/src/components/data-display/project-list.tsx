@@ -5,12 +5,14 @@ import {
   Stack,
   Typography,
 } from "@mui/material"
+import { useNavigate } from "@tanstack/react-router"
 import { isLeft, type Either } from "fp-ts/lib/Either"
 import type { FC } from "react"
 import { Fragment, memo, Suspense, use } from "react"
 import { ProjectCard } from "~/components/data-display/project-card"
 import { StyledLink } from "~/components/navigation/styled-link"
 import type { ProjectWithMetadata } from "~/db/models/project/project"
+import { ProjectQueryForm } from "../form/project-query-form"
 import { ProjectCardSkeleton } from "./project-card-skeleton"
 
 type InnerProps = {
@@ -59,12 +61,20 @@ type Props = {
   fetcher: Promise<Either<Error, ProjectWithMetadata[]>>
 }
 export const ProjectList: FC<Props> = memo(({ fetcher }) => {
+  const navigate = useNavigate()
   return (
     <Grid container spacing={1}>
       <Grid size={{ md: 3 }}>
         <Stack spacing={1}>
           <Paper variant="outlined">
             <StyledLink to="/projects/create">Create</StyledLink>
+          </Paper>
+          <Paper variant="outlined">
+            <ProjectQueryForm
+              onSubmit={(query) => {
+                navigate({ to: "/projects", search: query })
+              }}
+            />
           </Paper>
         </Stack>
       </Grid>

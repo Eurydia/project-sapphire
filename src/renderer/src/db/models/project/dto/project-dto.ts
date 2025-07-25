@@ -1,11 +1,11 @@
-import z from 'zod/v4'
-import { projectSchema } from '../project'
+import z from "zod/v4"
+import { projectSchema } from "../project"
 
-export const ProjectDtoSchema = projectSchema
+export const projectDtoSchema = projectSchema
   .pick({
     description: true,
     name: true,
-    root: true
+    root: true,
   })
   .extend({
     techNames: z
@@ -14,13 +14,45 @@ export const ProjectDtoSchema = projectSchema
       .nonempty()
       .normalize()
       .array()
-      .refine((args) => new Set(args).size === args.length, 'techs must be unique'),
+      .refine(
+        (args) => new Set(args).size === args.length,
+        "techs must be unique",
+      ),
     topicNames: z
       .string()
       .trim()
       .nonempty()
       .normalize()
       .array()
-      .refine((args) => new Set(args).size === args.length, 'topics must be unique')
+      .refine(
+        (args) => new Set(args).size === args.length,
+        "topics must be unique",
+      ),
   })
-export type ProjectDto = z.infer<typeof ProjectDtoSchema>
+export type ProjectDto = z.infer<typeof projectDtoSchema>
+
+export const projectQuerySchema = z.object({
+  names: z
+    .string()
+    .trim()
+    .normalize()
+    .nonempty()
+    .array()
+    .default([]),
+  techTags: z
+    .string()
+    .trim()
+    .normalize()
+    .nonempty()
+    .array()
+    .default([]),
+  topicTags: z
+    .string()
+    .trim()
+    .normalize()
+    .nonempty()
+    .array()
+    .default([]),
+})
+
+export type ProjectQuery = z.infer<typeof projectQuerySchema>

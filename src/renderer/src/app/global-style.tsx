@@ -6,11 +6,6 @@ export const globalStyle = (
       body: {
         scrollbarColor: `${lighten(theme.palette.background.paper, 0.2)} transparent`,
       } as CSSStyleDeclaration,
-      "::-webkit-scrollbar-button": {
-        display: "none",
-        width: 0,
-        height: 0,
-      },
     })}
   />
 )
