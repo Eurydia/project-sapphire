@@ -20,7 +20,7 @@ export const projectTableEntitySchema = z.object({
       "tech uuids must be unique",
     ),
   groupUuids: z.uuidv4().array().default([]),
-  pinned: z.boolean(),
+  pinned: z.coerce.boolean(),
 })
 
 export type ProjectTableEntity = z.infer<

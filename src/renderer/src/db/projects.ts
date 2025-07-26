@@ -1,9 +1,4 @@
-import {
-  isLeft,
-  left,
-  right,
-  type Either,
-} from "fp-ts/lib/Either"
+import { isLeft } from "fp-ts/lib/Either"
 import moment from "moment"
 import { v4 } from "uuid"
 import { statDir } from "~/api/fs"
@@ -12,10 +7,15 @@ import {
   type ProjectDto,
   type ProjectQuery,
 } from "./models/project/dto/project-dto"
+import type { Project } from "./models/project/project"
 import {
   projectTableEntitySchema,
-  type ProjectWithMetadata,
+  type ProjectTableEntity,
 } from "./models/project/project-table-entity"
+import {
+  addProjectGroupManyByName,
+  listProjectGroupManyByName,
+} from "./project-groups"
 import {
   addTechManyByName,
   listTechManyByUuids,
@@ -27,17 +27,15 @@ import {
 
 export const listProjects = async (
   query: ProjectQuery | undefined = undefined,
-): Promise<Either<Error, ProjectWithMetadata>[]> => {
+): Promise<Project[]> => {
   const db = await getDb()
-  const tx = db.transaction(
-    ["projects", "technologies", "topics"],
-    "readonly",
-  )
-
+  const tx = db.transaction("projects", "readonly")
   const projectStore = tx.objectStore("projects")
-
-  const entries = await projectStore.getAll()
-
+  const entries = await projectStore
+    .getAll()
+    .then((result) =>
+      projectTableEntitySchema.array().parseAsync(result),
+    )
   await tx.done
 
   let matchedEntries: typeof entries = entries
@@ -84,27 +82,45 @@ export const listProjects = async (
     )
   })
 
-  return (
-    await Promise.allSettled(
-      sortedEntries.map(async (entry) => ({
-        ...entry,
-        metadata: await getProjectRootMetadata(entry.root),
-      })),
-    )
-  ).map((result) =>
-    result.status === "fulfilled"
-      ? right(result.value)
-      : left(result.reason),
+  const projects: Promise<Project>[] = sortedEntries.map(
+    async ({
+      name,
+      pinned,
+      root,
+      description,
+      uuid,
+      groupUuids,
+      techUuids,
+      topicUuids,
+    }) => {
+      return {
+        name,
+        pinned,
+        root: {
+          path: root,
+          metadata: await getProjectRootMetadata(root),
+        },
+        description,
+        uuid,
+        tags: {
+          technologies: await listTechManyByUuids(techUuids),
+          topics: await listTopicManyByUuids(topicUuids),
+          groups: await listProjectGroupManyByName(groupUuids),
+        },
+      } satisfies Project
+    },
   )
+
+  return Promise.all(projects)
 }
 
 export const getProjectRootMetadata = async (root: string) => {
   return statDir(root).then((result) => {
     if (isLeft(result)) {
-      return result
+      return null
     }
     const { atimeMs, birthtimeMs, mtimeMs } = result.right
-    return right({
+    return {
       ctime: {
         fromNow: moment(birthtimeMs).fromNow(),
         exact: moment(birthtimeMs).toLocaleString(),
@@ -117,7 +133,7 @@ export const getProjectRootMetadata = async (root: string) => {
         fromNow: moment(atimeMs).fromNow(),
         exact: moment(atimeMs).toLocaleString(),
       },
-    })
+    }
   })
 }
 
@@ -138,6 +154,8 @@ export const createProject = async (dto: ProjectDto) => {
   const uuid = await store.add({
     name: dto.name,
     root: dto.root,
+    description: dto.description,
+    groupUuids: [],
     techUuids,
     topicUuids,
     pinned: false,
@@ -183,6 +201,9 @@ export const upsertProject = async (
 ) => {
   const techUuids = await addTechManyByName(dto.techNames)
   const topicUuids = await addTopicManyByName(dto.topicNames)
+  const groupUuids = await addProjectGroupManyByName(
+    dto.groupNames,
+  )
 
   const db = await getDb()
   const tx = db.transaction("projects", "readwrite")
@@ -196,8 +217,9 @@ export const upsertProject = async (
     pinned: project === undefined ? false : project.pinned,
     techUuids,
     topicUuids,
+    groupUuids,
     uuid,
-  }
+  } satisfies ProjectTableEntity
 
   if (project === undefined) {
     await store.add(entry)

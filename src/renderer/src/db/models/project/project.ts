@@ -24,9 +24,8 @@ export const projectSchema = z
         .trim()
         .nonempty()
         .nonoptional(),
-      metadata: projectRootMetadataSchema.optional(),
+      metadata: projectRootMetadataSchema.nullable(),
     }),
-
     tags: z.object({
       topics: topicTableEntitySchema.array(),
       technologies: technologySchema.array(),

@@ -8,10 +8,10 @@ import {
 import { useNavigate } from "@tanstack/react-router"
 import type { FC } from "react"
 import { Fragment, memo, useCallback } from "react"
-import type { Technology } from "~/db/models/technology/tech-table-entity"
+import type { ProjectGroupTableEntity } from "~/db/models/project-group/group-table-entity"
 
 type InnerProps = {
-  fetcher: Technology[]
+  fetcher: ProjectGroupTableEntity[]
 }
 const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
   const { palette } = useTheme()
@@ -19,15 +19,16 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
 
   const onClickHandleProvider = useCallback(
     (uuid: string) => () => {
-      navigate({ to: "/technologies", hash: uuid })
+      navigate({ to: "/topics", hash: uuid })
     },
     [navigate],
   )
   if (items.length === 0) {
     return (
-      <Typography variant="subtitle2" color="textSecondary">
-        {`not set`}
-      </Typography>
+      <Typography
+        variant="subtitle2"
+        color="textSecondary"
+      >{`not set`}</Typography>
     )
   }
   return (
@@ -40,8 +41,10 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
             backgroundColor: color,
             color: palette.getContrastText(color),
             "&:hover": {
-              backgroundColor: darken(color, 0.5),
-              color: palette.getContrastText(darken(color, 0.5)),
+              backgroundColor: darken(color, 0.01),
+              color: palette.getContrastText(
+                darken(color, 0.05),
+              ),
             },
           }}
           component="div"
@@ -54,9 +57,9 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
 })
 
 type Props = {
-  items: Technology[]
+  items: ProjectGroupTableEntity[]
 }
-export const ProjectCardTechList: FC<Props> = memo(
+export const ProjectCardGroupList: FC<Props> = memo(
   ({ items }) => {
     return (
       <Stack
@@ -67,7 +70,7 @@ export const ProjectCardTechList: FC<Props> = memo(
         alignItems="center"
       >
         <Typography variant="subtitle2" color="textSecondary">
-          {`tech(s):`}
+          {`group(s):`}
         </Typography>
         <Inner fetcher={items} />
       </Stack>

@@ -1,47 +1,23 @@
-import { Skeleton, Stack, Typography } from "@mui/material"
-import { isLeft } from "fp-ts/lib/Either"
-import {
-  Fragment,
-  memo,
-  Suspense,
-  use,
-  useEffect,
-  useMemo,
-  type FC,
-} from "react"
-import type { ProjectWithMetadata } from "~/db/models/project/project-table-entity"
-import { useLoggerStore } from "~/stores/useLoggerStore"
+import { Stack, Typography } from "@mui/material"
+import { Fragment, memo, useMemo, type FC } from "react"
+import type { Project } from "~/db/models/project/project"
 
 type InnerProps = {
-  fetcher: ProjectWithMetadata["metadata"]
-  uuid: ProjectWithMetadata["uuid"]
+  fetcher: Project
 }
-const Inner: FC<InnerProps> = memo(({ fetcher, uuid }) => {
-  const { logNotice, logWarn } = useLoggerStore()
-  const result = use(fetcher)
-
-  useEffect(() => {
-    if (isLeft(result)) {
-      logWarn(
-        `failed to resolve metadata promise for ${uuid}: ${String(result.left)}`,
-      )
-    } else {
-      logNotice(`resolved metadata promise for ${uuid}`)
-    }
-  }, [result, logNotice, logWarn])
-
+const Inner: FC<InnerProps> = memo(({ fetcher: project }) => {
   const items: {
     label: string
     value?: { fromNow: string; exact: string }
   }[] = useMemo(() => {
-    if (isLeft(result)) {
+    if (project.root.metadata === null) {
       return [
         { label: "created" },
         { label: "accessed" },
         { label: "modified" },
       ]
     }
-    const { ctime, atime, mtime } = result.right
+    const { ctime, atime, mtime } = project.root.metadata
     return [
       {
         label: "created",
@@ -56,7 +32,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher, uuid }) => {
         value: mtime,
       },
     ]
-  }, [result])
+  }, [project.root.metadata])
 
   return (
     <Fragment>
@@ -91,44 +67,13 @@ const Inner: FC<InnerProps> = memo(({ fetcher, uuid }) => {
 })
 
 type Props = {
-  project: ProjectWithMetadata
+  project: Project
 }
 export const ProjectCardMetadata: FC<Props> = memo(
-  ({ project: { metadata, uuid } }) => {
+  ({ project }) => {
     return (
       <Stack>
-        <Suspense
-          fallback={
-            <Fragment>
-              {["created", "accessed", "modified"].map(
-                (label, index) => (
-                  <Stack
-                    key={`item-${index}`}
-                    spacing={1}
-                    flexDirection="row"
-                    useFlexGap
-                    flexWrap="wrap"
-                  >
-                    <Typography
-                      variant="subtitle2"
-                      color="textSecondary"
-                    >
-                      {`${label}:`}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      variant="subtitle2"
-                    >
-                      <Skeleton />
-                    </Typography>
-                  </Stack>
-                ),
-              )}
-            </Fragment>
-          }
-        >
-          <Inner fetcher={metadata} uuid={uuid} />
-        </Suspense>
+        <Inner fetcher={project} />
       </Stack>
     )
   },

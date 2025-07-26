@@ -6,34 +6,17 @@ import {
   Typography,
 } from "@mui/material"
 import { useNavigate } from "@tanstack/react-router"
-import { isLeft, type Either } from "fp-ts/lib/Either"
 import type { FC } from "react"
-import { Fragment, memo, Suspense, use } from "react"
+import { Fragment, memo } from "react"
 import { ProjectCard } from "~/components/data-display/project-card"
 import { StyledLink } from "~/components/navigation/styled-link"
-import type { ProjectWithMetadata } from "~/db/models/project/project-table-entity"
+import type { Project } from "~/db/models/project/project"
 import { ProjectQueryForm } from "../form/project-query-form"
-import { ProjectCardSkeleton } from "./project-card-skeleton"
 
 type InnerProps = {
   fetcher: Props["fetcher"]
 }
-const Inner: FC<InnerProps> = memo(({ fetcher }) => {
-  const result = use(fetcher)
-
-  if (isLeft(result)) {
-    return (
-      <Grid size="grow">
-        <Alert severity="error" variant="outlined">
-          <Paper variant="outlined">
-            <Typography>{JSON.stringify(result)}</Typography>
-          </Paper>
-        </Alert>
-      </Grid>
-    )
-  }
-  const items = result.right
-
+const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
   if (items.length === 0) {
     return (
       <Alert severity="info">
@@ -58,7 +41,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
 })
 
 type Props = {
-  fetcher: Promise<Either<Error, ProjectWithMetadata[]>>
+  fetcher: Project[]
 }
 export const ProjectList: FC<Props> = memo(({ fetcher }) => {
   const navigate = useNavigate()
@@ -80,17 +63,7 @@ export const ProjectList: FC<Props> = memo(({ fetcher }) => {
       </Grid>
       <Grid size="grow">
         <Stack spacing={1}>
-          <Suspense
-            fallback={
-              <Fragment>
-                <ProjectCardSkeleton />
-                <ProjectCardSkeleton />
-                <ProjectCardSkeleton />
-              </Fragment>
-            }
-          >
-            <Inner fetcher={fetcher} />
-          </Suspense>
+          <Inner fetcher={fetcher} />
         </Stack>
       </Grid>
     </Grid>

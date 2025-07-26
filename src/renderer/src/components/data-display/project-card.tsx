@@ -19,15 +19,16 @@ import { Fragment, memo, useCallback } from "react"
 import { toast } from "react-toastify"
 import { openPath } from "~/api/fs"
 import { StyledLink } from "~/components/navigation/styled-link"
-import type { ProjectWithMetadata } from "~/db/models/project/project-table-entity"
+import type { Project } from "~/db/models/project/project"
 import { pinProject, unpinProject } from "~/db/projects"
 import { useLoggerStore } from "~/stores/useLoggerStore"
+import { ProjectCardGroupList } from "./project-card-group-list"
 import { ProjectCardMetadata } from "./project-card-metadata"
 import { ProjectCardTechList } from "./project-card-tech-list"
 import { ProjectCardTopicList } from "./project-card-topic-list"
 
 type Props = {
-  project: ProjectWithMetadata
+  project: Project
 }
 export const ProjectCard: FC<Props> = memo(({ project }) => {
   const {
@@ -39,7 +40,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
   const router = useRouter()
 
   const handleTogglePin = useCallback(() => {
-    if (project.pinned === 0) {
+    if (project.pinned) {
       logNotice(`unpinning project {uuid: ${project.uuid}}`)
       unpinProject(project.uuid).then(
         () => {
@@ -78,7 +79,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
 
   const handleOpenRoot = useCallback(() => {
     logNotice(`opening root for project ${project.uuid}`)
-    openPath(project.root).then(
+    openPath(project.root.path).then(
       () => {
         logNotice(`opened project root`)
         toast.success("opened in system explorer")
@@ -124,7 +125,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
                 variant="subtitle2"
                 color="textSecondary"
               >
-                {project.root}
+                {project.root.path}
               </Typography>
             </Fragment>
           </Stack>
@@ -154,10 +155,11 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
           </Stack>
           <ProjectCardMetadata project={project} />
           <Stack spacing={0.5}>
-            <ProjectCardTechList techUuids={project.techUuids} />
-            <ProjectCardTopicList
-              topicUuids={project.topicUuids}
+            <ProjectCardGroupList items={project.tags.groups} />
+            <ProjectCardTechList
+              items={project.tags.technologies}
             />
+            <ProjectCardTopicList items={project.tags.topics} />
           </Stack>
         </Stack>
         <Stack
@@ -167,11 +169,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
           direction={{ xs: "row", md: "column" }}
         >
           <IconButton onClick={handleTogglePin}>
-            {project.pinned === 0 ? (
-              <PushPin />
-            ) : (
-              <PushPinOutlined />
-            )}
+            {project.pinned ? <PushPin /> : <PushPinOutlined />}
           </IconButton>
           <IconButton
             onClick={() =>

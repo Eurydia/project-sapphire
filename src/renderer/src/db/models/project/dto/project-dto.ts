@@ -28,6 +28,7 @@ export const projectDtoSchema = projectTableEntitySchema
         (args) => new Set(args).size === args.length,
         "topics must be unique",
       ),
+    groupNames: z.string().trim().normalize().nonempty().array(),
   })
 export type ProjectDto = z.infer<typeof projectDtoSchema>
 
