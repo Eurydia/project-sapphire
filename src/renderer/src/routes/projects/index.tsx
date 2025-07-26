@@ -1,4 +1,4 @@
-import { Paper, Stack } from "@mui/material"
+import { Box, Grid, Paper, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
 import _ from "lodash"
@@ -17,24 +17,30 @@ const RouteComponent: FC = memo(() => {
   const { projects, formOptions } = Route.useLoaderData()
   const navigate = Route.useNavigate()
   return (
-    <ProjectList
-      fetcher={projects}
-      slotPanel={
-        <Stack spacing={1}>
-          <Paper variant="outlined">
-            <StyledLink to="/projects/create">Create</StyledLink>
-          </Paper>
-          <Paper variant="outlined">
-            <ProjectQueryForm
-              onSubmit={(query) => {
-                navigate({ to: "/projects", search: query })
-              }}
-              formOptions={formOptions}
-            />
-          </Paper>
-        </Stack>
-      }
-    />
+    <Box maxWidth="lg" sx={{ marginX: "auto" }}>
+      <Grid container spacing={1}>
+        <Grid size={{ md: 4 }}>
+          <Stack spacing={1}>
+            <Paper variant="outlined">
+              <StyledLink to="/projects/create">
+                Create
+              </StyledLink>
+            </Paper>
+            <Paper variant="outlined">
+              <ProjectQueryForm
+                onSubmit={(query) => {
+                  navigate({ to: "/projects", search: query })
+                }}
+                formOptions={formOptions}
+              />
+            </Paper>
+          </Stack>
+        </Grid>
+        <Grid size="grow">
+          <ProjectList fetcher={projects} />
+        </Grid>
+      </Grid>
+    </Box>
   )
 })
 

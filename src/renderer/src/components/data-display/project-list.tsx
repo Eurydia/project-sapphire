@@ -1,5 +1,5 @@
-import { Alert, Grid, Stack, Typography } from "@mui/material"
-import type { FC, ReactNode } from "react"
+import { Alert, Stack, Typography } from "@mui/material"
+import type { FC } from "react"
 import { Fragment, memo } from "react"
 import { ProjectCard } from "~/components/data-display/project-card"
 import { StyledLink } from "~/components/navigation/styled-link"
@@ -33,20 +33,12 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
 })
 
 type Props = {
-  slotPanel: ReactNode
   fetcher: Project[]
 }
-export const ProjectList: FC<Props> = memo(
-  ({ fetcher, slotPanel }) => {
-    return (
-      <Grid container spacing={1}>
-        <Grid size={{ md: 3 }}>{slotPanel}</Grid>
-        <Grid size="grow">
-          <Stack spacing={1}>
-            <Inner fetcher={fetcher} />
-          </Stack>
-        </Grid>
-      </Grid>
-    )
-  },
-)
+export const ProjectList: FC<Props> = memo(({ fetcher }) => {
+  return (
+    <Stack spacing={1}>
+      <Inner fetcher={fetcher} />
+    </Stack>
+  )
+})

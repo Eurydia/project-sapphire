@@ -141,7 +141,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
               }}
             >
               <StyledLink
-                to={"/projects/$uuid/edit"}
+                to={"/projects/$uuid"}
                 params={{ uuid: project.uuid }}
               >
                 {project.name}

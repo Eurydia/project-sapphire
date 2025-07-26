@@ -190,6 +190,9 @@ export const getProjectByUuid = async (uuid: string) => {
 export const createProject = async (dto: ProjectDto) => {
   const techUuids = await addTechManyByName(dto.techNames)
   const topicUuids = await addTopicManyByName(dto.topicNames)
+  const groupUuids = await addProjectGroupManyByName(
+    dto.groupNames,
+  )
 
   const db = await getDb()
   const store = db
@@ -199,7 +202,7 @@ export const createProject = async (dto: ProjectDto) => {
     name: dto.name,
     root: dto.root,
     description: dto.description,
-    groupUuids: [],
+    groupUuids,
     techUuids,
     topicUuids,
     pinned: false,

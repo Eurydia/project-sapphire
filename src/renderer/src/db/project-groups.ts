@@ -61,8 +61,8 @@ export const addProjectGroupManyByName = async (
   )
 
   const db = await getDb()
-  const tx = db.transaction("topics", "readwrite")
-  const store = tx.objectStore("topics")
+  const tx = db.transaction("project-groups", "readwrite")
+  const store = tx.objectStore("project-groups")
   const newEntries: ProjectGroupTableEntity[] = []
   for (const name of names) {
     if (knownNames.has(name)) {

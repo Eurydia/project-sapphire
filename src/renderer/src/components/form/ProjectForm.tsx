@@ -149,15 +149,14 @@ export const ProjectForm: FC<Props> = memo(
           <Field name="groupNames" mode="array">
             {({ state, removeValue, pushValue, handleBlur }) => (
               <>
-                <Grid size={3}>{`Technologies`}</Grid>
+                <Grid size={3}>{`groups`}</Grid>
                 <Grid size={9}>
                   <Stack spacing={0.5}>
                     <AutocompleteTextField
                       onSelect={pushValue}
-                      options={formOptions.technologies}
+                      options={formOptions.groups}
                       disabledOptions={state.value}
                       onBlur={handleBlur}
-                      placeholder="Technologies"
                     />
                     <Stack
                       spacing={0.5}
@@ -168,7 +167,7 @@ export const ProjectForm: FC<Props> = memo(
                       {state.value.map((_, index) => (
                         <Field
                           key={index}
-                          name={`techNames[${index}]`}
+                          name={`groupNames[${index}]`}
                         >
                           {(subfield) => (
                             <Chip
