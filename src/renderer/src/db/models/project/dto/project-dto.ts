@@ -54,6 +54,13 @@ export const projectQuerySchema = z.object({
     .nonempty()
     .array()
     .default([]),
+  groupTags: z
+    .string()
+    .trim()
+    .nonempty()
+    .normalize()
+    .array()
+    .default([]),
 })
 
 export type ProjectQuery = z.infer<typeof projectQuerySchema>

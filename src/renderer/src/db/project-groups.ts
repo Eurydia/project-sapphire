@@ -2,6 +2,39 @@ import { v4 } from "uuid"
 import { getDb } from "./db"
 import type { ProjectGroupTableEntity } from "./models/project-group/group-table-entity"
 
+export const listProjectGroups = async () => {
+  const db = await getDb()
+  const tx = db.transaction("project-groups", "readonly")
+  const idx = tx.objectStore("project-groups").index("by-name")
+  const items = await idx.getAll()
+  await tx.done
+  return items
+}
+
+export const listProjectGroupManyByUuid = async (
+  uuids: string[],
+) => {
+  const db = await getDb()
+  const tx = db.transaction("project-groups", "readonly")
+  const store = tx.objectStore("project-groups")
+  const results = await Promise.allSettled(
+    uuids.map((uuid) => store.get(uuid)),
+  )
+  await tx.done
+
+  const items: ProjectGroupTableEntity[] = []
+  for (const result of results) {
+    if (result.status === "rejected") {
+      continue
+    }
+    if (result.value === undefined) {
+      continue
+    }
+    items.push(result.value)
+  }
+  return items
+}
+
 export const listProjectGroupManyByName = async (
   uuids: string[],
 ) => {

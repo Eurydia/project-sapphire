@@ -8,22 +8,27 @@ import {
   type ProjectQuery,
 } from "./models/project/dto/project-dto"
 import type { Project } from "./models/project/project"
-import {
-  projectTableEntitySchema,
-  type ProjectTableEntity,
-} from "./models/project/project-table-entity"
+import { type ProjectTableEntity } from "./models/project/project-table-entity"
 import {
   addProjectGroupManyByName,
   listProjectGroupManyByName,
+  listProjectGroupManyByUuid,
 } from "./project-groups"
 import {
   addTechManyByName,
-  listTechManyByUuids,
+  listTechManyByUuid,
 } from "./technologies"
 import {
   addTopicManyByName,
-  listTopicManyByUuids,
+  listTopicManyByUuid,
 } from "./topics"
+
+export const listProjectsByNames = async () => {
+  const db = await getDb()
+  const tx = db.transaction("projects")
+  const idx = tx.objectStore("projects").index("by-name")
+  return idx.getAll()
+}
 
 export const listProjects = async (
   query: ProjectQuery | undefined = undefined,
@@ -31,11 +36,7 @@ export const listProjects = async (
   const db = await getDb()
   const tx = db.transaction("projects", "readonly")
   const projectStore = tx.objectStore("projects")
-  const entries = await projectStore
-    .getAll()
-    .then((result) =>
-      projectTableEntitySchema.array().parseAsync(result),
-    )
+  const entries = await projectStore.getAll()
   await tx.done
 
   let matchedEntries: typeof entries = entries
@@ -44,13 +45,13 @@ export const listProjects = async (
     const queryNames = new Set(query.names)
     const queryTopics = new Set(query.topicTags)
     const queryTechs = new Set(query.techTags)
-
+    const queryGroups = new Set(query.groupTags)
     for (const entry of entries) {
       if (queryNames.size > 0 && !queryNames.has(entry.name)) {
         continue
       }
 
-      const topics = await listTopicManyByUuids(entry.topicUuids)
+      const topics = await listTopicManyByUuid(entry.topicUuids)
         .then((result) => result.map(({ name }) => name))
         .then((result) => new Set(result))
 
@@ -61,13 +62,24 @@ export const listProjects = async (
         continue
       }
 
-      const tech = await listTechManyByUuids(entry.techUuids)
+      const tech = await listTechManyByUuid(entry.techUuids)
         .then((result) => result.map(({ name }) => name))
         .then((result) => new Set(result))
 
       if (
         queryTechs.size > 0 &&
         [...queryTechs].some((tag) => !tech.has(tag))
+      ) {
+        continue
+      }
+
+      const group = await listTechManyByUuid(entry.techUuids)
+        .then((result) => result.map(({ name }) => name))
+        .then((result) => new Set(result))
+
+      if (
+        queryGroups.size > 0 &&
+        [...queryGroups].some((tag) => !group.has(tag))
       ) {
         continue
       }
@@ -103,9 +115,9 @@ export const listProjects = async (
         description,
         uuid,
         tags: {
-          technologies: await listTechManyByUuids(techUuids),
-          topics: await listTopicManyByUuids(topicUuids),
-          groups: await listProjectGroupManyByName(groupUuids),
+          technologies: await listTechManyByUuid(techUuids),
+          topics: await listTopicManyByUuid(topicUuids),
+          groups: await listProjectGroupManyByUuid(groupUuids),
         },
       } satisfies Project
     },
@@ -138,9 +150,41 @@ export const getProjectRootMetadata = async (root: string) => {
 }
 
 export const getProjectByUuid = async (uuid: string) => {
-  return (await getDb())
-    .get("projects", uuid)
-    .then(projectTableEntitySchema.parseAsync)
+  const db = await getDb()
+  const tx = db.transaction("projects", "readonly")
+  const store = tx.objectStore("projects")
+  const item = await store.get(uuid)
+
+  if (item === undefined) {
+    return undefined
+  }
+  const {
+    groupUuids,
+    name,
+    pinned,
+    root,
+    techUuids,
+    topicUuids,
+    description,
+  } = item
+  const topics = await listTopicManyByUuid(topicUuids)
+  const techs = await listTechManyByUuid(techUuids)
+  const groups = await listProjectGroupManyByName(groupUuids)
+  return {
+    tags: {
+      groups,
+      technologies: techs,
+      topics,
+    },
+    uuid,
+    name,
+    pinned,
+    description,
+    root: {
+      path: root,
+      metadata: await getProjectRootMetadata(root),
+    },
+  } satisfies Project
 }
 
 export const createProject = async (dto: ProjectDto) => {

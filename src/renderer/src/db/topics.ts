@@ -60,7 +60,7 @@ export const addTopicManyByName = async (names: string[]) => {
   return addedUuids.concat(knownEntries.map(({ uuid }) => uuid))
 }
 
-export const listTopicManyByUuids = async (uuids: string[]) => {
+export const listTopicManyByUuid = async (uuids: string[]) => {
   const db = await getDb()
   const tx = db.transaction("topics", "readonly")
   const store = tx.objectStore("topics")

@@ -6,7 +6,7 @@ export const listTech = async () => {
   return (await getDb()).getAll("technologies")
 }
 
-export const listTechManyByUuids = async (uuids: string[]) => {
+export const listTechManyByUuid = async (uuids: string[]) => {
   const db = await getDb()
   const tx = db.transaction("technologies", "readonly")
   const store = tx.objectStore("technologies")
@@ -28,7 +28,7 @@ export const listTechManyByUuids = async (uuids: string[]) => {
   return entries
 }
 
-export const listManyTechByName = async (names: string[]) => {
+export const listTechManyByName = async (names: string[]) => {
   const db = await getDb()
   const tx = db.transaction("technologies", "readonly")
 
@@ -54,7 +54,7 @@ export const listManyTechByName = async (names: string[]) => {
 }
 
 export const addTechManyByName = async (names: string[]) => {
-  const knownEntries = await listManyTechByName(names)
+  const knownEntries = await listTechManyByName(names)
   const knownNames = new Set(
     knownEntries.map(({ name }) => name),
   )

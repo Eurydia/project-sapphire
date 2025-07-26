@@ -4,7 +4,7 @@ export const projectTableEntitySchema = z.object({
   uuid: z.uuidv4(),
   name: z.string().trim().normalize().nonempty(),
   root: z.string().trim().normalize().nonempty(),
-  description: z.string().trim().normalize().optional(),
+  description: z.string().trim().normalize().nullable(),
   topicUuids: z
     .uuidv4()
     .array()

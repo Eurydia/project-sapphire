@@ -1,17 +1,9 @@
-import {
-  Alert,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material"
-import { useNavigate } from "@tanstack/react-router"
-import type { FC } from "react"
+import { Alert, Grid, Stack, Typography } from "@mui/material"
+import type { FC, ReactNode } from "react"
 import { Fragment, memo } from "react"
 import { ProjectCard } from "~/components/data-display/project-card"
 import { StyledLink } from "~/components/navigation/styled-link"
 import type { Project } from "~/db/models/project/project"
-import { ProjectQueryForm } from "../form/project-query-form"
 
 type InnerProps = {
   fetcher: Props["fetcher"]
@@ -41,31 +33,20 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
 })
 
 type Props = {
+  slotPanel: ReactNode
   fetcher: Project[]
 }
-export const ProjectList: FC<Props> = memo(({ fetcher }) => {
-  const navigate = useNavigate()
-  return (
-    <Grid container spacing={1}>
-      <Grid size={{ md: 3 }}>
-        <Stack spacing={1}>
-          <Paper variant="outlined">
-            <StyledLink to="/projects/create">Create</StyledLink>
-          </Paper>
-          <Paper variant="outlined">
-            <ProjectQueryForm
-              onSubmit={(query) => {
-                navigate({ to: "/projects", search: query })
-              }}
-            />
-          </Paper>
-        </Stack>
+export const ProjectList: FC<Props> = memo(
+  ({ fetcher, slotPanel }) => {
+    return (
+      <Grid container spacing={1}>
+        <Grid size={{ md: 3 }}>{slotPanel}</Grid>
+        <Grid size="grow">
+          <Stack spacing={1}>
+            <Inner fetcher={fetcher} />
+          </Stack>
+        </Grid>
       </Grid>
-      <Grid size="grow">
-        <Stack spacing={1}>
-          <Inner fetcher={fetcher} />
-        </Stack>
-      </Grid>
-    </Grid>
-  )
-})
+    )
+  },
+)

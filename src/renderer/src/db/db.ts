@@ -27,11 +27,11 @@ interface AppDB extends DBSchema {
   }
 }
 
-let dbPromise: Promise<IDBPDatabase<AppDB>>
+let dbConnection: Promise<IDBPDatabase<AppDB>>
 
 export const getDb = () => {
-  if (!dbPromise) {
-    dbPromise = openDB<AppDB>(
+  if (!dbConnection) {
+    dbConnection = openDB<AppDB>(
       import.meta.env.PROD ? "sapphire.db" : "sapphire.dev.db",
       3,
       {
@@ -77,5 +77,5 @@ export const getDb = () => {
       },
     )
   }
-  return dbPromise
+  return dbConnection
 }

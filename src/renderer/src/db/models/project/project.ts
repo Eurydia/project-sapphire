@@ -16,7 +16,7 @@ export const projectSchema = z
     uuid: z.uuidv4(),
     name: z.string().normalize().trim().nonempty().nonoptional(),
     pinned: z.boolean(),
-    description: z.string().trim().normalize().optional(),
+    description: z.string().trim().normalize().nullable(),
     root: z.object({
       path: z
         .string()

@@ -1,32 +1,26 @@
 import { Autocomplete, TextField } from "@mui/material"
-import { isRight } from "fp-ts/lib/Either"
 import {
   memo,
   useCallback,
   useMemo,
-  useRef,
   useState,
   type FC,
 } from "react"
 import type { ProjectQuery } from "~/db/models/project/dto/project-dto"
-import { listProjects } from "~/db/projects"
-import { listTech } from "~/db/technologies"
-import { listTopic } from "~/db/topics"
 
-type Props = { onSubmit: (query: ProjectQuery) => unknown }
+type Props = {
+  onSubmit: (query: ProjectQuery) => unknown
+  formOptions: {
+    topics: string[]
+    technologies: string[]
+    groups: string[]
+    projects: string[]
+  }
+}
 export const ProjectQueryForm: FC<Props> = memo(
-  ({ onSubmit }) => {
-    const [topicOptions, setTopicOptions] = useState<string[]>(
-      [],
-    )
-    const [techOptions, setTechOptions] = useState<string[]>([])
-    const [projectOptions, setProjectOptions] = useState<
-      string[]
-    >([])
-
-    const hasLoaded = useRef(false)
+  ({ onSubmit, formOptions }) => {
     const options = useMemo(() => {
-      return techOptions
+      return formOptions.technologies
         .map((opt) => [
           {
             label: `tech:"${opt}"`,
@@ -35,7 +29,7 @@ export const ProjectQueryForm: FC<Props> = memo(
           },
         ])
         .concat(
-          topicOptions.map((opt) => [
+          formOptions.topics.map((opt) => [
             {
               label: `topic:"${opt}"`,
               value: opt,
@@ -44,7 +38,16 @@ export const ProjectQueryForm: FC<Props> = memo(
           ]),
         )
         .concat(
-          projectOptions.map((opt) => [
+          formOptions.groups.map((opt) => [
+            {
+              label: `group:"${opt}"`,
+              value: opt,
+              group: "group",
+            },
+          ]),
+        )
+        .concat(
+          formOptions.projects.map((opt) => [
             {
               label: `name:"${opt}"`,
               value: opt,
@@ -55,38 +58,16 @@ export const ProjectQueryForm: FC<Props> = memo(
         .flat() as {
         label: string
         value: string
-        group: "project" | "tech" | "topic"
+        group: "project" | "tech" | "topic" | "group"
       }[]
-    }, [techOptions, topicOptions, projectOptions])
-
-    const handleOpen = useCallback(async () => {
-      if (!hasLoaded.current) {
-        listTopic().then((res) =>
-          setTopicOptions([
-            ...new Set(res.map(({ name }) => name)),
-          ]),
-        )
-        listTech().then((res) =>
-          setTechOptions([
-            ...new Set(res.map(({ name }) => name)),
-          ]),
-        )
-        listProjects().then((result) => {
-          if (isRight(result)) {
-            setProjectOptions([
-              ...new Set(result.right.map(({ name }) => name)),
-            ])
-          }
-        })
-        hasLoaded.current = true
-      }
-    }, [])
+    }, [formOptions])
 
     const [value, setValue] = useState<typeof options>([])
     const handleSubmit = useCallback(() => {
       const names: string[] = []
       const techTags: string[] = []
       const topicTags: string[] = []
+      const groupTags: string[] = []
       for (const v of value) {
         switch (v.group) {
           case "project":
@@ -97,9 +78,13 @@ export const ProjectQueryForm: FC<Props> = memo(
             break
           case "topic":
             topicTags.push(v.value)
+            break
+          case "group":
+            groupTags.push(v.value)
+            break
         }
       }
-      onSubmit({ names, techTags, topicTags })
+      onSubmit({ names, techTags, topicTags, groupTags })
     }, [onSubmit, value])
 
     return (
@@ -115,7 +100,6 @@ export const ProjectQueryForm: FC<Props> = memo(
           value={value}
           onChange={(_, v) => setValue([...v])}
           disableClearable
-          onOpen={handleOpen}
           fullWidth
           options={options}
           renderInput={(param) => <TextField {...param} />}

@@ -9,14 +9,14 @@ import { memo, useCallback } from "react"
 import { toast } from "react-toastify"
 import { ProjectForm } from "~/components/form/ProjectForm"
 import type { ProjectDto } from "~/db/models/project/dto/project-dto"
+import { listProjectGroups } from "~/db/project-groups"
 import { getProjectByUuid, upsertProject } from "~/db/projects"
-import { listTech, listTechManyByUuids } from "~/db/technologies"
-import { listTopic, listTopicManyByUuids } from "~/db/topics"
+import { listTech } from "~/db/technologies"
+import { listTopic } from "~/db/topics"
 import { useLoggerStore } from "~/stores/useLoggerStore"
 
 const RouteComponent: FC = memo(() => {
-  const { project, techNames, topicNames, formOptions } =
-    Route.useLoaderData()
+  const { project, formOptions } = Route.useLoaderData()
   const navigate = Route.useNavigate()
   const { uuid } = Route.useParams()
 
@@ -48,9 +48,16 @@ const RouteComponent: FC = memo(() => {
         init={{
           description: project.description,
           name: project.name,
-          root: project.root,
-          techNames,
-          topicNames,
+          root: project.root.path,
+          techNames: project.tags.technologies.map(
+            ({ name }) => name,
+          ),
+          topicNames: project.tags.topics.map(
+            ({ name }) => name,
+          ),
+          groupNames: project.tags.groups.map(
+            ({ name }) => name,
+          ),
         }}
         action={handleSubmit}
         formOptions={formOptions}
@@ -62,46 +69,31 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/$uuid/edit")({
   component: RouteComponent,
   loader: async ({ params: { uuid } }) => {
-    const { logNotice, logWarn } = useLoggerStore.getState()
-
-    logNotice(`fetching project '${uuid}' for editing`)
     const project = await getProjectByUuid(uuid).then(
       (result) => {
-        logNotice(`got result from database`)
         return result
       },
-      (err) => {
-        logWarn(`failed to get result from database: ${err}`)
+      () => {
         return null
       },
     )
 
     if (project === null) {
-      logNotice("redirect to '/projects' due to database error")
       throw redirect({ to: "/projects" })
     }
 
     if (project === undefined) {
-      logNotice(
-        `redirect to 404 since project ${uuid} does not exist`,
-      )
       throw notFound()
     }
 
-    const techNames = (
-      await listTechManyByUuids(project.techUuids)
-    ).map(({ name }) => name)
-    const topicNames = (
-      await listTopicManyByUuids(project.topicUuids)
-    ).map(({ name }) => name)
-
     return {
       project,
-      techNames,
-      topicNames,
       formOptions: {
         topics: (await listTopic()).map(({ name }) => name),
         technologies: (await listTech()).map(({ name }) => name),
+        groups: (await listProjectGroups()).map(
+          ({ name }) => name,
+        ),
       },
     }
   },
