@@ -1,7 +1,7 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb"
-import type { Project } from "./models/project/project"
-import type { Technology } from "./models/technology/technology"
-import type { Topic } from "./models/topic/topic"
+import type { ProjectTableEntity } from "./models/project/project-table-entity"
+import type { Technology } from "./models/technology/tech-table-entity"
+import type { TopicTableEntity } from "./models/topic/topic-table.entity"
 
 interface AppDB extends DBSchema {
   technologies: {
@@ -11,12 +11,12 @@ interface AppDB extends DBSchema {
   }
   projects: {
     key: string
-    value: Project
+    value: ProjectTableEntity
     indexes: { "by-name": string; "by-pinned_name": string }
   }
   topics: {
     key: string
-    value: Topic
+    value: TopicTableEntity
     indexes: { "by-name": string }
   }
 }

@@ -1,22 +1,27 @@
-import { memo } from 'react'
-import { Paper, Stack, Typography } from '@mui/material'
-import { Link } from '@tanstack/react-router'
-import type { FC } from 'react'
-import type { Project } from '~/db/models/project/project'
+import { Paper, Stack, Typography } from "@mui/material"
+import { Link } from "@tanstack/react-router"
+import type { FC } from "react"
+import { memo } from "react"
+import type { ProjectTableEntity } from "~/db/models/project/project-table-entity"
 
-type Props = { project: Project }
+type Props = { project: ProjectTableEntity }
 export const ProjectDetails: FC<Props> = memo(({ project }) => {
   return (
     <Paper variant="outlined">
       <Stack spacing={1}>
-        <Link to="/projects/$uuid/edit" params={{ uuid: project.uuid }}>
+        <Link
+          to="/projects/$uuid/edit"
+          params={{ uuid: project.uuid }}
+        >
           <Typography variant="subtitle1" component="div">
             Edit
           </Typography>
         </Link>
         <Typography variant="h3">{project.name}</Typography>
         <Typography>{project.root}</Typography>
-        {project.description !== '' && <Typography>{project.description}</Typography>}
+        {project.description !== "" && (
+          <Typography>{project.description}</Typography>
+        )}
         {/* <List>
           <ListItem>
             <ListItemText

@@ -13,9 +13,9 @@ import {
   type ProjectQuery,
 } from "./models/project/dto/project-dto"
 import {
-  projectSchema,
+  projectTableEntitySchema,
   type ProjectWithMetadata,
-} from "./models/project/project"
+} from "./models/project/project-table-entity"
 import {
   addTechManyByName,
   listTechManyByUuids,
@@ -27,61 +27,75 @@ import {
 
 export const listProjects = async (
   query: ProjectQuery | undefined = undefined,
-): Promise<Either<Error, ProjectWithMetadata[]>> => {
-  return getDb()
-    .then((db) =>
-      db.getAllFromIndex("projects", "by-pinned_name"),
+): Promise<Either<Error, ProjectWithMetadata>[]> => {
+  const db = await getDb()
+  const tx = db.transaction(
+    ["projects", "technologies", "topics"],
+    "readonly",
+  )
+
+  const projectStore = tx.objectStore("projects")
+
+  const entries = await projectStore.getAll()
+
+  await tx.done
+
+  let matchedEntries: typeof entries = entries
+  if (query !== undefined) {
+    matchedEntries = []
+    const queryNames = new Set(query.names)
+    const queryTopics = new Set(query.topicTags)
+    const queryTechs = new Set(query.techTags)
+
+    for (const entry of entries) {
+      if (queryNames.size > 0 && !queryNames.has(entry.name)) {
+        continue
+      }
+
+      const topics = await listTopicManyByUuids(entry.topicUuids)
+        .then((result) => result.map(({ name }) => name))
+        .then((result) => new Set(result))
+
+      if (
+        queryTopics.size > 0 &&
+        [...queryTopics].some((tag) => !topics.has(tag))
+      ) {
+        continue
+      }
+
+      const tech = await listTechManyByUuids(entry.techUuids)
+        .then((result) => result.map(({ name }) => name))
+        .then((result) => new Set(result))
+
+      if (
+        queryTechs.size > 0 &&
+        [...queryTechs].some((tag) => !tech.has(tag))
+      ) {
+        continue
+      }
+      matchedEntries.push(entry)
+    }
+  }
+
+  const sortedEntries = matchedEntries.toSorted((a, b) => {
+    return (
+      Number(b.pinned) - Number(a.pinned) ||
+      b.name.localeCompare(a.name)
     )
-    .then((result) => projectSchema.array().parseAsync(result))
-    .then(async (result) => {
-      if (query === undefined) {
-        return result
-      }
-      console.debug(JSON.stringify(query))
-      const names = new Set(query.names)
-      const topicTags = new Set(query.topicTags)
-      const techTags = new Set(query.techTags)
-      const items: typeof result = []
-      for (const item of result) {
-        if (names.size > 0 && !names.has(item.name)) {
-          continue
-        }
+  })
 
-        const topics = await listTopicManyByUuids(
-          item.topicUuids,
-        )
-          .then((result) => result.map(({ name }) => name))
-          .then((result) => new Set(result))
-
-        if (
-          topicTags.size > 0 &&
-          [...topicTags].some((tag) => !topics.has(tag))
-        ) {
-          continue
-        }
-
-        const tech = await listTechManyByUuids(item.techUuids)
-          .then((result) => result.map(({ name }) => name))
-          .then((result) => new Set(result))
-
-        if (
-          techTags.size > 0 &&
-          [...techTags].some((tag) => !tech.has(tag))
-        ) {
-          continue
-        }
-        items.push(item)
-      }
-      return items
-    })
-    .then((result) =>
-      result.map((item) => ({
-        ...item,
-        metadata: getProjectRootMetadata(item.root),
+  return (
+    await Promise.allSettled(
+      sortedEntries.map(async (entry) => ({
+        ...entry,
+        metadata: await getProjectRootMetadata(entry.root),
       })),
     )
-    .then((result) => right(result))
-    .catch((err) => left<Error>(err))
+  ).map((result) =>
+    result.status === "fulfilled"
+      ? right(result.value)
+      : left(result.reason),
+  )
 }
 
 export const getProjectRootMetadata = async (root: string) => {
@@ -110,7 +124,7 @@ export const getProjectRootMetadata = async (root: string) => {
 export const getProjectByUuid = async (uuid: string) => {
   return (await getDb())
     .get("projects", uuid)
-    .then(projectSchema.parseAsync)
+    .then(projectTableEntitySchema.parseAsync)
 }
 
 export const createProject = async (dto: ProjectDto) => {
@@ -126,7 +140,7 @@ export const createProject = async (dto: ProjectDto) => {
     root: dto.root,
     techUuids,
     topicUuids,
-    pinned: 1,
+    pinned: false,
     uuid: v4(),
   })
 
@@ -142,7 +156,7 @@ export const pinProject = async (uuid: string) => {
   if (project === undefined) {
     return null
   }
-  project.pinned = 0
+  project.pinned = true
   await store.put(project)
   await tx.done
   return project
@@ -157,7 +171,7 @@ export const unpinProject = async (uuid: string) => {
   if (project === undefined) {
     throw new Error(`Project with uuid '${uuid}' does not exist`)
   }
-  project.pinned = 1
+  project.pinned = false
   await store.put(project)
   await tx.done
   return project
@@ -179,7 +193,7 @@ export const upsertProject = async (
     name: dto.name,
     root: dto.root,
     description: dto.description,
-    pinned: project === undefined ? 1 : project.pinned,
+    pinned: project === undefined ? false : project.pinned,
     techUuids,
     topicUuids,
     uuid,

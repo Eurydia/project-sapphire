@@ -9,7 +9,7 @@ import {
   useMemo,
   type FC,
 } from "react"
-import type { ProjectWithMetadata } from "~/db/models/project/project"
+import type { ProjectWithMetadata } from "~/db/models/project/project-table-entity"
 import { useLoggerStore } from "~/stores/useLoggerStore"
 
 type InnerProps = {

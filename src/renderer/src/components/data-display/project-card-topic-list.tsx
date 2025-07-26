@@ -1,12 +1,26 @@
-import { Chip, darken, Skeleton, Stack, Typography, useTheme } from '@mui/material'
-import { useNavigate } from '@tanstack/react-router'
-import type { FC } from 'react'
-import { Fragment, memo, Suspense, use, useCallback, useMemo } from 'react'
-import type { Topic } from '~/db/models/topic/topic'
-import { listTopicManyByUuids } from '~/db/topics'
+import {
+  Chip,
+  darken,
+  Skeleton,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material"
+import { useNavigate } from "@tanstack/react-router"
+import type { FC } from "react"
+import {
+  Fragment,
+  memo,
+  Suspense,
+  use,
+  useCallback,
+  useMemo,
+} from "react"
+import type { TopicTableEntity } from "~/db/models/topic/topic-table.entity"
+import { listTopicManyByUuids } from "~/db/topics"
 
 type InnerProps = {
-  fetcher: Promise<Topic[]>
+  fetcher: Promise<TopicTableEntity[]>
 }
 const Inner: FC<InnerProps> = memo(({ fetcher }) => {
   const { palette } = useTheme()
@@ -15,12 +29,17 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
 
   const onClickHandleProvider = useCallback(
     (uuid: string) => () => {
-      navigate({ to: '/topics', hash: uuid })
+      navigate({ to: "/topics", hash: uuid })
     },
-    [navigate]
+    [navigate],
   )
   if (items.length === 0) {
-    return <Typography variant="subtitle2" color="textSecondary">{`not set`}</Typography>
+    return (
+      <Typography
+        variant="subtitle2"
+        color="textSecondary"
+      >{`not set`}</Typography>
+    )
   }
   return (
     <Fragment>
@@ -28,13 +47,15 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
         <Chip
           key={`tag-item[${index}]`}
           sx={{
-            cursor: 'pointer',
+            cursor: "pointer",
             backgroundColor: color,
             color: palette.getContrastText(color),
-            '&:hover': {
+            "&:hover": {
               backgroundColor: darken(color, 0.01),
-              color: palette.getContrastText(darken(color, 0.05))
-            }
+              color: palette.getContrastText(
+                darken(color, 0.05),
+              ),
+            },
           }}
           component="div"
           onClick={onClickHandleProvider(uuid)}
@@ -48,27 +69,47 @@ const Inner: FC<InnerProps> = memo(({ fetcher }) => {
 type Props = {
   topicUuids: string[]
 }
-export const ProjectCardTopicList: FC<Props> = memo(({ topicUuids }) => {
-  const fetcher = useMemo(() => {
-    return listTopicManyByUuids(topicUuids)
-  }, [topicUuids])
+export const ProjectCardTopicList: FC<Props> = memo(
+  ({ topicUuids }) => {
+    const fetcher = useMemo(() => {
+      return listTopicManyByUuids(topicUuids)
+    }, [topicUuids])
 
-  return (
-    <Stack spacing={0.5} useFlexGap flexWrap="wrap" direction="row" alignItems="center">
-      <Typography variant="subtitle2" color="textSecondary">
-        {`topics(s):`}
-      </Typography>
-      <Suspense
-        fallback={
-          <Fragment>
-            <Skeleton variant="circular" width={20} height={20} />
-            <Skeleton variant="circular" width={20} height={20} />
-            <Skeleton variant="circular" width={20} height={20} />
-          </Fragment>
-        }
+    return (
+      <Stack
+        spacing={0.5}
+        useFlexGap
+        flexWrap="wrap"
+        direction="row"
+        alignItems="center"
       >
-        <Inner fetcher={fetcher} />
-      </Suspense>
-    </Stack>
-  )
-})
+        <Typography variant="subtitle2" color="textSecondary">
+          {`topics(s):`}
+        </Typography>
+        <Suspense
+          fallback={
+            <Fragment>
+              <Skeleton
+                variant="circular"
+                width={20}
+                height={20}
+              />
+              <Skeleton
+                variant="circular"
+                width={20}
+                height={20}
+              />
+              <Skeleton
+                variant="circular"
+                width={20}
+                height={20}
+              />
+            </Fragment>
+          }
+        >
+          <Inner fetcher={fetcher} />
+        </Suspense>
+      </Stack>
+    )
+  },
+)

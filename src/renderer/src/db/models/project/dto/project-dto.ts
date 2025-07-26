@@ -1,7 +1,7 @@
 import z from "zod/v4"
-import { projectSchema } from "../project"
+import { projectTableEntitySchema } from "../project-table-entity"
 
-export const projectDtoSchema = projectSchema
+export const projectDtoSchema = projectTableEntitySchema
   .pick({
     description: true,
     name: true,

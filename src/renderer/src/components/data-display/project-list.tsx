@@ -11,7 +11,7 @@ import type { FC } from "react"
 import { Fragment, memo, Suspense, use } from "react"
 import { ProjectCard } from "~/components/data-display/project-card"
 import { StyledLink } from "~/components/navigation/styled-link"
-import type { ProjectWithMetadata } from "~/db/models/project/project"
+import type { ProjectWithMetadata } from "~/db/models/project/project-table-entity"
 import { ProjectQueryForm } from "../form/project-query-form"
 import { ProjectCardSkeleton } from "./project-card-skeleton"
 
