@@ -28,3 +28,19 @@ export const statDir = async (
     .then((result) => right(result))
     .catch((err) => left(err))
 }
+
+const readDirResultSchema = z.object({
+  path: z.string(),
+  dirs: z.string().array(),
+  files: z.string().array(),
+})
+export type ReadDirResult = z.infer<typeof readDirResultSchema>
+export const readDir = async (
+  root: string,
+  ...segments: string[]
+) => {
+  return window.fs
+    .readDir(root, ...segments)
+    .then((result) => readDirResultSchema.parseAsync(result))
+    .catch(() => null)
+}

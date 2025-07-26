@@ -20,7 +20,8 @@ const RouteComponent: FC = memo(() => {
         toast.success("project added")
         navigate({ to: "/projects" })
       },
-      () => () => {
+      (err) => {
+        console.debug(err)
         toast.error("failed to add project")
       },
     )

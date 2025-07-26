@@ -156,6 +156,7 @@ export const ProjectForm: FC<Props> = memo(
                       onSelect={pushValue}
                       options={formOptions.groups}
                       disabledOptions={state.value}
+                      placeholder="groups"
                       onBlur={handleBlur}
                     />
                     <Stack

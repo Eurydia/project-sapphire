@@ -147,7 +147,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
                 {project.name}
               </StyledLink>
             </Typography>
-            {project.description !== "" && (
+            {project.description !== null && (
               <Typography fontFamily={serifFontFamily}>
                 {project.description}
               </Typography>
