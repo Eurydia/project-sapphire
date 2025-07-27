@@ -5,12 +5,12 @@ import {
 } from "@tanstack/react-router"
 import type { FC } from "react"
 import { memo } from "react"
-import { readDir } from "~/api/fs"
 import { ProjectCardGroupList } from "~/components/data-display/project-card-group-list"
 import { ProjectCardMetadata } from "~/components/data-display/project-card-metadata"
 import { ProjectCardTechList } from "~/components/data-display/project-card-tech-list"
 import { ProjectCardTopicList } from "~/components/data-display/project-card-topic-list"
 import { ProjectTreeExplorer } from "~/components/data-display/project-tree-explorer"
+import { getProjectTree } from "~/db/project-trees"
 import { getProjectByUuid } from "~/db/projects"
 
 export const RouteComponent: FC = memo(() => {
@@ -42,9 +42,7 @@ export const RouteComponent: FC = memo(() => {
       </Grid>
       <Grid size={{ md: "grow" }}>
         <Paper variant="outlined">
-          {tree !== null && (
-            <ProjectTreeExplorer {...tree} project={project} />
-          )}
+          <ProjectTreeExplorer tree={tree} />
         </Paper>
       </Grid>
     </Grid>
@@ -58,7 +56,7 @@ export const Route = createFileRoute("/projects/$uuid/")({
     if (project === undefined) {
       throw notFound()
     }
-    const tree = await readDir(project.root.path)
+    const tree = await getProjectTree(project, "")
     return { project, tree }
   },
 })

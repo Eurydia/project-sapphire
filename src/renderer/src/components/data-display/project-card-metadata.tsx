@@ -39,7 +39,8 @@ const Inner: FC<InnerProps> = memo(({ fetcher: project }) => {
       {items.map(({ label, value }, index) => (
         <Stack
           key={`item-${index}`}
-          spacing={1}
+          rowGap={0}
+          columnGap={1}
           flexDirection="row"
           useFlexGap
           flexWrap="wrap"

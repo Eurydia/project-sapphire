@@ -40,6 +40,7 @@ export const theme = createTheme({
       },
     },
     MuiPaper: {
+      defaultProps: { variant: "outlined" },
       styleOverrides: {
         outlined: ({ theme: { spacing } }) => ({
           padding: spacing(2),

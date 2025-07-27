@@ -1,5 +1,6 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb"
 import type { ProjectGroupTableEntity } from "./models/project-group/group-table-entity"
+import type { ProjectTreeTableEntity } from "./models/project-tree/project-tree-table-entity"
 import type { ProjectTableEntity } from "./models/project/project-table-entity"
 import type { Technology } from "./models/technology/tech-table-entity"
 import type { TopicTableEntity } from "./models/topic/topic-table.entity"
@@ -25,6 +26,11 @@ interface AppDB extends DBSchema {
     value: ProjectGroupTableEntity
     indexes: { "by-name": "string" }
   }
+  "project-trees": {
+    key: [string, string]
+    value: ProjectTreeTableEntity
+    indexes: { "by-project": "string" }
+  }
 }
 
 let dbConnection: Promise<IDBPDatabase<AppDB>>
@@ -33,7 +39,7 @@ export const getDb = () => {
   if (!dbConnection) {
     dbConnection = openDB<AppDB>(
       import.meta.env.PROD ? "sapphire.db" : "sapphire.dev.db",
-      3,
+      4,
       {
         upgrade: (db, prevVersion, _, tx) => {
           if (prevVersion < 1) {
@@ -72,6 +78,12 @@ export const getDb = () => {
             projectGroupStore.createIndex("by-name", "name", {
               unique: true,
             })
+          }
+          if (prevVersion < 4) {
+            const projectTreeStore = db.createObjectStore(
+              "project-trees",
+              { keyPath: ["projectUuid", "path"] },
+            )
           }
         },
       },

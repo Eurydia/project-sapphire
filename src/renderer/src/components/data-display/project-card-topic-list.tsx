@@ -25,10 +25,9 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
   )
   if (items.length === 0) {
     return (
-      <Typography
-        variant="subtitle2"
-        color="textSecondary"
-      >{`not set`}</Typography>
+      <Typography variant="subtitle2" color="textSecondary">
+        {`not set`}
+      </Typography>
     )
   }
   return (
@@ -63,7 +62,8 @@ export const ProjectCardTopicList: FC<Props> = memo(
   ({ items }) => {
     return (
       <Stack
-        spacing={0.5}
+        rowGap={0.5}
+        columnGap={0}
         useFlexGap
         flexWrap="wrap"
         direction="row"

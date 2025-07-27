@@ -1,8 +1,8 @@
 import { left, right, type Either } from "fp-ts/lib/Either"
 import { z } from "zod/v4"
 
-export const openPath = (path: string) =>
-  window.fs.openPath(path)
+export const openPath = (...segments: string[]) =>
+  window.fs.openPath(...segments)
 
 export const openDirDialog = () =>
   window.fs.openDirDialog().then(
@@ -42,5 +42,17 @@ export const readDir = async (
   return window.fs
     .readDir(root, ...segments)
     .then((result) => readDirResultSchema.parseAsync(result))
+    .catch(() => null)
+}
+
+const readFileResultSchema = z.string().default("")
+export type ReadFileResult = z.infer<typeof readFileResultSchema>
+export const readFile = async (
+  root: string,
+  ...segments: string[]
+) => {
+  return window.fs
+    .readFile(root, ...segments)
+    .then((result) => readFileResultSchema.parseAsync(result))
     .catch(() => null)
 }
