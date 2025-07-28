@@ -1,13 +1,4 @@
-import { FolderRounded } from "@mui/icons-material"
-import {
-  Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  Typography,
-} from "@mui/material"
+import { Divider, Link, Stack, Typography } from "@mui/material"
 import { useRouter } from "@tanstack/react-router"
 import { memo, type FC } from "react"
 import { openPath } from "~/api/fs"
@@ -24,57 +15,58 @@ export const ProjectTreeExplorer: FC<Props> = memo(
   }) => {
     const router = useRouter()
     return (
-      <Stack>
-        <List>
-          {dirs.map((name, i) => (
-            <ListItem key={`dir-${i}`}>
-              <ListItemIcon>
-                <FolderRounded />
-              </ListItemIcon>
-              <ListItemText disableTypography>
-                <StyledLink
-                  to="/projects/$uuid/tree/$"
-                  params={{
-                    uuid: projectUuid,
-                    _splat: `${path}/${name}`,
-                  }}
-                >
-                  {name}
-                </StyledLink>
-              </ListItemText>
-            </ListItem>
-          ))}
-          {files.map((name, i) => (
-            <ListItem key={`file-${i}`}>
-              <ListItemIcon />
-              <ListItemText disableTypography>
-                <Typography
-                  component="div"
-                  onClick={() => openPath(parentPath, name)}
-                >
-                  {name}
-                </Typography>
-                <Button
-                  onClick={() =>
-                    upsertTree({
-                      path,
-                      projectUuid: projectUuid,
-                      readme:
-                        readme !== null && readme.name === name
-                          ? null
-                          : name,
-                    }).then(() => router.invalidate())
-                  }
-                >
-                  {readme !== null && readme.name === name
-                    ? "unset"
-                    : "set"}
-                </Button>
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
-        <Typography>{readme?.content ?? "???"}</Typography>
+      <Stack divider={<Divider flexItem />} spacing={2}>
+        {dirs.map((name, i) => (
+          <StyledLink
+            key={`dir-${i}`}
+            to="/projects/$uuid/tree/$"
+            params={{
+              uuid: projectUuid,
+              _splat: `${path}/${name}`,
+            }}
+          >
+            {`${name}/`}
+          </StyledLink>
+        ))}
+        {files.map((name, i) => (
+          <Stack key={`file-${i}`} spacing={0.5}>
+            <Typography
+              onClick={() => openPath(parentPath, name)}
+              sx={{
+                cursor: "pointer",
+                textDecorationLine: "underline",
+              }}
+            >
+              {name}
+            </Typography>
+            <Stack
+              spacing={2}
+              direction="row"
+              divider={
+                <Divider flexItem orientation="vertical" />
+              }
+            >
+              <Link
+                sx={{ cursor: "pointer" }}
+                onClick={() =>
+                  upsertTree({
+                    path,
+                    projectUuid: projectUuid,
+                    readme:
+                      readme !== null && readme.name === name
+                        ? null
+                        : name,
+                  }).then(() => router.invalidate())
+                }
+              >
+                {readme !== null && readme.name === name
+                  ? "unset"
+                  : "set"}
+              </Link>
+              <Typography>exclude</Typography>
+            </Stack>
+          </Stack>
+        ))}
       </Stack>
     )
   },

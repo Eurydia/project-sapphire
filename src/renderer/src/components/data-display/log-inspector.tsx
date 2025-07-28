@@ -102,7 +102,6 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
             sx={{
               height: "100%",
               overflow: "auto",
-              scrollbarGutter: "stable",
               scrollbarColor: "transparent transparent",
               "&:hover": {
                 scrollbarColor: `${divider} transparent`,
@@ -166,7 +165,6 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
                 flexBasis: 0,
                 flexGrow: 1,
                 padding: 2,
-                scrollbarGutter: "stable",
                 scrollbarColor: "transparent transparent",
                 "&:hover": {
                   scrollbarColor: `${divider} transparent`,

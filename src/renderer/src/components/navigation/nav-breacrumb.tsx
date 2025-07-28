@@ -1,6 +1,7 @@
 import {
   AppBar,
   Breadcrumbs,
+  Divider,
   Toolbar,
   Typography,
 } from "@mui/material"
@@ -25,7 +26,7 @@ export const NavBreadcrumbs: FC = memo(() => {
       position="sticky"
       variant="outlined"
       color="default"
-      sx={{ padding: 0 }}
+      sx={{ padding: 0, borderWidth: 0 }}
     >
       <Toolbar variant="dense">
         <Breadcrumbs>
@@ -39,6 +40,7 @@ export const NavBreadcrumbs: FC = memo(() => {
             ),
           )}
         </Breadcrumbs>
+        <Divider flexItem />
       </Toolbar>
     </AppBar>
   )
