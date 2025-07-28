@@ -22,7 +22,7 @@ export const ProjectTreeExplorer: FC<Props> = memo(
             to="/projects/$uuid/tree/$"
             params={{
               uuid: projectUuid,
-              _splat: `${path}/${name}`,
+              _splat: path !== "" ? `${path}/${name}` : name,
             }}
           >
             {`${name}/`}
