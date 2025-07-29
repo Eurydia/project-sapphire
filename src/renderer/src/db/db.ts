@@ -5,7 +5,7 @@ import type { ProjectTableEntity } from "./models/project/project-table-entity"
 import type { Technology } from "./models/technology/tech-table-entity"
 import type { TopicTableEntity } from "./models/topic/topic-table.entity"
 
-interface AppDB extends DBSchema {
+export interface AppDB extends DBSchema {
   technologies: {
     key: string
     value: Technology

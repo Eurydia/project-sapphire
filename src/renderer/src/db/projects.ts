@@ -9,11 +9,7 @@ import {
 } from "./models/project/dto/project-dto"
 import type { Project } from "./models/project/project"
 import { type ProjectTableEntity } from "./models/project/project-table-entity"
-import {
-  addProjectGroupManyByName,
-  listProjectGroupManyByName,
-  listProjectGroupManyByUuid,
-} from "./project-groups"
+import { ProjectGroupService } from "./project-groups"
 import {
   addTechManyByName,
   listTechManyByUuid,
@@ -117,7 +113,8 @@ export const listProjects = async (
         tags: {
           technologies: await listTechManyByUuid(techUuids),
           topics: await listTopicManyByUuid(topicUuids),
-          groups: await listProjectGroupManyByUuid(groupUuids),
+          groups:
+            await ProjectGroupService.listByUuids(groupUuids),
         },
       } satisfies Project
     },
@@ -169,7 +166,8 @@ export const getProjectByUuid = async (uuid: string) => {
   } = item
   const topics = await listTopicManyByUuid(topicUuids)
   const techs = await listTechManyByUuid(techUuids)
-  const groups = await listProjectGroupManyByName(groupUuids)
+  const groups =
+    await ProjectGroupService.listByUuids(groupUuids)
   return {
     tags: {
       groups,
@@ -190,7 +188,7 @@ export const getProjectByUuid = async (uuid: string) => {
 export const createProject = async (dto: ProjectDto) => {
   const techUuids = await addTechManyByName(dto.techNames)
   const topicUuids = await addTopicManyByName(dto.topicNames)
-  const groupUuids = await addProjectGroupManyByName(
+  const groupUuids = await ProjectGroupService.addByNames(
     dto.groupNames,
   )
 
@@ -248,9 +246,14 @@ export const upsertProject = async (
 ) => {
   const techUuids = await addTechManyByName(dto.techNames)
   const topicUuids = await addTopicManyByName(dto.topicNames)
-  const groupUuids = await addProjectGroupManyByName(
+  const groupUuids = await ProjectGroupService.addByNames(
     dto.groupNames,
   )
+    .then((r) => r)
+    .catch((err) => {
+      console.debug(err)
+      return []
+    })
 
   const db = await getDb()
   const tx = db.transaction("projects", "readwrite")

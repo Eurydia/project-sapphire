@@ -8,7 +8,7 @@ import { ProjectList } from "~/components/data-display/project-list"
 import { ProjectQueryForm } from "~/components/form/project-query-form"
 import { StyledLink } from "~/components/navigation/styled-link"
 import { projectQuerySchema } from "~/db/models/project/dto/project-dto"
-import { listProjectGroups } from "~/db/project-groups"
+import { ProjectGroupService } from "~/db/project-groups"
 import { listProjects } from "~/db/projects"
 import { listTech } from "~/db/technologies"
 import { listTopic } from "~/db/topics"
@@ -59,7 +59,7 @@ export const Route = createFileRoute("/projects/")({
         ),
         technologies: (await listTech()).map(({ name }) => name),
         topics: (await listTopic()).map(({ name }) => name),
-        groups: (await listProjectGroups()).map(
+        groups: (await ProjectGroupService.list()).map(
           ({ name }) => name,
         ),
       },

@@ -9,7 +9,7 @@ import { memo, useCallback } from "react"
 import { toast } from "react-toastify"
 import { ProjectForm } from "~/components/form/ProjectForm"
 import type { ProjectDto } from "~/db/models/project/dto/project-dto"
-import { listProjectGroups } from "~/db/project-groups"
+import { ProjectGroupService } from "~/db/project-groups"
 import { getProjectByUuid, upsertProject } from "~/db/projects"
 import { listTech } from "~/db/technologies"
 import { listTopic } from "~/db/topics"
@@ -91,7 +91,7 @@ export const Route = createFileRoute("/projects/$uuid/edit")({
       formOptions: {
         topics: (await listTopic()).map(({ name }) => name),
         technologies: (await listTech()).map(({ name }) => name),
-        groups: (await listProjectGroups()).map(
+        groups: (await ProjectGroupService.list()).map(
           ({ name }) => name,
         ),
       },
