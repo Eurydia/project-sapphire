@@ -80,10 +80,9 @@ export const getDb = () => {
             })
           }
           if (prevVersion < 4) {
-            const projectTreeStore = db.createObjectStore(
-              "project-trees",
-              { keyPath: ["projectUuid", "path"] },
-            )
+            db.createObjectStore("project-trees", {
+              keyPath: ["projectUuid", "path"],
+            })
           }
         },
       },

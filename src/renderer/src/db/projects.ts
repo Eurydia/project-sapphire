@@ -14,10 +14,7 @@ import {
   addTechManyByName,
   listTechManyByUuid,
 } from "./technologies"
-import {
-  addTopicManyByName,
-  listTopicManyByUuid,
-} from "./topics"
+import { TopicService } from "./topics"
 
 export const listProjectsByNames = async () => {
   const db = await getDb()
@@ -47,7 +44,9 @@ export const listProjects = async (
         continue
       }
 
-      const topics = await listTopicManyByUuid(entry.topicUuids)
+      const topics = await TopicService.listByUuids(
+        entry.topicUuids,
+      )
         .then((result) => result.map(({ name }) => name))
         .then((result) => new Set(result))
 
@@ -112,7 +111,7 @@ export const listProjects = async (
         uuid,
         tags: {
           technologies: await listTechManyByUuid(techUuids),
-          topics: await listTopicManyByUuid(topicUuids),
+          topics: await TopicService.listByUuids(topicUuids),
           groups:
             await ProjectGroupService.listByUuids(groupUuids),
         },
@@ -164,7 +163,7 @@ export const getProjectByUuid = async (uuid: string) => {
     topicUuids,
     description,
   } = item
-  const topics = await listTopicManyByUuid(topicUuids)
+  const topics = await TopicService.listByUuids(topicUuids)
   const techs = await listTechManyByUuid(techUuids)
   const groups =
     await ProjectGroupService.listByUuids(groupUuids)
@@ -187,7 +186,9 @@ export const getProjectByUuid = async (uuid: string) => {
 
 export const createProject = async (dto: ProjectDto) => {
   const techUuids = await addTechManyByName(dto.techNames)
-  const topicUuids = await addTopicManyByName(dto.topicNames)
+  const topicUuids = await TopicService.addByNames(
+    dto.topicNames,
+  )
   const groupUuids = await ProjectGroupService.addByNames(
     dto.groupNames,
   )
@@ -245,7 +246,9 @@ export const upsertProject = async (
   dto: ProjectDto,
 ) => {
   const techUuids = await addTechManyByName(dto.techNames)
-  const topicUuids = await addTopicManyByName(dto.topicNames)
+  const topicUuids = await TopicService.addByNames(
+    dto.topicNames,
+  )
   const groupUuids = await ProjectGroupService.addByNames(
     dto.groupNames,
   )

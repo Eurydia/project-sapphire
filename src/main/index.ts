@@ -1,11 +1,15 @@
+import "reflect-metadata"
+
 import {
   electronApp,
   is,
   optimizer,
 } from "@electron-toolkit/utils"
-import { app, BrowserWindow, shell } from "electron"
+import { app, BrowserWindow, ipcMain, shell } from "electron"
 import { join } from "path"
 import icon from "../../resources/icons/icon.png?asset"
+import { AppDataSource } from "./db/data-source"
+import { User } from "./db/entity/User"
 import { initFsServices } from "./services/fs"
 
 function createWindow(): void {
@@ -17,10 +21,10 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     icon,
-    ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, "..", "preload", "index.js"),
       sandbox: false,
+      nodeIntegration: true,
     },
   })
 
@@ -48,6 +52,14 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
+  initFsServices()
+  const dt = await AppDataSource.initialize()
+  const repo = dt.getRepository(User)
+  await repo.save(repo.create({ firstName: "sss" }))
+  ipcMain.handle("ping", async () => {
+    const r = await repo.find({ select: { firstName: true } })
+    return JSON.stringify(r)
+  })
   // Set app user model id for windows
   electronApp.setAppUserModelId("io.github.eurydia")
 
@@ -58,7 +70,6 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  initFsServices()
   createWindow()
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the

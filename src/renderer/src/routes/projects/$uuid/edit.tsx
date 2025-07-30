@@ -12,7 +12,6 @@ import type { ProjectDto } from "~/db/models/project/dto/project-dto"
 import { ProjectGroupService } from "~/db/project-groups"
 import { getProjectByUuid, upsertProject } from "~/db/projects"
 import { listTech } from "~/db/technologies"
-import { listTopic } from "~/db/topics"
 import { useLoggerStore } from "~/stores/useLoggerStore"
 
 const RouteComponent: FC = memo(() => {
@@ -89,7 +88,7 @@ export const Route = createFileRoute("/projects/$uuid/edit")({
     return {
       project,
       formOptions: {
-        topics: (await listTopic()).map(({ name }) => name),
+        topics: [],
         technologies: (await listTech()).map(({ name }) => name),
         groups: (await ProjectGroupService.list()).map(
           ({ name }) => name,

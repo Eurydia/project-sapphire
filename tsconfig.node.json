@@ -15,6 +15,7 @@
     "target": "ESNext",
     "lib": ["ESNext"],
     "useDefineForClassFields": false,
-    "allowUnreachableCode": true
+    "allowUnreachableCode": true,
+    "strictPropertyInitialization": false
   }
 }

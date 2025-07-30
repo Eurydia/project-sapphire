@@ -11,7 +11,6 @@ import { projectQuerySchema } from "~/db/models/project/dto/project-dto"
 import { ProjectGroupService } from "~/db/project-groups"
 import { listProjects } from "~/db/projects"
 import { listTech } from "~/db/technologies"
-import { listTopic } from "~/db/topics"
 
 const RouteComponent: FC = memo(() => {
   const { projects, formOptions } = Route.useLoaderData()
@@ -58,7 +57,7 @@ export const Route = createFileRoute("/projects/")({
           (await listProjects()).map(({ name }) => name),
         ),
         technologies: (await listTech()).map(({ name }) => name),
-        topics: (await listTopic()).map(({ name }) => name),
+        topics: [],
         groups: (await ProjectGroupService.list()).map(
           ({ name }) => name,
         ),

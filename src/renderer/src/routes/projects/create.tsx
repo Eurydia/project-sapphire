@@ -8,7 +8,6 @@ import type { ProjectDto } from "~/db/models/project/dto/project-dto"
 import { ProjectGroupService } from "~/db/project-groups"
 import { createProject } from "~/db/projects"
 import { listTech } from "~/db/technologies"
-import { listTopic } from "~/db/topics"
 
 const RouteComponent: FC = memo(() => {
   const { options } = Route.useLoaderData()
@@ -38,7 +37,7 @@ export const Route = createFileRoute("/projects/create")({
   loader: async () => {
     return {
       options: {
-        topics: (await listTopic()).map(({ name }) => name),
+        topics: [],
         technologies: (await listTech()).map(({ name }) => name),
         groups: (await ProjectGroupService.list()).map(
           ({ name }) => name,

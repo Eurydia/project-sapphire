@@ -1,3 +1,7 @@
-import { registerIpcRendererServices } from './register'
+import { contextBridge, ipcRenderer } from "electron"
+import { registerIpcRendererServices } from "./register"
 
-registerIpcRendererServices('fs')
+registerIpcRendererServices("fs")
+contextBridge.exposeInMainWorld("text", {
+  ping: () => ipcRenderer.invoke("ping"),
+})

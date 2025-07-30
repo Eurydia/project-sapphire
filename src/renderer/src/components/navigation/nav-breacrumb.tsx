@@ -7,12 +7,10 @@ import {
 } from "@mui/material"
 import { useLocation } from "@tanstack/react-router"
 import { memo, useMemo, type FC } from "react"
-import { useLoggerStore } from "~/stores/useLoggerStore"
 import { StyledLink } from "./styled-link"
 
 export const NavBreadcrumbs: FC = memo(() => {
   const { pathname } = useLocation()
-  const { logNotice } = useLoggerStore()
   const segments = useMemo(() => {
     const segments = pathname.split("/")
     return segments.map((segment, index) => ({

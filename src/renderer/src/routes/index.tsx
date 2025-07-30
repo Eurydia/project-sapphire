@@ -1,10 +1,9 @@
-import {
-  createFileRoute,
-  redirect,
-} from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
+import { useLoggerStore } from "~/stores/useLoggerStore"
 
 export const Route = createFileRoute("/")({
-  beforeLoad: () => {
-    throw redirect({ to: "/projects" })
+  beforeLoad: async () => {
+    const { logNotice } = useLoggerStore.getState()
+    logNotice((await window.text.ping()) as string)
   },
 })
