@@ -80,11 +80,10 @@ export const readFile = async (
   return String(content)
 }
 
-export const initFsServices = () =>
-  registerIpcMainServices("fs", {
-    openDirDialog,
-    openPath,
-    statDir,
-    readDir,
-    readFile,
-  })
+registerIpcMainServices("fs", {
+  openDirDialog,
+  openPath,
+  statDir,
+  readDir,
+  readFile,
+})

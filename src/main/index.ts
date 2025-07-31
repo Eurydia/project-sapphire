@@ -1,16 +1,16 @@
 import "reflect-metadata"
+import "./db/service"
+import "./services/fs"
 
 import {
   electronApp,
   is,
   optimizer,
 } from "@electron-toolkit/utils"
-import { app, BrowserWindow, ipcMain, shell } from "electron"
+import { app, BrowserWindow, shell } from "electron"
 import { join } from "path"
 import icon from "../../resources/icons/icon.png?asset"
 import { AppDataSource } from "./db/data-source"
-import { User } from "./db/entity/User"
-import { initFsServices } from "./services/fs"
 
 function createWindow(): void {
   // Create the browser window.
@@ -52,14 +52,7 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
-  initFsServices()
-  const dt = await AppDataSource.initialize()
-  const repo = dt.getRepository(User)
-  await repo.save(repo.create({ firstName: "sss" }))
-  ipcMain.handle("ping", async () => {
-    const r = await repo.find({ select: { firstName: true } })
-    return JSON.stringify(r)
-  })
+  await AppDataSource.initialize()
   // Set app user model id for windows
   electronApp.setAppUserModelId("io.github.eurydia")
 
