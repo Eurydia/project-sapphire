@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm"
 import { GroupEntity } from "./entity/Group"
-import { ProjectTreeEntity } from "./entity/project-tree/project-tree.entity"
+import { ProjectTreeEntity } from "./entity/project-tree.entity"
 import { ProjectEntity } from "./entity/project.entity"
 import { TechnologyEntity } from "./entity/Technology"
 import { TopicEntity } from "./entity/Topic"

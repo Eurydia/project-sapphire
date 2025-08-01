@@ -1,12 +1,11 @@
-import {
-  createProjectDtoSchema,
-  upsertProjectDtoSchema,
-} from "#/services/project/dto/dto"
-import { Project } from "#/services/project/project"
+import { createProjectDtoSchema } from "#/models/project/dto/create-project.dto"
+import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
+import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
 import { existsSync, statSync } from "fs"
+import moment from "moment"
 import { normalize } from "path"
-import { EntityManager, In } from "typeorm"
+import { In } from "typeorm"
 import z4 from "zod/v4"
 import { AppDataSource } from "../data-source"
 import { GroupEntity } from "../entity/Group"
@@ -25,12 +24,25 @@ const _getMetadata = async (root: string) => {
   if (pathStat.isDirectory()) {
     return null
   }
+  const { birthtime, atime, mtime } = pathStat
+
+  return {
+    atime: {
+      exact: moment(atime).toISOString(),
+      fromNow: moment(atime).fromNow(),
+    },
+    ctime: {
+      exact: moment(birthtime).toISOString(),
+      fromNow: moment(birthtime).fromNow(),
+    },
+    mtime: {
+      exact: moment(mtime).toISOString(),
+      fromNow: moment(mtime).fromNow(),
+    },
+  } satisfies Project["root"]["metadata"]
 }
 
-const _fromTableEntity = async (
-  mgr: EntityManager,
-  entity: ProjectEntity,
-) => {
+const _fromTableEntity = async (entity: ProjectEntity) => {
   const {
     description,
     groups,
@@ -39,11 +51,10 @@ const _fromTableEntity = async (
     root,
     techs,
     topics,
-    trees,
     uuid,
   } = entity
 
-  let metadata: Project["root"]["metadata"] = null
+  const metadata = await _getMetadata(root)
 
   return {
     uuid,
@@ -54,22 +65,29 @@ const _fromTableEntity = async (
       path: root,
       metadata,
     },
-    tags: undefined,
+    tags: { groups, technologies: techs, topics },
   } satisfies Project
 }
 
-const list = async () => {
+const list = () => {
   return AppDataSource.transaction(async (mgr) => {
     const entities = await mgr.find(ProjectEntity)
-
+    const items = await Promise.all(
+      entities.map((ent) => _fromTableEntity(ent)),
+    )
     return items satisfies Project[]
   })
 }
 const listByUuids = async (arg: unknown) => {
   const uuids = z4.uuidv4().array().parse(arg)
-  return repo.find({
-    where: { uuid: In(uuids) },
-    order: { name: { direction: "ASC" } },
+  return AppDataSource.transaction(async (mgr) => {
+    const entities = await mgr.find(ProjectEntity, {
+      where: { uuid: In(uuids) },
+    })
+    const items = await Promise.all(
+      entities.map((ent) => _fromTableEntity(ent)),
+    )
+    return items satisfies Project[]
   })
 }
 const listByNames = async (arg: unknown) => {
@@ -80,15 +98,29 @@ const listByNames = async (arg: unknown) => {
     .normalize()
     .array()
     .parse(arg)
-  return repo.find({
-    where: { name: In(names) },
-    order: { name: { direction: "asc" } },
+  return AppDataSource.transaction(async (mgr) => {
+    const entities = await mgr.find(ProjectEntity, {
+      where: { name: In(names) },
+    })
+    const items = await Promise.all(
+      entities.map((ent) => _fromTableEntity(ent)),
+    )
+    return items satisfies Project[]
   })
 }
 
 export const findByUuid = async (arg: unknown) => {
   const uuid = z4.uuidv4().parse(arg)
-  return repo.findOne({ where: { uuid } })
+  return AppDataSource.transaction(async (mgr) => {
+    const entity = await mgr.findOne(ProjectEntity, {
+      where: { uuid },
+    })
+    if (entity === null) {
+      return null
+    }
+    const item = await _fromTableEntity(entity)
+    return item satisfies Project
+  })
 }
 
 export const pin = async (arg: unknown) => {
