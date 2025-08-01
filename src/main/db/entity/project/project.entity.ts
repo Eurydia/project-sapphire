@@ -3,11 +3,13 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm"
 import { GroupEntity } from "../Group"
 import { TechnologyEntity } from "../Technology"
 import { TopicEntity } from "../Topic"
+import { ProjectTreeEntity } from "../project-tree/project-tree.entity"
 
 @Entity()
 export class ProjectEntity {
@@ -46,4 +48,7 @@ export class ProjectEntity {
   })
   @JoinTable()
   groups: GroupEntity[]
+
+  @OneToMany(() => ProjectTreeEntity, (tree) => tree.project)
+  trees: ProjectTreeEntity[]
 }

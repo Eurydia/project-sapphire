@@ -4,7 +4,7 @@ import {
   ManyToMany,
   PrimaryColumn,
 } from "typeorm"
-import { ProjectEntity } from "./project/Project"
+import { ProjectEntity } from "./project/project.entity"
 
 @Entity()
 export class TopicEntity {

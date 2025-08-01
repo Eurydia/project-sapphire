@@ -9,10 +9,10 @@ import {
 import { join, normalize } from "path"
 import { registerIpcMainServices } from "./core"
 
-export const openDirDialog = () =>
+const openDirDialog = () =>
   dialog.showOpenDialog({ properties: ["openDirectory"] })
 
-export const openPath = async (...segments: string[]) => {
+const openPath = async (...segments: string[]) => {
   const path = normalize(join(...segments))
 
   if (!existsSync(path)) {
@@ -21,7 +21,7 @@ export const openPath = async (...segments: string[]) => {
   return shell.openPath(path)
 }
 
-export const statDir = async (path: string) => {
+const statDir = async (path: string) => {
   const pathStat = lstatSync(path)
   if (!pathStat.isDirectory()) {
     throw new Error(`path '${path}' is not a directory`)
@@ -29,10 +29,7 @@ export const statDir = async (path: string) => {
   return pathStat
 }
 
-export const readDir = async (
-  root: string,
-  ...segments: string[]
-) => {
+const readDir = async (root: string, ...segments: string[]) => {
   const path = normalize(join(root, ...segments))
   if (!existsSync(path)) {
     throw new Error(`path ${path} does not exist`)
@@ -64,10 +61,7 @@ export const readDir = async (
   }
 }
 
-export const readFile = async (
-  root: string,
-  ...segments: string[]
-) => {
+const readFile = async (root: string, ...segments: string[]) => {
   const path = normalize(join(root, ...segments))
   if (!existsSync(path)) {
     return null

@@ -1,5 +1,4 @@
 import { readDir, readFile } from "~/api/fs"
-import { getDb } from "./db"
 import type { ProjectTree } from "./models/project-tree/project-tree"
 import type { ProjectTreeDto } from "./models/project-tree/project-tree-dto"
 import type { Project } from "./models/project/project"

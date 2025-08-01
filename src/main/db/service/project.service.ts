@@ -1,3 +1,4 @@
+import { normalize } from "path"
 import { In } from "typeorm"
 import z4 from "zod/v4"
 import { registerIpcMainServices } from "../../services/core"
@@ -7,7 +8,7 @@ import {
   createProjectDtoSchema,
   upsertProjectDtoSchema,
 } from "../entity/project/dto"
-import { ProjectEntity } from "../entity/project/Project"
+import { ProjectEntity } from "../entity/project/project.entity"
 import { TechnologyEntity } from "../entity/Technology"
 import { TopicEntity } from "../entity/Topic"
 
@@ -36,29 +37,6 @@ const listByNames = async (arg: unknown) => {
     order: { name: { direction: "asc" } },
   })
 }
-
-// export const getProjectRootMetadata = async (root: string) => {
-//   return statDir(root).then((result) => {
-//     if (isLeft(result)) {
-//       return null
-//     }
-//     const { atimeMs, birthtimeMs, mtimeMs } = result.right
-//     return {
-//       ctime: {
-//         fromNow: moment(birthtimeMs).fromNow(),
-//         exact: moment(birthtimeMs).toLocaleString(),
-//       },
-//       mtime: {
-//         fromNow: moment(mtimeMs).fromNow(),
-//         exact: moment(mtimeMs).toLocaleString(),
-//       },
-//       atime: {
-//         fromNow: moment(atimeMs).fromNow(),
-//         exact: moment(atimeMs).toLocaleString(),
-//       },
-//     }
-//   })
-// }
 
 export const findByUuid = async (arg: unknown) => {
   const uuid = z4.uuidv4().parse(arg)
@@ -132,7 +110,7 @@ export const createProject = async (arg: unknown) => {
 
     const project = mgr.create(ProjectEntity, {
       name: dto.name,
-      root: dto.root,
+      root: normalize(dto.root).trim(),
       pinned: false,
       description: dto.description ?? null,
       topics: [...knownTopics, ...newTopics],
@@ -183,7 +161,7 @@ export const upsertProject = async (arg: unknown) => {
     const project = mgr.create(ProjectEntity, {
       uuid: dto.uuid,
       name: dto.name,
-      root: dto.root,
+      root: normalize(dto.root).trim(),
       pinned: false,
       description: dto.description ?? null,
       topics: [...knownTopics, ...newTopics],
