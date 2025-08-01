@@ -25,8 +25,8 @@ export class ProjectEntity {
   @Column({ type: "boolean", default: false })
   pinned: boolean
 
-  @Column({ type: "text", nullable: true })
-  description: string | null
+  @Column({ type: "text" })
+  description: string
 
   @ManyToMany(() => TopicEntity, (topic) => topic.projects, {
     cascade: true,

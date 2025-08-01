@@ -56,7 +56,9 @@ export const Route = createFileRoute("/projects/$uuid/")({
     if (project === null) {
       throw notFound()
     }
-    const tree = ProjectTreeService.getRootTree(project.uuid)
+    const tree = await ProjectTreeService.getRootTree(
+      project.uuid,
+    )
     return { project, tree }
   },
 })

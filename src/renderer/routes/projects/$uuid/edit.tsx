@@ -1,13 +1,14 @@
-import type { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
 import { ProjectGroupService } from "@/api/project-group.service"
+import { ProjectTechnologyService } from "@/api/project-technology.service"
+import { ProjectTopicService } from "@/api/project-topic.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectForm } from "@/components/form/ProjectForm"
 import { useLoggerStore } from "@/stores/useLoggerStore"
+import type { ProjectFormData } from "@/types/project-form-data"
 import { Paper } from "@mui/material"
 import {
   createFileRoute,
   notFound,
-  redirect,
 } from "@tanstack/react-router"
 import type { FC } from "react"
 import { memo, useCallback } from "react"
@@ -20,15 +21,15 @@ const RouteComponent: FC = memo(() => {
 
   const { logNotice, logWarn } = useLoggerStore()
   const handleSubmit = useCallback(
-    (dto: UpsertProjectDto) => {
+    (data: ProjectFormData) => {
       logNotice(
-        `upserting project uuid=${uuid} with ${JSON.stringify(dto)}`,
+        `upserting project uuid=${uuid} with ${JSON.stringify(data)}`,
       )
-      ProjectService.upsert(dto)
+      ProjectService.upsert({ ...data, uuid })
         .then(() => {
           logNotice(`upserted project uuid=${uuid}`)
           toast.success("update saved")
-          navigate({ to: "/projects" })
+          return navigate({ to: "/projects" })
         })
         .catch((err) => {
           logWarn(
@@ -67,31 +68,17 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/$uuid/edit")({
   component: RouteComponent,
   loader: async ({ params: { uuid } }) => {
-    const project = await getProjectByUuid(uuid).then(
-      (result) => {
-        return result
-      },
-      () => {
-        return null
-      },
-    )
-
+    const project = await ProjectService.findByUuid(uuid)
     if (project === null) {
-      throw redirect({ to: "/projects" })
-    }
-
-    if (project === undefined) {
       throw notFound()
     }
 
     return {
       project,
       formOptions: {
-        topics: [],
-        technologies: (await listTech()).map(({ name }) => name),
-        groups: (await ProjectGroupService.list()).map(
-          ({ name }) => name,
-        ),
+        topics: await ProjectTopicService.listNames(),
+        technologies: await ProjectTechnologyService.listNames(),
+        groups: await ProjectGroupService.listNames(),
       },
     }
   },

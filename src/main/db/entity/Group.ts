@@ -11,13 +11,13 @@ export class GroupEntity {
   @PrimaryGeneratedColumn("uuid")
   uuid: string
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "text", default: "" })
+  description: string
+
+  @Column({ type: "text" })
   name: string
 
-  @Column({ type: "text", nullable: true })
-  description?: string
-
-  @Column({ type: "varchar", length: 50 })
+  @Column({ type: "text", default: "#ffffff" })
   color: string
 
   @ManyToMany(() => ProjectEntity, (project) => project.groups)

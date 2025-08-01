@@ -1,3 +1,5 @@
+import { openDirDialog } from "@/api/fs"
+import type { ProjectFormData } from "@/types/project-form-data"
 import { FolderOutlined } from "@mui/icons-material"
 import {
   Button,
@@ -10,15 +12,12 @@ import {
   Toolbar,
 } from "@mui/material"
 import { useForm } from "@tanstack/react-form"
-import type { FC } from "react"
-import { memo, useRef } from "react"
-import type { ProjectDto } from "src/shared/models/project/dto/project-dto"
-import { openDirDialog } from "~/api/fs"
-import { AutocompleteTextField } from "~/components/input/AutocompeleteTextField"
+import { memo, useRef, type FC } from "react"
+import { AutocompleteTextField } from "../input/AutocompeleteTextField"
 
 type Props = {
-  init?: ProjectDto
-  action: (value: ProjectDto) => unknown
+  init?: ProjectFormData
+  action: (value: ProjectFormData) => unknown
   formOptions: {
     topics: string[]
     technologies: string[]
@@ -37,7 +36,7 @@ export const ProjectForm: FC<Props> = memo(
           techNames: [],
           topicNames: [],
           groupNames: [],
-        } as ProjectDto),
+        } as ProjectFormData),
       onSubmit: ({ value }) => {
         action(value)
       },

@@ -1,11 +1,11 @@
 import { Stack, Typography } from "@mui/material"
 import type { FC } from "react"
 import { Fragment, memo } from "react"
-import type { ProjectGroupTableEntity } from "src/shared/models/project-group/group-table-entity"
+import type { ProjectGroup } from "src/shared/models/project-group/group-table-entity"
 import { StyledLink } from "../navigation/styled-link"
 
 type InnerProps = {
-  fetcher: ProjectGroupTableEntity[]
+  fetcher: ProjectGroup[]
 }
 const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
   if (items.length === 0) {
@@ -27,7 +27,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
 })
 
 type Props = {
-  items: ProjectGroupTableEntity[]
+  items: ProjectGroup[]
 }
 export const ProjectCardGroupList: FC<Props> = memo(
   ({ items }) => {

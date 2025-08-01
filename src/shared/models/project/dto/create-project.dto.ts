@@ -4,12 +4,7 @@ import z from "zod/v4"
 export const createProjectDtoSchema = z.object({
   name: z.string().trim().normalize().nonempty(),
   root: z.string().trim().normalize().nonempty(),
-  description: z
-    .string()
-    .trim()
-    .normalize()
-    .nonempty()
-    .optional(),
+  description: z.string().trim().normalize(),
   techNames: z
     .string()
     .trim()

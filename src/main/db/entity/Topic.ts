@@ -9,14 +9,14 @@ import { ProjectEntity } from "./project.entity"
 @Entity()
 export class TopicEntity {
   @PrimaryColumn("uuid")
-  uuid!: string
+  uuid: string
 
-  @Column({ type: "varchar", length: 255 })
-  name!: string
+  @Column({ type: "text" })
+  name: string
 
-  @Column({ type: "varchar", length: 50 })
-  color!: string
+  @Column({ type: "text", default: "#ffffff" })
+  color: string
 
   @ManyToMany(() => ProjectEntity, (project) => project.topics)
-  projects!: ProjectEntity[]
+  projects: ProjectEntity[]
 }

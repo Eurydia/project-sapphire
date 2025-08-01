@@ -4,7 +4,7 @@ import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
 import { normalize } from "path"
-import { In } from "typeorm"
+import { FindOperator, In } from "typeorm"
 import z4 from "zod/v4"
 import { AppDataSource } from "../data-source"
 import { ProjectEntity } from "../entity/project.entity"
@@ -16,16 +16,19 @@ import {
 const repo = AppDataSource.getRepository(ProjectEntity)
 
 const list = (arg: unknown) => {
-  console.debug(arg)
   const query = projectQuerySchema.parse(arg)
-
+  const InOrUndefined = <T>(
+    values: T[],
+  ): FindOperator<T> | undefined => {
+    return values.length > 0 ? In(values) : undefined
+  }
   return AppDataSource.transaction(async (mgr) => {
     const entities = await mgr.find(ProjectEntity, {
       where: {
-        name: In(query.names),
-        topics: { name: In(query.topics) },
-        techs: { name: In(query.techs) },
-        groups: { name: In(query.groups) },
+        name: InOrUndefined(query.names),
+        topics: { name: InOrUndefined(query.topics) },
+        techs: { name: InOrUndefined(query.techs) },
+        groups: { name: InOrUndefined(query.groups) },
       },
     })
     const items = await Promise.all(
@@ -115,7 +118,7 @@ const createProject = async (arg: unknown) => {
       name: dto.name,
       root: normalize(dto.root).trim(),
       pinned: false,
-      description: dto.description ?? null,
+      description: dto.description,
       groups,
       techs,
       topics,
@@ -128,12 +131,15 @@ const upsertProject = async (arg: unknown) => {
   const dto = upsertProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const { groups, techs, topics } = await _fillTags(mgr, dto)
+    const previous = await mgr.findOne(ProjectEntity, {
+      where: { uuid: dto.uuid },
+    })
     const project = mgr.create(ProjectEntity, {
+      root: dto.root,
       uuid: dto.uuid,
       name: dto.name,
-      pinned: dto.pinned,
-      root: normalize(dto.root).trim(),
-      description: dto.description ?? null,
+      description: dto.description,
+      pinned: previous === null ? false : previous.pinned,
       groups,
       techs,
       topics,

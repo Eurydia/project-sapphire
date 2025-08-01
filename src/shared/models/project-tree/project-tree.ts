@@ -5,7 +5,10 @@ export const projectTreeSchema = z.object({
   path: z.string().nullable(),
   parentPath: z.string(),
   readme: z
-    .object({ name: z.string(), content: z.string().nullable() })
+    .object({
+      name: z.string(),
+      content: z.string().trim().normalize(),
+    })
     .nullable(),
   files: z.string().array(),
   dirs: z.string().array(),

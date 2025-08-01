@@ -12,17 +12,13 @@ const Inner: FC<InnerProps> = memo(({ fetcher: project }) => {
   }[] = useMemo(() => {
     if (project.root.metadata === null) {
       return [
-        { label: "created" },
         { label: "accessed" },
         { label: "modified" },
+        { label: "created" },
       ]
     }
     const { ctime, atime, mtime } = project.root.metadata
     return [
-      {
-        label: "created",
-        value: ctime,
-      },
       {
         label: "accessed",
         value: atime,
@@ -30,6 +26,10 @@ const Inner: FC<InnerProps> = memo(({ fetcher: project }) => {
       {
         label: "modified",
         value: mtime,
+      },
+      {
+        label: "created",
+        value: ctime,
       },
     ]
   }, [project.root.metadata])

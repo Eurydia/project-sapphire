@@ -16,7 +16,7 @@ const _getMetadata = async (root: string) => {
     return null
   }
   const pathStat = statSync(path)
-  if (pathStat.isDirectory()) {
+  if (!pathStat.isDirectory()) {
     return null
   }
   const { birthtime, atime, mtime } = pathStat
