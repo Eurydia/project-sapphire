@@ -1,21 +1,69 @@
-import { normalize } from "path"
-import { In } from "typeorm"
-import z4 from "zod/v4"
-import { registerIpcMainServices } from "../../services/core"
-import { AppDataSource } from "../data-source"
-import { GroupEntity } from "../entity/Group"
 import {
   createProjectDtoSchema,
   upsertProjectDtoSchema,
-} from "../entity/project/dto"
-import { ProjectEntity } from "../entity/project/project.entity"
+} from "#/services/project/dto/dto"
+import { Project } from "#/services/project/project"
+import { registerIpcMainServices } from "@/services/core"
+import { existsSync, statSync } from "fs"
+import { normalize } from "path"
+import { EntityManager, In } from "typeorm"
+import z4 from "zod/v4"
+import { AppDataSource } from "../data-source"
+import { GroupEntity } from "../entity/Group"
+import { ProjectEntity } from "../entity/project.entity"
 import { TechnologyEntity } from "../entity/Technology"
 import { TopicEntity } from "../entity/Topic"
 
 export const repo = AppDataSource.getRepository(ProjectEntity)
 
+const _getMetadata = async (root: string) => {
+  const path = normalize(root).trim()
+  if (!existsSync(path)) {
+    return null
+  }
+  const pathStat = statSync(path)
+  if (pathStat.isDirectory()) {
+    return null
+  }
+}
+
+const _fromTableEntity = async (
+  mgr: EntityManager,
+  entity: ProjectEntity,
+) => {
+  const {
+    description,
+    groups,
+    name,
+    pinned,
+    root,
+    techs,
+    topics,
+    trees,
+    uuid,
+  } = entity
+
+  let metadata: Project["root"]["metadata"] = null
+
+  return {
+    uuid,
+    name,
+    pinned,
+    description,
+    root: {
+      path: root,
+      metadata,
+    },
+    tags: undefined,
+  } satisfies Project
+}
+
 const list = async () => {
-  return repo.find()
+  return AppDataSource.transaction(async (mgr) => {
+    const entities = await mgr.find(ProjectEntity)
+
+    return items satisfies Project[]
+  })
 }
 const listByUuids = async (arg: unknown) => {
   const uuids = z4.uuidv4().array().parse(arg)

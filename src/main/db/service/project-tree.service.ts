@@ -3,7 +3,7 @@ import { normalize } from "path"
 import { z } from "zod/v4"
 import { AppDataSource } from "../data-source"
 import { ProjectTreeEntity } from "../entity/project-tree/project-tree.entity"
-import { ProjectEntity } from "../entity/project/project.entity"
+import { ProjectEntity } from "../entity/project.entity"
 
 const readDirectoryEntires = (path: PathLike) => {
   const files: string[] = []

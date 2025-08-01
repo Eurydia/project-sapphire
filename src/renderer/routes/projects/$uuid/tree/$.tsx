@@ -1,12 +1,10 @@
+import { ProjectTreeExplorer } from "@/components/data-display/project-tree-explorer"
 import { Paper, Stack, Typography } from "@mui/material"
 import {
   createFileRoute,
   notFound,
 } from "@tanstack/react-router"
 import { type FC, memo } from "react"
-import { ProjectTreeExplorer } from "~/components/data-display/project-tree-explorer"
-import { getProjectTree } from "~/db/project-trees"
-import { getProjectByUuid } from "~/db/projects"
 
 const RouteComponent: FC = memo(() => {
   const { tree } = Route.useLoaderData()

@@ -3,14 +3,6 @@ import { projectGroupTableEntitySchema } from "../project-group/group-table-enti
 import { technologySchema } from "../technology/tech-table-entity"
 import { topicTableEntitySchema } from "../topic/topic-table.entity"
 
-export const projectRootMetadataSchema = z
-  .object({
-    atime: z.object({ fromNow: z.string(), exact: z.string() }),
-    ctime: z.object({ fromNow: z.string(), exact: z.string() }),
-    mtime: z.object({ fromNow: z.string(), exact: z.string() }),
-  })
-  .readonly()
-
 export const projectSchema = z.object({
   uuid: z.uuidv4(),
   name: z.string().normalize().trim().nonempty(),
@@ -18,7 +10,22 @@ export const projectSchema = z.object({
   description: z.string().trim().normalize().nullable(),
   root: z.object({
     path: z.string().normalize().trim().nonempty().nonoptional(),
-    metadata: projectRootMetadataSchema.nullable(),
+    metadata: z
+      .object({
+        atime: z.object({
+          fromNow: z.string(),
+          exact: z.string(),
+        }),
+        ctime: z.object({
+          fromNow: z.string(),
+          exact: z.string(),
+        }),
+        mtime: z.object({
+          fromNow: z.string(),
+          exact: z.string(),
+        }),
+      })
+      .nullable(),
   }),
   tags: z.object({
     topics: topicTableEntitySchema.array(),
@@ -26,9 +33,5 @@ export const projectSchema = z.object({
     groups: projectGroupTableEntitySchema.array(),
   }),
 })
-
-export type ProjectRootMetadata = z.infer<
-  typeof projectRootMetadataSchema
->
 
 export type Project = z.infer<typeof projectSchema>

@@ -6,10 +6,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm"
-import { GroupEntity } from "../Group"
-import { TechnologyEntity } from "../Technology"
-import { TopicEntity } from "../Topic"
-import { ProjectTreeEntity } from "../project-tree/project-tree.entity"
+import { GroupEntity } from "./Group"
+import { TechnologyEntity } from "./Technology"
+import { TopicEntity } from "./Topic"
+import { ProjectTreeEntity } from "./project-tree.entity"
 
 @Entity()
 export class ProjectEntity {

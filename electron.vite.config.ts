@@ -14,6 +14,12 @@ export default defineConfig({
         external: ["call-bind-apply-helpers", "typeorm"],
       },
     },
+    resolve: {
+      alias: {
+        "#": resolve("src/shared"),
+        "@": resolve("src/main"),
+      },
+    },
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
@@ -21,7 +27,8 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        "~": resolve("src/renderer/src"),
+        "@": resolve("src/renderer"),
+        "#": resolve("src/shared"),
       },
     },
 
@@ -29,9 +36,8 @@ export default defineConfig({
       tanstackRouter({
         target: "react",
         autoCodeSplitting: true,
-        routesDirectory: "./src/renderer/src/routes",
-        generatedRouteTree:
-          "./src/renderer/src/routeTree.gen.ts",
+        routesDirectory: "./src/renderer/routes",
+        generatedRouteTree: "./src/renderer/routeTree.gen.ts",
       }),
       viteReact(),
     ],

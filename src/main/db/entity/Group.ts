@@ -4,7 +4,7 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from "typeorm"
-import { ProjectEntity } from "./project/project.entity"
+import { ProjectEntity } from "./project.entity"
 
 @Entity()
 export class GroupEntity {

@@ -1,16 +1,13 @@
+import { projectQuerySchema } from "#/services/project/dto/project-dto"
+import { ProjectList } from "@/components/data-display/project-list"
+import { ProjectQueryForm } from "@/components/form/project-query-form"
+import type { StyledLink } from "@/components/navigation/styled-link"
 import { Box, Grid, Paper, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
 import _ from "lodash"
 import type { FC } from "react"
 import { memo } from "react"
-import { projectQuerySchema } from "src/shared/models/project/dto/project-dto"
-import { ProjectList } from "~/components/data-display/project-list"
-import { ProjectQueryForm } from "~/components/form/project-query-form"
-import { StyledLink } from "~/components/navigation/styled-link"
-import { ProjectGroupService } from "~/db/project-groups"
-import { listProjects } from "~/db/projects"
-import { listTech } from "~/db/technologies"
 
 const RouteComponent: FC = memo(() => {
   const { projects, formOptions } = Route.useLoaderData()

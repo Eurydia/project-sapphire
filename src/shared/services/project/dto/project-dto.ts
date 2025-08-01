@@ -1,5 +1,4 @@
 import z from "zod/v4"
-import { projectTableEntitySchema } from "../project-table-entity"
 
 export const projectDtoSchema = projectTableEntitySchema
   .pick({

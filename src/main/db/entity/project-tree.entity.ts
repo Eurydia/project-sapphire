@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm"
-import { ProjectEntity } from "../project/project.entity"
+import { ProjectEntity } from "./project.entity"
 
 @Entity()
 @Unique(["project", "path"])
