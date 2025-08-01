@@ -1,128 +1,33 @@
-import {
-  CreateProjectDto,
-  createProjectDtoSchema,
-} from "#/models/project/dto/create-project.dto"
-import {
-  UpsertProjectDto,
-  upsertProjectDtoSchema,
-} from "#/models/project/dto/upsert-project.dto"
+import { createProjectDtoSchema } from "#/models/project/dto/create-project.dto"
+import { projectQuerySchema } from "#/models/project/dto/query-project.dto"
+import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
-import { existsSync, statSync } from "fs"
-import moment from "moment"
 import { normalize } from "path"
-import { EntityManager, In } from "typeorm"
+import { In } from "typeorm"
 import z4 from "zod/v4"
 import { AppDataSource } from "../data-source"
-import { GroupEntity } from "../entity/Group"
 import { ProjectEntity } from "../entity/project.entity"
-import { TechnologyEntity } from "../entity/Technology"
-import { TopicEntity } from "../entity/Topic"
+import {
+  _fillTags,
+  _fromTableEntity,
+} from "./project.service.helper"
 
-export const repo = AppDataSource.getRepository(ProjectEntity)
+const repo = AppDataSource.getRepository(ProjectEntity)
 
-const _getMetadata = async (root: string) => {
-  const path = normalize(root).trim()
-  if (!existsSync(path)) {
-    return null
-  }
-  const pathStat = statSync(path)
-  if (pathStat.isDirectory()) {
-    return null
-  }
-  const { birthtime, atime, mtime } = pathStat
+const list = (arg: unknown) => {
+  console.debug(arg)
+  const query = projectQuerySchema.parse(arg)
 
-  return {
-    atime: {
-      exact: moment(atime).toISOString(),
-      fromNow: moment(atime).fromNow(),
-    },
-    ctime: {
-      exact: moment(birthtime).toISOString(),
-      fromNow: moment(birthtime).fromNow(),
-    },
-    mtime: {
-      exact: moment(mtime).toISOString(),
-      fromNow: moment(mtime).fromNow(),
-    },
-  } satisfies Project["root"]["metadata"]
-}
-
-const _fromTableEntity = async (entity: ProjectEntity) => {
-  const {
-    description,
-    groups,
-    name,
-    pinned,
-    root,
-    techs,
-    topics,
-    uuid,
-  } = entity
-
-  const metadata = await _getMetadata(root)
-
-  return {
-    uuid,
-    name,
-    pinned,
-    description,
-    root: {
-      path: root,
-      metadata,
-    },
-    tags: { groups, technologies: techs, topics },
-  } satisfies Project
-}
-
-const _fillTags = async (
-  mgr: EntityManager,
-  dto: CreateProjectDto | UpsertProjectDto,
-) => {
-  const [knownTopics, knownTechs, knownGroups] =
-    await Promise.all([
-      mgr.find(TopicEntity, {
-        where: { name: In(dto.topicNames) },
-      }),
-      mgr.find(TechnologyEntity, {
-        where: { name: In(dto.techNames) },
-      }),
-      mgr.find(GroupEntity, {
-        where: { name: In(dto.groupNames) },
-      }),
-    ])
-
-  const knownTopicNames = new Set(
-    knownTopics.map(({ name }) => name),
-  )
-  const newTopics = dto.topicNames
-    .filter((name) => !knownTopicNames.has(name))
-    .map((name) => mgr.create(TopicEntity, { name }))
-
-  const knownTechNames = new Set(
-    knownTechs.map(({ name }) => name),
-  )
-  const newTechs = dto.techNames
-    .filter((name) => !knownTechNames.has(name))
-    .map((name) => mgr.create(TechnologyEntity, { name }))
-
-  const knownGroupNames = new Set(
-    knownGroups.map(({ name }) => name),
-  )
-  const newGroups = dto.groupNames
-    .filter((name) => !knownGroupNames.has(name))
-    .map((name) => mgr.create(GroupEntity, { name }))
-
-  return {
-    topics: [...knownTopics, ...newTopics],
-    groups: [...knownGroups, ...newGroups],
-    techs: [...knownTechs, ...newTechs],
-  }
-}
-
-const list = () => {
   return AppDataSource.transaction(async (mgr) => {
-    const entities = await mgr.find(ProjectEntity)
+    const entities = await mgr.find(ProjectEntity, {
+      where: {
+        name: In(query.names),
+        topics: { name: In(query.topics) },
+        techs: { name: In(query.techs) },
+        groups: { name: In(query.groups) },
+      },
+    })
     const items = await Promise.all(
       entities.map((ent) => _fromTableEntity(ent)),
     )
@@ -160,7 +65,7 @@ const listByNames = async (arg: unknown) => {
   })
 }
 
-export const findByUuid = async (arg: unknown) => {
+const findByUuid = async (arg: unknown) => {
   const uuid = z4.uuidv4().parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const entity = await mgr.findOne(ProjectEntity, {
@@ -174,7 +79,7 @@ export const findByUuid = async (arg: unknown) => {
   })
 }
 
-export const pin = async (arg: unknown) => {
+const pin = async (arg: unknown) => {
   const uuid = z4.uuidv4().parse(arg)
   return AppDataSource.manager.transaction(async (mgn) => {
     const item = await mgn.findOne(ProjectEntity, {
@@ -188,7 +93,7 @@ export const pin = async (arg: unknown) => {
   })
 }
 
-export const unpin = async (arg: unknown) => {
+const unpin = async (arg: unknown) => {
   const uuid = z4.uuidv4().parse(arg)
   return AppDataSource.manager.transaction(async (mgn) => {
     const item = await mgn.findOne(ProjectEntity, {
@@ -202,7 +107,7 @@ export const unpin = async (arg: unknown) => {
   })
 }
 
-export const createProject = async (arg: unknown) => {
+const createProject = async (arg: unknown) => {
   const dto = createProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const { groups, techs, topics } = await _fillTags(mgr, dto)
@@ -219,15 +124,15 @@ export const createProject = async (arg: unknown) => {
   })
 }
 
-export const upsertProject = async (arg: unknown) => {
+const upsertProject = async (arg: unknown) => {
   const dto = upsertProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const { groups, techs, topics } = await _fillTags(mgr, dto)
     const project = mgr.create(ProjectEntity, {
       uuid: dto.uuid,
       name: dto.name,
+      pinned: dto.pinned,
       root: normalize(dto.root).trim(),
-      pinned: false,
       description: dto.description ?? null,
       groups,
       techs,

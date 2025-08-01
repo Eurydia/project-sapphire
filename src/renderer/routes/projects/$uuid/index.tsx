@@ -1,3 +1,10 @@
+import { ProjectTreeService } from "@/api/project-tree.service"
+import { ProjectService } from "@/api/project.service"
+import { ProjectCardGroupList } from "@/components/data-display/project-card-group-list"
+import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
+import { ProjectCardTechList } from "@/components/data-display/project-card-tech-list"
+import { ProjectCardTopicList } from "@/components/data-display/project-card-topic-list"
+import { ProjectTreeExplorer } from "@/components/data-display/project-tree-explorer"
 import { Grid, Paper, Stack, Typography } from "@mui/material"
 import {
   createFileRoute,
@@ -5,13 +12,6 @@ import {
 } from "@tanstack/react-router"
 import type { FC } from "react"
 import { memo } from "react"
-import { ProjectCardGroupList } from "~/components/data-display/project-card-group-list"
-import { ProjectCardMetadata } from "~/components/data-display/project-card-metadata"
-import { ProjectCardTechList } from "~/components/data-display/project-card-tech-list"
-import { ProjectCardTopicList } from "~/components/data-display/project-card-topic-list"
-import { ProjectTreeExplorer } from "~/components/data-display/project-tree-explorer"
-import { getProjectTree } from "~/db/project-trees"
-import { getProjectByUuid } from "~/db/projects"
 
 export const RouteComponent: FC = memo(() => {
   const { project, tree } = Route.useLoaderData()
@@ -52,11 +52,11 @@ export const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/$uuid/")({
   component: RouteComponent,
   loader: async ({ params: { uuid } }) => {
-    const project = await getProjectByUuid(uuid)
-    if (project === undefined) {
+    const project = await ProjectService.findByUuid(uuid)
+    if (project === null) {
       throw notFound()
     }
-    const tree = await getProjectTree(project, "")
+    const tree = ProjectTreeService.getRootTree(project.uuid)
     return { project, tree }
   },
 })

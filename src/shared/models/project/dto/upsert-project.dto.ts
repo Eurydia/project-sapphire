@@ -5,6 +5,7 @@ export const upsertProjectDtoSchema = z.object({
   uuid: z.uuidv4(),
   name: z.string().trim().normalize().nonempty(),
   root: z.string().trim().normalize().nonempty(),
+  pinned: z.boolean(),
   description: z
     .string()
     .trim()

@@ -1,11 +1,14 @@
-import { projectQuerySchema } from "#/services/project/dto/project-dto"
+import { projectQuerySchema } from "#/models/project/dto/query-project.dto"
+import { ProjectGroupService } from "@/api/project-group.service"
+import { ProjectTechnologyService } from "@/api/project-technology.service"
+import { ProjectTopicService } from "@/api/project-topic.service"
+import { ProjectService } from "@/api/project.service"
 import { ProjectList } from "@/components/data-display/project-list"
 import { ProjectQueryForm } from "@/components/form/project-query-form"
-import type { StyledLink } from "@/components/navigation/styled-link"
+import { StyledLink } from "@/components/navigation/styled-link"
 import { Box, Grid, Paper, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
-import _ from "lodash"
 import type { FC } from "react"
 import { memo } from "react"
 
@@ -42,22 +45,16 @@ const RouteComponent: FC = memo(() => {
 
 export const Route = createFileRoute("/projects/")({
   component: RouteComponent,
-  validateSearch: zodValidator(projectQuerySchema.optional()),
+  validateSearch: zodValidator(projectQuerySchema),
   loaderDeps: ({ search }) => ({ search }),
   loader: async ({ deps: { search } }) => {
     return {
-      projects: await listProjects(search).catch(() => {
-        return []
-      }),
+      projects: await ProjectService.list(search),
       formOptions: {
-        projects: _.uniq(
-          (await listProjects()).map(({ name }) => name),
-        ),
-        technologies: (await listTech()).map(({ name }) => name),
-        topics: [],
-        groups: (await ProjectGroupService.list()).map(
-          ({ name }) => name,
-        ),
+        projects: await ProjectService.listNames(),
+        technologies: await ProjectTechnologyService.listNames(),
+        topics: await ProjectTopicService.listNames(),
+        groups: await ProjectGroupService.listNames(),
       },
     }
   },

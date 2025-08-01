@@ -1,5 +1,7 @@
+import { ProjectTreeService } from "@/api/project-tree.service"
+import { ProjectService } from "@/api/project.service"
 import { ProjectTreeExplorer } from "@/components/data-display/project-tree-explorer"
-import { Paper, Stack, Typography } from "@mui/material"
+import { Paper, Stack } from "@mui/material"
 import {
   createFileRoute,
   notFound,
@@ -14,9 +16,6 @@ const RouteComponent: FC = memo(() => {
       <Paper>
         {tree !== null && <ProjectTreeExplorer tree={tree} />}
       </Paper>
-      <Paper>
-        <Typography>{tree.readme?.content}</Typography>
-      </Paper>
     </Stack>
   )
 })
@@ -24,12 +23,15 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/$uuid/tree/$")({
   component: RouteComponent,
   loader: async ({ params: { uuid, _splat } }) => {
-    const project = await getProjectByUuid(uuid)
-    if (project === undefined) {
+    const project = await ProjectService.findByUuid(uuid)
+    if (project === null) {
       throw notFound()
     }
 
-    const tree = await getProjectTree(project, _splat ?? "")
+    const tree = await ProjectTreeService.getTree(
+      project.uuid,
+      _splat ?? "",
+    )
     return { tree, project }
   },
 })

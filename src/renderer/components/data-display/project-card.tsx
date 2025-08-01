@@ -1,3 +1,6 @@
+import { openPath } from "@/api/fs"
+import { ProjectService } from "@/api/project.service"
+import { useLoggerStore } from "@/stores/useLoggerStore"
 import {
   EditRounded,
   FolderRounded,
@@ -18,10 +21,7 @@ import type { FC } from "react"
 import { Fragment, memo, useCallback } from "react"
 import { toast } from "react-toastify"
 import type { Project } from "src/shared/models/project/project"
-import { openPath } from "~/api/fs"
-import { StyledLink } from "~/components/navigation/styled-link"
-import { pinProject, unpinProject } from "~/db/projects"
-import { useLoggerStore } from "~/stores/useLoggerStore"
+import { StyledLink } from "../navigation/styled-link"
 import { ProjectCardGroupList } from "./project-card-group-list"
 import { ProjectCardMetadata } from "./project-card-metadata"
 import { ProjectCardTechList } from "./project-card-tech-list"
@@ -42,7 +42,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
   const handleTogglePin = useCallback(() => {
     if (project.pinned) {
       logNotice(`unpinning project {uuid: ${project.uuid}}`)
-      unpinProject(project.uuid).then(
+      ProjectService.unpin(project.uuid).then(
         () => {
           logNotice(
             `project {uuid: ${project.uuid}} is no longer pinned`,
@@ -59,7 +59,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
       )
     } else {
       logNotice(`pinning project {uuid: ${project.uuid}}`)
-      pinProject(project.uuid).then(
+      ProjectService.pin(project.uuid).then(
         () => {
           logNotice(
             `project {uuid: ${project.uuid}} is now pinned`,

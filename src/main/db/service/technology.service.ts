@@ -30,7 +30,6 @@ const listByNames = async (arg: unknown) => {
     where: { name: In(names) },
   })
 }
-
 registerIpcMainServices("db$technology", {
   list,
   listByNames,

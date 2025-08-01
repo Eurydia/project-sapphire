@@ -1,9 +1,9 @@
+import type { Project } from "#/models/project/project"
 import { Alert, Stack, Typography } from "@mui/material"
 import type { FC } from "react"
 import { Fragment, memo } from "react"
-import type { Project } from "src/shared/models/project/project"
-import { ProjectCard } from "~/components/data-display/project-card"
-import { StyledLink } from "~/components/navigation/styled-link"
+import { StyledLink } from "../navigation/styled-link"
+import { ProjectCard } from "./project-card"
 
 type InnerProps = {
   fetcher: Props["fetcher"]

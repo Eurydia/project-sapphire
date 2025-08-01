@@ -3,16 +3,8 @@
   "include": [
     "src/preload/*.d.ts",
     "src/preload/*.gen.d.ts",
-    "src/shared/services",
-    "src/renderer/env.d.ts",
-    "src/renderer/main.tsx",
-    "src/renderer/routeTree.gen.ts",
-    "src/renderer/api",
-    "src/renderer/app",
-    "src/renderer/components",
-    "src/renderer/db",
-    "src/renderer/routes",
-    "src/renderer/stores"
+    "src/shared/**/*",
+    "src/renderer/**/*"
   ],
   "compilerOptions": {
     "target": "ES2022",

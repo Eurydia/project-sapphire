@@ -1,3 +1,8 @@
+import type { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
+import { ProjectGroupService } from "@/api/project-group.service"
+import { ProjectService } from "@/api/project.service"
+import { ProjectForm } from "@/components/form/ProjectForm"
+import { useLoggerStore } from "@/stores/useLoggerStore"
 import { Paper } from "@mui/material"
 import {
   createFileRoute,
@@ -7,12 +12,6 @@ import {
 import type { FC } from "react"
 import { memo, useCallback } from "react"
 import { toast } from "react-toastify"
-import type { ProjectDto } from "src/shared/models/project/dto/project-dto"
-import { ProjectForm } from "~/components/form/ProjectForm"
-import { ProjectGroupService } from "~/db/project-groups"
-import { getProjectByUuid, upsertProject } from "~/db/projects"
-import { listTech } from "~/db/technologies"
-import { useLoggerStore } from "~/stores/useLoggerStore"
 
 const RouteComponent: FC = memo(() => {
   const { project, formOptions } = Route.useLoaderData()
@@ -21,11 +20,11 @@ const RouteComponent: FC = memo(() => {
 
   const { logNotice, logWarn } = useLoggerStore()
   const handleSubmit = useCallback(
-    (dto: ProjectDto) => {
+    (dto: UpsertProjectDto) => {
       logNotice(
         `upserting project uuid=${uuid} with ${JSON.stringify(dto)}`,
       )
-      upsertProject(uuid, dto)
+      ProjectService.upsert(dto)
         .then(() => {
           logNotice(`upserted project uuid=${uuid}`)
           toast.success("update saved")

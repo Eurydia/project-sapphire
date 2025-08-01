@@ -1,4 +1,8 @@
 import {
+  LogLevel,
+  useLoggerStore,
+} from "@/stores/useLoggerStore"
+import {
   VisibilityOffRounded,
   VisibilityRounded,
 } from "@mui/icons-material"
@@ -27,10 +31,6 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from "react-resizable-panels"
-import {
-  LogLevel,
-  useLoggerStore,
-} from "~/stores/useLoggerStore"
 
 const StyledHandle = styled(PanelResizeHandle)(
   ({

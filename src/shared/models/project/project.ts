@@ -1,7 +1,7 @@
 import { z } from "zod/v4"
 import { projectGroupTableEntitySchema } from "../project-group/group-table-entity"
 import { technologySchema } from "../technology/tech-table-entity"
-import { topicTableEntitySchema } from "../topic/topic-table.entity"
+import { topicSchema } from "../topic/topic-table.entity"
 
 export const projectSchema = z.object({
   uuid: z.uuidv4(),
@@ -28,7 +28,7 @@ export const projectSchema = z.object({
       .nullable(),
   }),
   tags: z.object({
-    topics: topicTableEntitySchema.array(),
+    topics: topicSchema.array(),
     technologies: technologySchema.array(),
     groups: projectGroupTableEntitySchema.array(),
   }),

@@ -1,9 +1,8 @@
+import type { ProjectTree } from "#/models/project-tree/project-tree"
+import { openPath } from "@/api/fs"
 import { Divider, Link, Stack, Typography } from "@mui/material"
 import { useRouter } from "@tanstack/react-router"
 import { memo, type FC } from "react"
-import { openPath } from "~/api/fs"
-import type { ProjectTree } from "~/db/models/project-tree/project-tree"
-import { upsertTree } from "~/db/project-trees"
 import { StyledLink } from "../navigation/styled-link"
 
 type Props = {

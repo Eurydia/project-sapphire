@@ -8,10 +8,10 @@ import {
 import { useNavigate } from "@tanstack/react-router"
 import type { FC } from "react"
 import { Fragment, memo, useCallback } from "react"
-import type { TopicTableEntity } from "src/shared/models/topic/topic-table.entity"
+import type { Topic } from "src/shared/models/topic/topic-table.entity"
 
 type InnerProps = {
-  fetcher: TopicTableEntity[]
+  fetcher: Topic[]
 }
 const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
   const { palette } = useTheme()
@@ -56,7 +56,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
 })
 
 type Props = {
-  items: TopicTableEntity[]
+  items: Topic[]
 }
 export const ProjectCardTopicList: FC<Props> = memo(
   ({ items }) => {

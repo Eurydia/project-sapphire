@@ -1,23 +1,24 @@
+import type { CreateProjectDto } from "#/models/project/dto/create-project.dto"
+import { ProjectGroupService } from "@/api/project-group.service"
+import { ProjectTechnologyService } from "@/api/project-technology.service"
+import { ProjectTopicService } from "@/api/project-topic.service"
+import { ProjectService } from "@/api/project.service"
+import { ProjectForm } from "@/components/form/ProjectForm"
 import { Paper } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import type { FC } from "react"
 import { memo, useCallback } from "react"
 import { toast } from "react-toastify"
-import type { ProjectDto } from "src/shared/models/project/dto/project-dto"
-import { ProjectForm } from "~/components/form/ProjectForm"
-import { ProjectGroupService } from "~/db/project-groups"
-import { createProject } from "~/db/projects"
-import { listTech } from "~/db/technologies"
 
 const RouteComponent: FC = memo(() => {
   const { options } = Route.useLoaderData()
   const navigate = Route.useNavigate()
 
-  const handleSubmit = useCallback((dto: ProjectDto) => {
-    createProject(dto).then(
+  const handleSubmit = useCallback((dto: CreateProjectDto) => {
+    ProjectService.create(dto).then(
       () => {
         toast.success("project added")
-        navigate({ to: "/projects" })
+        return navigate({ to: "/projects" })
       },
       (err) => {
         console.debug(err)
@@ -37,11 +38,9 @@ export const Route = createFileRoute("/projects/create")({
   loader: async () => {
     return {
       options: {
-        topics: [],
-        technologies: (await listTech()).map(({ name }) => name),
-        groups: (await ProjectGroupService.list()).map(
-          ({ name }) => name,
-        ),
+        topics: await ProjectTopicService.listNames(),
+        technologies: await ProjectTechnologyService.listNames(),
+        groups: await ProjectGroupService.listNames(),
       },
     }
   },
