@@ -1,11 +1,17 @@
-import { createProjectDtoSchema } from "#/models/project/dto/create-project.dto"
-import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
+import {
+  CreateProjectDto,
+  createProjectDtoSchema,
+} from "#/models/project/dto/create-project.dto"
+import {
+  UpsertProjectDto,
+  upsertProjectDtoSchema,
+} from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
 import { existsSync, statSync } from "fs"
 import moment from "moment"
 import { normalize } from "path"
-import { In } from "typeorm"
+import { EntityManager, In } from "typeorm"
 import z4 from "zod/v4"
 import { AppDataSource } from "../data-source"
 import { GroupEntity } from "../entity/Group"
@@ -67,6 +73,51 @@ const _fromTableEntity = async (entity: ProjectEntity) => {
     },
     tags: { groups, technologies: techs, topics },
   } satisfies Project
+}
+
+const _fillTags = async (
+  mgr: EntityManager,
+  dto: CreateProjectDto | UpsertProjectDto,
+) => {
+  const [knownTopics, knownTechs, knownGroups] =
+    await Promise.all([
+      mgr.find(TopicEntity, {
+        where: { name: In(dto.topicNames) },
+      }),
+      mgr.find(TechnologyEntity, {
+        where: { name: In(dto.techNames) },
+      }),
+      mgr.find(GroupEntity, {
+        where: { name: In(dto.groupNames) },
+      }),
+    ])
+
+  const knownTopicNames = new Set(
+    knownTopics.map(({ name }) => name),
+  )
+  const newTopics = dto.topicNames
+    .filter((name) => !knownTopicNames.has(name))
+    .map((name) => mgr.create(TopicEntity, { name }))
+
+  const knownTechNames = new Set(
+    knownTechs.map(({ name }) => name),
+  )
+  const newTechs = dto.techNames
+    .filter((name) => !knownTechNames.has(name))
+    .map((name) => mgr.create(TechnologyEntity, { name }))
+
+  const knownGroupNames = new Set(
+    knownGroups.map(({ name }) => name),
+  )
+  const newGroups = dto.groupNames
+    .filter((name) => !knownGroupNames.has(name))
+    .map((name) => mgr.create(GroupEntity, { name }))
+
+  return {
+    topics: [...knownTopics, ...newTopics],
+    groups: [...knownGroups, ...newGroups],
+    techs: [...knownTechs, ...newTechs],
+  }
 }
 
 const list = () => {
@@ -154,48 +205,15 @@ export const unpin = async (arg: unknown) => {
 export const createProject = async (arg: unknown) => {
   const dto = createProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
-    const [knownTopics, knownTechs, knownGroups] =
-      await Promise.all([
-        mgr.find(TopicEntity, {
-          where: { name: In(dto.topicNames) },
-        }),
-        mgr.find(TechnologyEntity, {
-          where: { name: In(dto.techNames) },
-        }),
-        mgr.find(GroupEntity, {
-          where: { name: In(dto.groupNames) },
-        }),
-      ])
-
-    const knownTopicNames = new Set(
-      knownTopics.map(({ name }) => name),
-    )
-    const newTopics = dto.topicNames
-      .filter((name) => !knownTopicNames.has(name))
-      .map((name) => mgr.create(TopicEntity, { name }))
-
-    const knownTechNames = new Set(
-      knownTechs.map(({ name }) => name),
-    )
-    const newTechs = dto.techNames
-      .filter((name) => !knownTechNames.has(name))
-      .map((name) => mgr.create(TechnologyEntity, { name }))
-
-    const knownGroupNames = new Set(
-      knownGroups.map(({ name }) => name),
-    )
-    const newGroups = dto.groupNames
-      .filter((name) => !knownGroupNames.has(name))
-      .map((name) => mgr.create(GroupEntity, { name }))
-
+    const { groups, techs, topics } = await _fillTags(mgr, dto)
     const project = mgr.create(ProjectEntity, {
       name: dto.name,
       root: normalize(dto.root).trim(),
       pinned: false,
       description: dto.description ?? null,
-      topics: [...knownTopics, ...newTopics],
-      groups: [...knownGroups, ...newGroups],
-      techs: [...knownTechs, ...newTechs],
+      groups,
+      techs,
+      topics,
     })
     return mgr.save(ProjectEntity, project)
   })
@@ -204,49 +222,16 @@ export const createProject = async (arg: unknown) => {
 export const upsertProject = async (arg: unknown) => {
   const dto = upsertProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
-    const [knownTopics, knownTechs, knownGroups] =
-      await Promise.all([
-        mgr.find(TopicEntity, {
-          where: { name: In(dto.topicNames) },
-        }),
-        mgr.find(TechnologyEntity, {
-          where: { name: In(dto.techNames) },
-        }),
-        mgr.find(GroupEntity, {
-          where: { name: In(dto.groupNames) },
-        }),
-      ])
-
-    const knownTopicNames = new Set(
-      knownTopics.map(({ name }) => name),
-    )
-    const newTopics = dto.topicNames
-      .filter((name) => !knownTopicNames.has(name))
-      .map((name) => mgr.create(TopicEntity, { name }))
-
-    const knownTechNames = new Set(
-      knownTechs.map(({ name }) => name),
-    )
-    const newTechs = dto.techNames
-      .filter((name) => !knownTechNames.has(name))
-      .map((name) => mgr.create(TechnologyEntity, { name }))
-
-    const knownGroupNames = new Set(
-      knownGroups.map(({ name }) => name),
-    )
-    const newGroups = dto.groupNames
-      .filter((name) => !knownGroupNames.has(name))
-      .map((name) => mgr.create(GroupEntity, { name }))
-
+    const { groups, techs, topics } = await _fillTags(mgr, dto)
     const project = mgr.create(ProjectEntity, {
       uuid: dto.uuid,
       name: dto.name,
       root: normalize(dto.root).trim(),
       pinned: false,
       description: dto.description ?? null,
-      topics: [...knownTopics, ...newTopics],
-      groups: [...knownGroups, ...newGroups],
-      techs: [...knownTechs, ...newTechs],
+      groups,
+      techs,
+      topics,
     })
     return mgr.save(ProjectEntity, project)
   })
