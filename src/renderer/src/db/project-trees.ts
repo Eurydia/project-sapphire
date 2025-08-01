@@ -1,7 +1,7 @@
 import { readDir, readFile } from "~/api/fs"
-import type { ProjectTree } from "./models/project-tree/project-tree"
-import type { ProjectTreeDto } from "./models/project-tree/project-tree-dto"
-import type { Project } from "./models/project/project"
+import type { ProjectTree } from "../../../shared/services/project-tree/project-tree"
+import type { ProjectTreeDto } from "../../../shared/services/project-tree/project-tree-dto"
+import type { Project } from "../../../shared/services/project/project"
 
 export const upsertTree = async (dto: ProjectTreeDto) => {
   const db = await getDb()

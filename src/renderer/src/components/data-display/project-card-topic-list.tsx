@@ -8,7 +8,7 @@ import {
 import { useNavigate } from "@tanstack/react-router"
 import type { FC } from "react"
 import { Fragment, memo, useCallback } from "react"
-import type { TopicTableEntity } from "~/db/models/topic/topic-table.entity"
+import type { TopicTableEntity } from "src/shared/models/topic/topic-table.entity"
 
 type InnerProps = {
   fetcher: TopicTableEntity[]

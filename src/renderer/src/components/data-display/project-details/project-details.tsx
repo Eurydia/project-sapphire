@@ -2,7 +2,7 @@ import { Paper, Stack, Typography } from "@mui/material"
 import { Link } from "@tanstack/react-router"
 import type { FC } from "react"
 import { memo } from "react"
-import type { ProjectTableEntity } from "~/db/models/project/project-table-entity"
+import type { ProjectTableEntity } from "src/shared/models/project/project-table-entity"
 
 type Props = { project: ProjectTableEntity }
 export const ProjectDetails: FC<Props> = memo(({ project }) => {

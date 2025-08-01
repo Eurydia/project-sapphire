@@ -5,7 +5,8 @@
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.tsx",
     "src/preload/*.d.ts",
-    "src/preload/*.gen.d.ts"
+    "src/preload/*.gen.d.ts",
+    "src/shared/services"
   ],
   "compilerOptions": {
     "target": "ES2022",

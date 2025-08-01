@@ -6,7 +6,7 @@ import {
   useState,
   type FC,
 } from "react"
-import type { ProjectQuery } from "~/db/models/project/dto/project-dto"
+import type { ProjectQuery } from "src/shared/models/project/dto/project-dto"
 
 type Props = {
   onSubmit: (query: ProjectQuery) => unknown

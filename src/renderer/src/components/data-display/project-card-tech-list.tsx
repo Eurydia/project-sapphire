@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import type { FC } from "react"
 import { Fragment, memo } from "react"
-import type { Technology } from "~/db/models/technology/tech-table-entity"
+import type { Technology } from "src/shared/models/technology/tech-table-entity"
 import { StyledLink } from "../navigation/styled-link"
 
 type InnerProps = {

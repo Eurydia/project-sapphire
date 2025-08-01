@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { Fragment, memo, useMemo, type FC } from "react"
-import type { Project } from "~/db/models/project/project"
+import type { Project } from "src/shared/models/project/project"
 
 type InnerProps = {
   fetcher: Project

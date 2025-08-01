@@ -1,7 +1,7 @@
 import { Stack, Typography } from "@mui/material"
 import type { FC } from "react"
 import { Fragment, memo } from "react"
-import type { ProjectGroupTableEntity } from "~/db/models/project-group/group-table-entity"
+import type { ProjectGroupTableEntity } from "src/shared/models/project-group/group-table-entity"
 import { StyledLink } from "../navigation/styled-link"
 
 type InnerProps = {

@@ -12,9 +12,9 @@ import {
 import { useForm } from "@tanstack/react-form"
 import type { FC } from "react"
 import { memo, useRef } from "react"
+import type { ProjectDto } from "src/shared/models/project/dto/project-dto"
 import { openDirDialog } from "~/api/fs"
 import { AutocompleteTextField } from "~/components/input/AutocompeleteTextField"
-import type { ProjectDto } from "~/db/models/project/dto/project-dto"
 
 type Props = {
   init?: ProjectDto

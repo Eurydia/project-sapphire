@@ -11,28 +11,21 @@ export const projectRootMetadataSchema = z
   })
   .readonly()
 
-export const projectSchema = z
-  .object({
-    uuid: z.uuidv4(),
-    name: z.string().normalize().trim().nonempty().nonoptional(),
-    pinned: z.boolean(),
-    description: z.string().trim().normalize().nullable(),
-    root: z.object({
-      path: z
-        .string()
-        .normalize()
-        .trim()
-        .nonempty()
-        .nonoptional(),
-      metadata: projectRootMetadataSchema.nullable(),
-    }),
-    tags: z.object({
-      topics: topicTableEntitySchema.array(),
-      technologies: technologySchema.array(),
-      groups: projectGroupTableEntitySchema.array(),
-    }),
-  })
-  .readonly()
+export const projectSchema = z.object({
+  uuid: z.uuidv4(),
+  name: z.string().normalize().trim().nonempty(),
+  pinned: z.boolean(),
+  description: z.string().trim().normalize().nullable(),
+  root: z.object({
+    path: z.string().normalize().trim().nonempty().nonoptional(),
+    metadata: projectRootMetadataSchema.nullable(),
+  }),
+  tags: z.object({
+    topics: topicTableEntitySchema.array(),
+    technologies: technologySchema.array(),
+    groups: projectGroupTableEntitySchema.array(),
+  }),
+})
 
 export type ProjectRootMetadata = z.infer<
   typeof projectRootMetadataSchema

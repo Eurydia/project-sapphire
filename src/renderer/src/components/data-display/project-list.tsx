@@ -1,9 +1,9 @@
 import { Alert, Stack, Typography } from "@mui/material"
 import type { FC } from "react"
 import { Fragment, memo } from "react"
+import type { Project } from "src/shared/models/project/project"
 import { ProjectCard } from "~/components/data-display/project-card"
 import { StyledLink } from "~/components/navigation/styled-link"
-import type { Project } from "~/db/models/project/project"
 
 type InnerProps = {
   fetcher: Props["fetcher"]
