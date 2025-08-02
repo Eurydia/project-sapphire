@@ -11,11 +11,11 @@ export class GroupEntity {
   @PrimaryGeneratedColumn("uuid")
   uuid: string
 
+  @Column({ type: "text", unique: true })
+  name: string
+
   @Column({ type: "text", default: "" })
   description: string
-
-  @Column({ type: "text" })
-  name: string
 
   @Column({ type: "text", default: "#ffffff" })
   color: string

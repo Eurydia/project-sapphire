@@ -2,16 +2,16 @@ import {
   Column,
   Entity,
   ManyToMany,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm"
 import { ProjectEntity } from "./project.entity"
 
 @Entity()
 export class TechnologyEntity {
-  @PrimaryColumn("uuid")
+  @PrimaryGeneratedColumn("uuid")
   uuid: string
 
-  @Column({ type: "text" })
+  @Column({ type: "text", unique: true })
   name: string
 
   @Column({ type: "text", default: "#ffffff" })

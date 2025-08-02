@@ -5,9 +5,7 @@ export class ProjectTreeService {
   static async getRootTree(projectUuid: string) {
     return this.provider
       .getRootTree(projectUuid)
-      .then((response) =>
-        projectTreeSchema.nullable().parseAsync(response),
-      )
+      .then((response) => projectTreeSchema.parseAsync(response))
   }
   static async getTree(projectUuid: string, segments: string) {
     return this.provider

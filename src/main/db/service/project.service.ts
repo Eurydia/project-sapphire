@@ -131,20 +131,15 @@ const upsertProject = async (arg: unknown) => {
   const dto = upsertProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const { groups, techs, topics } = await _fillTags(mgr, dto)
-    const previous = await mgr.findOne(ProjectEntity, {
-      where: { uuid: dto.uuid },
-    })
-    const project = mgr.create(ProjectEntity, {
-      root: dto.root,
+    return mgr.preload(ProjectEntity, {
       uuid: dto.uuid,
+      root: dto.root,
       name: dto.name,
       description: dto.description,
-      pinned: previous === null ? false : previous.pinned,
       groups,
       techs,
       topics,
     })
-    return mgr.save(ProjectEntity, project)
   })
 }
 

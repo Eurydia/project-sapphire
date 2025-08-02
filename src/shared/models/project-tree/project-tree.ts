@@ -7,7 +7,7 @@ export const projectTreeSchema = z.object({
   readme: z
     .object({
       name: z.string(),
-      content: z.string().trim().normalize(),
+      content: z.string().trim().normalize().nullable(),
     })
     .nullable(),
   files: z.string().array(),
