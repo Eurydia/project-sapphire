@@ -1,9 +1,9 @@
 import { topicSchema } from "#/models/topic/topic-table.entity"
 import { uniq } from "lodash"
 
-export class ProjectGroupService {
+export class ProjectTagService {
   public static async list() {
-    return window["db$topic"]
+    return window["db$tags"]
       .list()
       .then((response) =>
         topicSchema.array().parseAsync(response),

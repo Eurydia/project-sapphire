@@ -1,9 +1,7 @@
 import { ProjectTreeService } from "@/api/project-tree.service"
 import { ProjectService } from "@/api/project.service"
-import { ProjectCardGroupList } from "@/components/data-display/project-card-group-list"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
-import { ProjectCardTechList } from "@/components/data-display/project-card-tech-list"
-import { ProjectCardTopicList } from "@/components/data-display/project-card-topic-list"
+import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
 import { ProjectTreeExplorer } from "@/components/data-display/project-tree-explorer"
 import { Grid, Paper, Stack, Typography } from "@mui/material"
 import {
@@ -31,11 +29,7 @@ export const RouteComponent: FC = memo(() => {
             >
               {project.description}
             </Typography>
-            <ProjectCardGroupList items={project.tags.groups} />
-            <ProjectCardTechList
-              items={project.tags.technologies}
-            />
-            <ProjectCardTopicList items={project.tags.topics} />
+            <ProjectCardTagList items={project.tags} />
             <ProjectCardMetadata project={project} />
           </Stack>
         </Paper>

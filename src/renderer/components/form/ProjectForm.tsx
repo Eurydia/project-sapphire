@@ -19,9 +19,7 @@ type Props = {
   init?: ProjectFormData
   action: (value: ProjectFormData) => unknown
   formOptions: {
-    topics: string[]
-    technologies: string[]
-    groups: string[]
+    tags: string[]
   }
 }
 export const ProjectForm: FC<Props> = memo(
@@ -35,7 +33,7 @@ export const ProjectForm: FC<Props> = memo(
           root: "",
           techNames: [],
           topicNames: [],
-          groupNames: [],
+          tagNames: [],
         } as ProjectFormData),
       onSubmit: ({ value }) => {
         action(value)
@@ -145,7 +143,7 @@ export const ProjectForm: FC<Props> = memo(
               </>
             )}
           </Field>
-          <Field name="groupNames" mode="array">
+          <Field name="tagNames" mode="array">
             {({ state, removeValue, pushValue, handleBlur }) => (
               <>
                 <Grid size={3}>{`groups`}</Grid>
@@ -153,7 +151,7 @@ export const ProjectForm: FC<Props> = memo(
                   <Stack spacing={0.5}>
                     <AutocompleteTextField
                       onSelect={pushValue}
-                      options={formOptions.groups}
+                      options={formOptions.tags}
                       disabledOptions={state.value}
                       placeholder="groups"
                       onBlur={handleBlur}
@@ -167,87 +165,7 @@ export const ProjectForm: FC<Props> = memo(
                       {state.value.map((_, index) => (
                         <Field
                           key={index}
-                          name={`groupNames[${index}]`}
-                        >
-                          {(subfield) => (
-                            <Chip
-                              variant="outlined"
-                              label={subfield.state.value}
-                              onDelete={() => removeValue(index)}
-                              sx={{ widthh: "fit-content" }}
-                            />
-                          )}
-                        </Field>
-                      ))}
-                    </Stack>
-                  </Stack>
-                </Grid>
-              </>
-            )}
-          </Field>
-          <Field name="topicNames" mode="array">
-            {({ state, removeValue, pushValue, handleBlur }) => (
-              <>
-                <Grid size={3}>{`topics`}</Grid>
-                <Grid size={9}>
-                  <Stack spacing={0.5} direction="column">
-                    <AutocompleteTextField
-                      onSelect={pushValue}
-                      options={formOptions.technologies}
-                      disabledOptions={state.value}
-                      onBlur={handleBlur}
-                      placeholder="Topics"
-                    />
-                    <Stack
-                      spacing={0.5}
-                      direction="row"
-                      flexWrap="wrap"
-                      useFlexGap
-                    >
-                      {state.value.map((_, index) => (
-                        <Field
-                          key={index}
-                          name={`topicNames[${index}]`}
-                        >
-                          {(subfield) => (
-                            <Chip
-                              variant="outlined"
-                              label={subfield.state.value}
-                              onDelete={() => removeValue(index)}
-                              sx={{ widthh: "fit-content" }}
-                            />
-                          )}
-                        </Field>
-                      ))}
-                    </Stack>
-                  </Stack>
-                </Grid>
-              </>
-            )}
-          </Field>
-          <Field name="techNames" mode="array">
-            {({ state, removeValue, pushValue, handleBlur }) => (
-              <>
-                <Grid size={3}>{`Technologies`}</Grid>
-                <Grid size={9}>
-                  <Stack spacing={0.5}>
-                    <AutocompleteTextField
-                      onSelect={pushValue}
-                      options={formOptions.technologies}
-                      disabledOptions={state.value}
-                      onBlur={handleBlur}
-                      placeholder="Technologies"
-                    />
-                    <Stack
-                      spacing={0.5}
-                      direction="row"
-                      flexWrap="wrap"
-                      useFlexGap
-                    >
-                      {state.value.map((_, index) => (
-                        <Field
-                          key={index}
-                          name={`techNames[${index}]`}
+                          name={`tagNames[${index}]`}
                         >
                           {(subfield) => (
                             <Chip

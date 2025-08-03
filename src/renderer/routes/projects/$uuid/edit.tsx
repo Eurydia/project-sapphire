@@ -1,6 +1,4 @@
-import { ProjectGroupService } from "@/api/project-group.service"
-import { ProjectTechnologyService } from "@/api/project-technology.service"
-import { ProjectTopicService } from "@/api/project-topic.service"
+import { ProjectTagService } from "@/api/project-group.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectForm } from "@/components/form/ProjectForm"
 import { useLoggerStore } from "@/stores/useLoggerStore"
@@ -48,15 +46,7 @@ const RouteComponent: FC = memo(() => {
           description: project.description,
           name: project.name,
           root: project.root.path,
-          techNames: project.tags.technologies.map(
-            ({ name }) => name,
-          ),
-          topicNames: project.tags.topics.map(
-            ({ name }) => name,
-          ),
-          groupNames: project.tags.groups.map(
-            ({ name }) => name,
-          ),
+          tagNames: project.tags.groups.map(({ name }) => name),
         }}
         action={handleSubmit}
         formOptions={formOptions}
@@ -76,9 +66,7 @@ export const Route = createFileRoute("/projects/$uuid/edit")({
     return {
       project,
       formOptions: {
-        topics: await ProjectTopicService.listNames(),
-        technologies: await ProjectTechnologyService.listNames(),
-        groups: await ProjectGroupService.listNames(),
+        tags: await ProjectTagService.listNames(),
       },
     }
   },

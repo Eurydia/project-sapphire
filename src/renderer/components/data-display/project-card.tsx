@@ -22,10 +22,8 @@ import { Fragment, memo, useCallback } from "react"
 import { toast } from "react-toastify"
 import type { Project } from "src/shared/models/project/project"
 import { StyledLink } from "../navigation/styled-link"
-import { ProjectCardGroupList } from "./project-card-group-list"
 import { ProjectCardMetadata } from "./project-card-metadata"
-import { ProjectCardTechList } from "./project-card-tech-list"
-import { ProjectCardTopicList } from "./project-card-topic-list"
+import { ProjectCardTagList } from "./project-card-tag-list"
 
 type Props = {
   project: Project
@@ -154,13 +152,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
             )}
           </Stack>
           <ProjectCardMetadata project={project} />
-          <Stack spacing={0.5}>
-            <ProjectCardGroupList items={project.tags.groups} />
-            <ProjectCardTechList
-              items={project.tags.technologies}
-            />
-            <ProjectCardTopicList items={project.tags.topics} />
-          </Stack>
+          <ProjectCardTagList items={project.tags} />
         </Stack>
         <Stack
           spacing={2}

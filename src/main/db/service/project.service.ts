@@ -26,9 +26,7 @@ const list = (arg: unknown) => {
     const entities = await mgr.find(ProjectEntity, {
       where: {
         name: InOrUndefined(query.names),
-        topics: { name: InOrUndefined(query.topics) },
-        techs: { name: InOrUndefined(query.techs) },
-        groups: { name: InOrUndefined(query.groups) },
+        tags: { name: InOrUndefined(query.tags) },
       },
     })
     const items = await Promise.all(
@@ -113,15 +111,13 @@ const unpin = async (arg: unknown) => {
 const createProject = async (arg: unknown) => {
   const dto = createProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
-    const { groups, techs, topics } = await _fillTags(mgr, dto)
+    const tags = await _fillTags(mgr, dto)
     const project = mgr.create(ProjectEntity, {
       name: dto.name,
       root: normalize(dto.root).trim(),
       pinned: false,
       description: dto.description,
-      groups,
-      techs,
-      topics,
+      tags,
     })
     return mgr.save(ProjectEntity, project)
   })
@@ -130,15 +126,13 @@ const createProject = async (arg: unknown) => {
 const upsertProject = async (arg: unknown) => {
   const dto = upsertProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
-    const { groups, techs, topics } = await _fillTags(mgr, dto)
+    const tags = await _fillTags(mgr, dto)
     return mgr.preload(ProjectEntity, {
       uuid: dto.uuid,
       root: dto.root,
       name: dto.name,
       description: dto.description,
-      groups,
-      techs,
-      topics,
+      tags,
     })
   })
 }

@@ -2,9 +2,9 @@ import { In } from "typeorm"
 import { z } from "zod/v4"
 import { registerIpcMainServices } from "../../services/core"
 import { AppDataSource } from "../data-source"
-import { TopicEntity } from "../entity/Topic"
+import { ProjectTagEntity } from "../entity/project-tag.entity"
 
-const repo = AppDataSource.getRepository(TopicEntity)
+const repo = AppDataSource.getRepository(ProjectTagEntity)
 const list = async () => {
   return repo.find({ order: { name: "asc" } })
 }
@@ -30,7 +30,8 @@ const listByNames = async (arg: unknown) => {
     where: { name: In(names) },
   })
 }
-registerIpcMainServices("db$technology", {
+
+registerIpcMainServices("db$tags", {
   list,
   listByNames,
   listByUuids,

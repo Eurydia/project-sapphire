@@ -1,7 +1,5 @@
 import { z } from "zod/v4"
-import { projectGroupSchema } from "../project-group/group-table-entity"
-import { technologySchema } from "../technology/tech-table-entity"
-import { topicSchema } from "../topic/topic-table.entity"
+import { projectTagSchema } from "../project-tag/project-tag-entity"
 
 export const projectSchema = z.object({
   uuid: z.uuidv4(),
@@ -27,11 +25,7 @@ export const projectSchema = z.object({
       })
       .nullable(),
   }),
-  tags: z.object({
-    topics: topicSchema.array(),
-    technologies: technologySchema.array(),
-    groups: projectGroupSchema.array(),
-  }),
+  tags: projectTagSchema.array(),
 })
 
 export type Project = z.infer<typeof projectSchema>

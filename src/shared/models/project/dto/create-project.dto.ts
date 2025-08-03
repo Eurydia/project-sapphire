@@ -5,21 +5,7 @@ export const createProjectDtoSchema = z.object({
   name: z.string().trim().normalize().nonempty(),
   root: z.string().trim().normalize().nonempty(),
   description: z.string().trim().normalize(),
-  techNames: z
-    .string()
-    .trim()
-    .nonempty()
-    .normalize()
-    .array()
-    .pipe(z.transform((arg) => uniq(arg))),
-  topicNames: z
-    .string()
-    .trim()
-    .nonempty()
-    .normalize()
-    .array()
-    .pipe(z.transform((arg) => uniq(arg))),
-  groupNames: z
+  tagNames: z
     .string()
     .trim()
     .normalize()

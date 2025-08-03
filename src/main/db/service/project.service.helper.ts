@@ -5,10 +5,8 @@ import { existsSync, statSync } from "fs"
 import moment from "moment"
 import { normalize } from "path"
 import { EntityManager, In } from "typeorm"
-import { GroupEntity } from "../entity/Group"
+import { ProjectTagEntity } from "../entity/project-tag.entity"
 import { ProjectEntity } from "../entity/project.entity"
-import { TechnologyEntity } from "../entity/Technology"
-import { TopicEntity } from "../entity/Topic"
 
 const _getMetadata = async (root: string) => {
   const path = normalize(root).trim()
@@ -40,16 +38,7 @@ const _getMetadata = async (root: string) => {
 export const _fromTableEntity = async (
   entity: ProjectEntity,
 ) => {
-  const {
-    description,
-    groups,
-    name,
-    pinned,
-    root,
-    techs,
-    topics,
-    uuid,
-  } = entity
+  const { description, tags, name, pinned, root, uuid } = entity
 
   const metadata = await _getMetadata(root)
 
@@ -62,7 +51,7 @@ export const _fromTableEntity = async (
       path: root,
       metadata,
     },
-    tags: { groups, technologies: techs, topics },
+    tags,
   } satisfies Project
 }
 
@@ -70,60 +59,18 @@ export const _fillTags = async (
   mgr: EntityManager,
   dto: CreateProjectDto | UpsertProjectDto,
 ) => {
-  const topics = await (async () => {
-    const repo = mgr.getRepository(TopicEntity)
-    const names = dto.topicNames
+  const repo = mgr.getRepository(ProjectTagEntity)
+  const { tagNames } = dto
 
-    const known = await repo.find({
-      where: { name: In(names) },
-    })
-    const knownNames = new Set(known.map(({ name }) => name))
-    const newNames = names.filter(
-      (name) => !knownNames.has(name),
-    )
-    const added = await Promise.all(
-      newNames.map((name) => repo.save(repo.create({ name }))),
-    )
-    return known.concat(added)
-  })()
-
-  const techs = await (async () => {
-    const repo = mgr.getRepository(TechnologyEntity)
-    const names = dto.techNames
-
-    const known = await repo.find({
-      where: { name: In(names) },
-    })
-    const knownNames = new Set(known.map(({ name }) => name))
-    const newNames = names.filter(
-      (name) => !knownNames.has(name),
-    )
-    const added = await Promise.all(
-      newNames.map((name) => repo.save(repo.create({ name }))),
-    )
-    return known.concat(added)
-  })()
-
-  const groups = await (async () => {
-    const repo = mgr.getRepository(GroupEntity)
-    const names = dto.groupNames
-
-    const known = await repo.find({
-      where: { name: In(names) },
-    })
-    const knownNames = new Set(known.map(({ name }) => name))
-    const newNames = names.filter(
-      (name) => !knownNames.has(name),
-    )
-    const added = await Promise.all(
-      newNames.map((name) => repo.save(repo.create({ name }))),
-    )
-    return known.concat(added)
-  })()
-
-  return {
-    topics,
-    techs,
-    groups,
-  }
+  const known = await repo.find({
+    where: { name: In(tagNames) },
+  })
+  const knownNames = new Set(known.map(({ name }) => name))
+  const newNames = tagNames.filter(
+    (name) => !knownNames.has(name),
+  )
+  const added = await Promise.all(
+    newNames.map((name) => repo.save(repo.create({ name }))),
+  )
+  return known.concat(added)
 }

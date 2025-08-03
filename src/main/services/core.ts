@@ -1,11 +1,20 @@
 import { app, ipcMain } from "electron"
-import { writeFileSync } from "fs"
+import { globSync, rmSync, writeFileSync } from "fs"
 import { join } from "path"
 
 export type ServiceProvider = Record<
   string,
   (...args: any[]) => Promise<any>
 >
+
+;(() => {
+  const glob = globSync(
+    join(__dirname, "..", "..", "src", "preload", "*.gen.d.ts"),
+  )
+  for (const file of glob) {
+    rmSync(file)
+  }
+})()
 
 export const registerIpcMainServices = (
   providerName: string,

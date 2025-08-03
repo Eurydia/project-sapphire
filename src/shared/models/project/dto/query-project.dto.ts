@@ -11,10 +11,8 @@ const stringArraySchema = z
 export const projectQuerySchema = z
   .object({
     names: stringArraySchema,
-    topics: stringArraySchema,
-    techs: stringArraySchema,
-    groups: stringArraySchema,
+    tags: stringArraySchema,
   })
-  .default({ groups: [], names: [], techs: [], topics: [] })
+  .default({ tags: [], names: [] })
 
 export type ProjectQuery = z.infer<typeof projectQuerySchema>

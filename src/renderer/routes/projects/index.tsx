@@ -1,7 +1,5 @@
 import { projectQuerySchema } from "#/models/project/dto/query-project.dto"
-import { ProjectGroupService } from "@/api/project-group.service"
-import { ProjectTechnologyService } from "@/api/project-technology.service"
-import { ProjectTopicService } from "@/api/project-topic.service"
+import { ProjectTagService } from "@/api/project-group.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectList } from "@/components/data-display/project-list"
 import { ProjectQueryForm } from "@/components/form/project-query-form"
@@ -52,9 +50,7 @@ export const Route = createFileRoute("/projects/")({
       projects: await ProjectService.list(search),
       formOptions: {
         projects: await ProjectService.listNames(),
-        technologies: await ProjectTechnologyService.listNames(),
-        topics: await ProjectTopicService.listNames(),
-        groups: await ProjectGroupService.listNames(),
+        tags: await ProjectTagService.listNames(),
       },
     }
   },

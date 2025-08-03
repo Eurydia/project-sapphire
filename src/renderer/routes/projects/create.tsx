@@ -1,6 +1,4 @@
-import { ProjectGroupService } from "@/api/project-group.service"
-import { ProjectTechnologyService } from "@/api/project-technology.service"
-import { ProjectTopicService } from "@/api/project-topic.service"
+import { ProjectTagService } from "@/api/project-group.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectForm } from "@/components/form/ProjectForm"
 import type { ProjectFormData } from "@/types/project-form-data"
@@ -37,9 +35,7 @@ export const Route = createFileRoute("/projects/create")({
   loader: async () => {
     return {
       options: {
-        topics: await ProjectTopicService.listNames(),
-        technologies: await ProjectTechnologyService.listNames(),
-        groups: await ProjectGroupService.listNames(),
+        tags: await ProjectTagService.listNames(),
       },
     }
   },

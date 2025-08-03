@@ -1,5 +1,3 @@
-import "./group.service"
+import "./project-tag.service"
 import "./project-tree.service"
 import "./project.service"
-import "./technology.service"
-import "./topic.service"

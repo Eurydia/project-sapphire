@@ -6,9 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm"
-import { GroupEntity } from "./Group"
-import { TechnologyEntity } from "./Technology"
-import { TopicEntity } from "./Topic"
+import { ProjectTagEntity } from "./project-tag.entity"
 import { ProjectTreeEntity } from "./project-tree.entity"
 
 @Entity()
@@ -28,26 +26,16 @@ export class ProjectEntity {
   @Column({ type: "text" })
   description: string
 
-  @ManyToMany(() => TopicEntity, (topic) => topic.projects, {
-    cascade: true,
-    eager: true,
-  })
+  @ManyToMany(
+    () => ProjectTagEntity,
+    (group) => group.projects,
+    {
+      cascade: true,
+      eager: true,
+    },
+  )
   @JoinTable()
-  topics: TopicEntity[]
-
-  @ManyToMany(() => TechnologyEntity, (tech) => tech.projects, {
-    cascade: true,
-    eager: true,
-  })
-  @JoinTable()
-  techs: TechnologyEntity[]
-
-  @ManyToMany(() => GroupEntity, (group) => group.projects, {
-    cascade: true,
-    eager: true,
-  })
-  @JoinTable()
-  groups: GroupEntity[]
+  tags: ProjectTagEntity[]
 
   @OneToMany(() => ProjectTreeEntity, (tree) => tree.project)
   trees: ProjectTreeEntity[]
