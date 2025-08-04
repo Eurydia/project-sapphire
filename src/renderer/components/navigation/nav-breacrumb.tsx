@@ -13,10 +13,13 @@ export const NavBreadcrumbs: FC = memo(() => {
   const { pathname } = useLocation()
   const segments = useMemo(() => {
     const segments = pathname.split("/")
-    return segments.map((segment, index) => ({
+    segments.shift()
+    const paths = segments.map((segment, index) => ({
       path: segments.slice(0, index + 1).join("/"),
       name: segment,
     }))
+    paths.unshift({ path: "/", name: "root" })
+    return paths
   }, [pathname])
 
   return (
@@ -28,7 +31,6 @@ export const NavBreadcrumbs: FC = memo(() => {
     >
       <Toolbar variant="dense">
         <Breadcrumbs>
-          <StyledLink to="/">root</StyledLink>
           {segments.map(({ path, name }, index) =>
             index + 1 < segments.length ? (
               <StyledLink key={`crumb-${index}`} to={path}>
