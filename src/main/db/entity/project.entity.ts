@@ -26,14 +26,10 @@ export class ProjectEntity {
   @Column({ type: "text" })
   description: string
 
-  @ManyToMany(
-    () => ProjectTagEntity,
-    (group) => group.projects,
-    {
-      cascade: true,
-      eager: true,
-    },
-  )
+  @ManyToMany(() => ProjectTagEntity, (tag) => tag.projects, {
+    cascade: true,
+    eager: true,
+  })
   @JoinTable()
   tags: ProjectTagEntity[]
 

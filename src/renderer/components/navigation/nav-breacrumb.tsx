@@ -28,6 +28,7 @@ export const NavBreadcrumbs: FC = memo(() => {
     >
       <Toolbar variant="dense">
         <Breadcrumbs>
+          <StyledLink to="/">root</StyledLink>
           {segments.map(({ path, name }, index) =>
             index + 1 < segments.length ? (
               <StyledLink key={`crumb-${index}`} to={path}>

@@ -28,6 +28,9 @@ const list = (arg: unknown) => {
         name: InOrUndefined(query.names),
         tags: { name: InOrUndefined(query.tags) },
       },
+      relations: {
+        tags: true,
+      },
     })
     const items = await Promise.all(
       entities.map((ent) => _fromTableEntity(ent)),

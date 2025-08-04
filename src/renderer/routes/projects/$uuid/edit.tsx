@@ -46,7 +46,7 @@ const RouteComponent: FC = memo(() => {
           description: project.description,
           name: project.name,
           root: project.root.path,
-          tagNames: project.tags.groups.map(({ name }) => name),
+          tagNames: project.tags.map(({ name }) => name),
         }}
         action={handleSubmit}
         formOptions={formOptions}

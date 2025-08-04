@@ -39,7 +39,6 @@ export const _fromTableEntity = async (
   entity: ProjectEntity,
 ) => {
   const { description, tags, name, pinned, root, uuid } = entity
-
   const metadata = await _getMetadata(root)
 
   return {

@@ -19,13 +19,15 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
       direction="row"
       alignItems="center"
     >
-      <Fragment>
-        {items.map(({ name }, index) => (
-          <StyledLink key={`tag-item[${index}]`} to="/projects">
-            {name}
-          </StyledLink>
-        ))}
-      </Fragment>
+      {items.map(({ name, uuid }) => (
+        <StyledLink
+          key={`tag-${uuid}`}
+          to="/project-tags/$uuid"
+          params={{ uuid }}
+        >
+          {`[${name}]`}
+        </StyledLink>
+      ))}
     </Stack>
   )
 })
