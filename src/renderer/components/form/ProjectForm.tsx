@@ -55,14 +55,13 @@ export const ProjectForm: FC<Props> = memo(
           <Field name="name">
             {({ state, handleChange, handleBlur }) => (
               <>
-                <Grid size={3}>{`Name`}</Grid>
+                <Grid size={3}>{`NAME`}</Grid>
                 <Grid size={9}>
                   <TextField
                     fullWidth
                     multiline
                     required
                     minRows={1}
-                    placeholder="name"
                     onBlur={handleBlur}
                     onChange={(e) =>
                       handleChange(e.target.value)
@@ -76,13 +75,12 @@ export const ProjectForm: FC<Props> = memo(
           <Field name="root">
             {({ state, handleChange, handleBlur }) => (
               <>
-                <Grid size={3}>{`root`}</Grid>
+                <Grid size={3}>{`ROOT`}</Grid>
                 <Grid size={9}>
                   <TextField
                     fullWidth
                     multiline
                     minRows={1}
-                    placeholder="Root"
                     onBlur={handleBlur}
                     onChange={(e) =>
                       handleChange(e.target.value)
@@ -126,13 +124,12 @@ export const ProjectForm: FC<Props> = memo(
           <Field name="description">
             {({ state, handleChange, handleBlur }) => (
               <>
-                <Grid size={3}>{`description`}</Grid>
+                <Grid size={3}>{`DESC`}</Grid>
                 <Grid size={9}>
                   <TextField
                     fullWidth
                     multiline
                     minRows={4}
-                    placeholder="Description"
                     onBlur={handleBlur}
                     onChange={(e) =>
                       handleChange(e.target.value)
@@ -146,14 +143,13 @@ export const ProjectForm: FC<Props> = memo(
           <Field name="tagNames" mode="array">
             {({ state, removeValue, pushValue, handleBlur }) => (
               <>
-                <Grid size={3}>{`groups`}</Grid>
+                <Grid size={3}>{`TAGS`}</Grid>
                 <Grid size={9}>
                   <Stack spacing={0.5}>
                     <AutocompleteTextField
                       onSelect={pushValue}
                       options={formOptions.tags}
                       disabledOptions={state.value}
-                      placeholder="groups"
                       onBlur={handleBlur}
                     />
                     <Stack
