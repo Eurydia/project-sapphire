@@ -130,13 +130,14 @@ const upsertProject = async (arg: unknown) => {
   const dto = upsertProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const tags = await _fillTags(mgr, dto)
-    return mgr.preload(ProjectEntity, {
+    const project = await mgr.preload(ProjectEntity, {
       uuid: dto.uuid,
       root: dto.root,
       name: dto.name,
       description: dto.description,
       tags,
     })
+    return mgr.save(project)
   })
 }
 

@@ -27,7 +27,10 @@ const RouteComponent: FC = memo(() => {
         .then(() => {
           logNotice(`upserted project uuid=${uuid}`)
           toast.success("update saved")
-          return navigate({ to: "/projects" })
+          return navigate({
+            to: "/projects/$uuid",
+            params: { uuid: project.uuid },
+          })
         })
         .catch((err) => {
           logWarn(

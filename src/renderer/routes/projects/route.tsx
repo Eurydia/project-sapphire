@@ -4,7 +4,7 @@ import { memo, type FC } from "react"
 
 const RouteComponent: FC = memo(() => {
   return (
-    <Box paddingY={1}>
+    <Box maxWidth="lg" sx={{ marginX: "auto" }} paddingY={1}>
       <Outlet />
     </Box>
   )

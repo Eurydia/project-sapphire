@@ -29,10 +29,7 @@ type Props = {
   project: Project
 }
 export const ProjectCard: FC<Props> = memo(({ project }) => {
-  const {
-    typography: { monospaceFontFamily, serifFontFamily },
-    breakpoints,
-  } = useTheme()
+  const { breakpoints } = useTheme()
   const isSmallScreen = useMediaQuery(breakpoints.down("md"))
   const { logWarn, logNotice } = useLoggerStore()
   const router = useRouter()
@@ -112,14 +109,12 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
           <Stack>
             <Fragment>
               <Typography
-                fontFamily={monospaceFontFamily}
                 variant="subtitle2"
                 color="textSecondary"
               >
                 {project.uuid}
               </Typography>
               <Typography
-                fontFamily={monospaceFontFamily}
                 variant="subtitle2"
                 color="textSecondary"
               >
@@ -129,7 +124,6 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
           </Stack>
           <Stack>
             <Typography
-              fontFamily={serifFontFamily}
               variant="h4"
               component="div"
               sx={{
@@ -145,10 +139,8 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
                 {project.name}
               </StyledLink>
             </Typography>
-            {project.description !== null && (
-              <Typography fontFamily={serifFontFamily}>
-                {project.description}
-              </Typography>
+            {project.description !== "" && (
+              <Typography>{project.description}</Typography>
             )}
           </Stack>
           <ProjectCardMetadata project={project} />
