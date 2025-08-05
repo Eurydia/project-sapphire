@@ -2,6 +2,7 @@ import { z } from "zod/v4"
 
 export const projectTagSchema = z.strictObject({
   uuid: z.uuidv4(),
+  pinned: z.boolean(),
   name: z.string().trim().normalize().nonempty(),
   description: z.string().trim().normalize(),
   color: z.string(),

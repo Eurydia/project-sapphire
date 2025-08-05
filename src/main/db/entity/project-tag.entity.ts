@@ -14,6 +14,9 @@ export class ProjectTagEntity {
   @Column({ type: "text", unique: true })
   name: string
 
+  @Column({ type: "boolean", default: false })
+  pinned: boolean
+
   @Column({ type: "text", default: "" })
   description: string
 

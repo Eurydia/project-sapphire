@@ -19,7 +19,7 @@ const list = async () => {
 const listByUuids = async (arg: unknown) => {
   const uuids = z.uuidv4().array().parse(arg)
   return repo.find({
-    order: { name: "ASC" },
+    order: { name: "ASC", pinned: "ASC" },
     where: { uuid: In(uuids) },
     relations: {
       projects: true,

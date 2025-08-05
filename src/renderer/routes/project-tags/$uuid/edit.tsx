@@ -19,7 +19,7 @@ import { memo, type FC } from "react"
 const RouteComponent: FC = memo(() => {
   const { tag } = Route.useLoaderData()
   const navigate = Route.useNavigate()
-  const { logNotice, logWarn, logTrace } = useLoggerStore()
+  const { logNotice, logWarn } = useLoggerStore()
   const { Field, Subscribe, handleSubmit } = useForm({
     defaultValues: {
       name: tag.name,

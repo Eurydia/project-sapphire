@@ -28,14 +28,19 @@ const list = (arg: unknown) => {
         name: InOrUndefined(query.names),
         tags: { name: InOrUndefined(query.tags) },
       },
+      order: {
+        pinned: "DESC",
+        name: "ASC",
+      },
       relations: {
         tags: true,
       },
     })
-    const items = await Promise.all(
-      entities.map((ent) => _fromTableEntity(ent)),
-    )
-    return items satisfies Project[]
+    const items: Project[] = []
+    for (const entity of entities) {
+      items.push(await _fromTableEntity(entity))
+    }
+    return items
   })
 }
 const listByUuids = async (arg: unknown) => {
@@ -43,11 +48,17 @@ const listByUuids = async (arg: unknown) => {
   return AppDataSource.transaction(async (mgr) => {
     const entities = await mgr.find(ProjectEntity, {
       where: { uuid: In(uuids) },
+      order: {
+        pinned: "DESC",
+        name: "ASC",
+      },
+      relations: { tags: true },
     })
-    const items = await Promise.all(
-      entities.map((ent) => _fromTableEntity(ent)),
-    )
-    return items satisfies Project[]
+    const items: Project[] = []
+    for (const entity of entities) {
+      items.push(await _fromTableEntity(entity))
+    }
+    return items
   })
 }
 const listByNames = async (arg: unknown) => {
@@ -61,11 +72,17 @@ const listByNames = async (arg: unknown) => {
   return AppDataSource.transaction(async (mgr) => {
     const entities = await mgr.find(ProjectEntity, {
       where: { name: In(names) },
+      order: {
+        pinned: "DESC",
+        name: "ASC",
+      },
+      relations: { tags: true },
     })
-    const items = await Promise.all(
-      entities.map((ent) => _fromTableEntity(ent)),
-    )
-    return items satisfies Project[]
+    const items: Project[] = []
+    for (const entity of entities) {
+      items.push(await _fromTableEntity(entity))
+    }
+    return items
   })
 }
 
@@ -74,6 +91,7 @@ const findByUuid = async (arg: unknown) => {
   return AppDataSource.transaction(async (mgr) => {
     const entity = await mgr.findOne(ProjectEntity, {
       where: { uuid },
+      relations: { tags: true },
     })
     if (entity === null) {
       return null

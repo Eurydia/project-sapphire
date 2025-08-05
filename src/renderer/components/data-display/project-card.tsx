@@ -23,15 +23,11 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
     logNotice(`unpinning project {uuid: ${project.uuid}}`)
     ProjectService.unpin(project.uuid).then(
       () => {
-        logNotice(`Project ${project} is no longer pinned`)
-        toast.success("project is no longer pinned")
-        router.invalidate()
+        logNotice(`${project.uuid} is no longer pinned`)
+        router.invalidate({ sync: true })
       },
       (err) => {
-        logWarn(
-          `failed to unpin project {uuid: ${project.uuid}}; ${err}`,
-        )
-        toast.warn("failed to unpin project")
+        logWarn(`failed to unpin project ${project}: ${err}`)
       },
     )
   }, [project, logNotice, logWarn, router])
@@ -40,17 +36,13 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
     logNotice(`pinning project {uuid: ${project.uuid}}`)
     ProjectService.pin(project.uuid).then(
       () => {
-        logNotice(
-          `project {uuid: ${project.uuid}} is now pinned`,
-        )
-        toast.success("project is now pinned")
-        router.invalidate()
+        logNotice(`${project.uuid} is now pinned`)
+        router.invalidate({ sync: true })
       },
       (err) => {
         logWarn(
-          `failed to pin project {uuid: ${project.uuid}}; ${err}`,
+          `failed to pin project ${project} with error: ${err}`,
         )
-        toast.warn("failed to pin project")
       },
     )
   }, [project, logNotice, logWarn, router])
