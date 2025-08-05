@@ -1,4 +1,4 @@
-import { topicSchema } from "#/models/topic/topic-table.entity"
+import { projectTagSchema } from "#/models/project-tag/project-tag-entity"
 import { uniq } from "lodash"
 
 export class ProjectTagService {
@@ -6,7 +6,7 @@ export class ProjectTagService {
     return window["db$tags"]
       .list()
       .then((response) =>
-        topicSchema.array().parseAsync(response),
+        projectTagSchema.array().parseAsync(response),
       )
   }
 
