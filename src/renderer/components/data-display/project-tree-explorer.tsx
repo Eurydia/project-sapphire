@@ -1,5 +1,4 @@
 import type { ProjectTree } from "#/models/project-tree/project-tree"
-import { openPath } from "@/api/file-system.service"
 import { Divider, Link, Stack, Typography } from "@mui/material"
 import { useRouter } from "@tanstack/react-router"
 import { memo, type FC } from "react"
@@ -30,7 +29,7 @@ export const ProjectTreeExplorer: FC<Props> = memo(
         {files.map((name, i) => (
           <Stack key={`file-${i}`} spacing={0.5}>
             <Typography
-              onClick={() => openPath(parentPath, name)}
+              // onClick={() => openPath(parentPath, name)}
               sx={{
                 cursor: "pointer",
                 textDecorationLine: "underline",
@@ -47,16 +46,16 @@ export const ProjectTreeExplorer: FC<Props> = memo(
             >
               <Link
                 sx={{ cursor: "pointer" }}
-                onClick={() =>
-                  upsertTree({
-                    path,
-                    projectUuid: projectUuid,
-                    readme:
-                      readme !== null && readme.name === name
-                        ? null
-                        : name,
-                  }).then(() => router.invalidate())
-                }
+                // onClick={() =>
+                // upsertTree({
+                //   path,
+                //   projectUuid: projectUuid,
+                //   readme:
+                //     readme !== null && readme.name === name
+                //       ? null
+                //       : name,
+                // }).then(() => router.invalidate())
+                // }
               >
                 {readme !== null && readme.name === name
                   ? "unset"

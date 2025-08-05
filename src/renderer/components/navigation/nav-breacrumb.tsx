@@ -41,8 +41,8 @@ export const NavBreadcrumbs: FC = memo(() => {
             ),
           )}
         </Breadcrumbs>
-        <Divider flexItem />
       </Toolbar>
+      <Divider flexItem />
     </AppBar>
   )
 })

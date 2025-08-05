@@ -12,7 +12,7 @@ export const TagCard: FC<Props> = memo(({ tag }) => {
   const navigate = useNavigate()
   const handleRedirectEdit = useCallback(() => {
     navigate({
-      to: "/project-tags/$uuid",
+      to: "/project-tags/$uuid/edit",
       params: { uuid: tag.uuid },
     })
   }, [tag, navigate])
@@ -36,7 +36,11 @@ export const TagCard: FC<Props> = memo(({ tag }) => {
           {tag.description !== "" && (
             <Typography>{tag.description}</Typography>
           )}
-          <Typography>{`${tag.projects.length} PROJECTS`}</Typography>
+          <Typography>
+            {tag.projects.length <= 1
+              ? `${tag.projects.length} PROJECT`
+              : `${tag.projects.length} PROJECTS`}
+          </Typography>
         </Stack>
       </Stack>
     </Paper>

@@ -1,9 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { StyledLink } from "@/components/navigation/styled-link"
+import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute('/project-tags/$uuid/')({
+export const Route = createFileRoute("/project-tags/$uuid/")({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/project-tags/uuid/"!</div>
+  const { uuid } = Route.useParams()
+  return (
+    <StyledLink to="/project-tags/$uuid/edit" params={{ uuid }}>
+      [EDIT]
+    </StyledLink>
+  )
 }

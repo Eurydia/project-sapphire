@@ -1,3 +1,4 @@
+import { ProjectTag } from "#/models/project-tag/project-tag-entity"
 import { In } from "typeorm"
 import { z } from "zod/v4"
 import { registerIpcMainServices } from "../../services/core"
@@ -41,9 +42,17 @@ const listByNames = async (arg: unknown) => {
     },
   })
 }
+const findByUUID = async (arg: unknown) => {
+  const uuid = z.uuidv4().parse(arg)
+  return repo.findOne({
+    where: { uuid },
+    relations: { projects: true },
+  }) satisfies Promise<ProjectTag | null>
+}
 
 registerIpcMainServices("db$tags", {
   list,
   listByNames,
   listByUuids,
+  findByUUID,
 })
