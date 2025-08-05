@@ -18,7 +18,7 @@ const RouteComponent: FC = memo(() => {
       <Grid size={{ md: 4 }}>
         <Stack spacing={1}>
           <Paper variant="outlined">
-            <StyledLink to="/projects/create">Create</StyledLink>
+            <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
           </Paper>
           <Paper variant="outlined">
             <ProjectQueryForm

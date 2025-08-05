@@ -1,12 +1,9 @@
 import { FileSystemService } from "@/api/file-system.service"
 import type { ProjectFormData } from "@/types/project-form-data"
-import { FolderOutlined } from "@mui/icons-material"
 import {
   Button,
   Chip,
   Grid,
-  IconButton,
-  InputAdornment,
   Stack,
   TextField,
   Toolbar,
@@ -14,6 +11,7 @@ import {
 import { useForm } from "@tanstack/react-form"
 import { memo, useRef, type FC } from "react"
 import { AutocompleteTextField } from "../input/AutocompeleteTextField"
+import { TypographyButton } from "../input/typography-button"
 
 type Props = {
   init?: ProjectFormData
@@ -77,46 +75,40 @@ export const ProjectForm: FC<Props> = memo(
               <>
                 <Grid size={3}>{`ROOT`}</Grid>
                 <Grid size={9}>
-                  <TextField
-                    fullWidth
-                    multiline
-                    minRows={1}
-                    onBlur={handleBlur}
-                    onChange={(e) =>
-                      handleChange(e.target.value)
-                    }
-                    value={state.value}
-                    required
-                    slotProps={{
-                      input: {
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={async () => {
-                                if (dirDialogOpenedRef.current) {
-                                  return
-                                }
-                                dirDialogOpenedRef.current = true
-                                const { canceled, filePaths } =
-                                  await FileSystemService.openDirDialog()
-                                dirDialogOpenedRef.current = false
-                                if (canceled) {
-                                  return
-                                }
-                                const path = filePaths.at(0)
-                                if (path === undefined) {
-                                  return
-                                }
-                                handleChange(path)
-                              }}
-                            >
-                              <FolderOutlined />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      },
-                    }}
-                  />
+                  <Stack spacing={1} alignItems="start">
+                    <TextField
+                      fullWidth
+                      multiline
+                      minRows={1}
+                      onBlur={handleBlur}
+                      onChange={(e) =>
+                        handleChange(e.target.value)
+                      }
+                      value={state.value}
+                      required
+                    />
+                    <TypographyButton
+                      onClick={async () => {
+                        if (dirDialogOpenedRef.current) {
+                          return
+                        }
+                        dirDialogOpenedRef.current = true
+                        const { canceled, filePaths } =
+                          await FileSystemService.openDirDialog()
+                        dirDialogOpenedRef.current = false
+                        if (canceled) {
+                          return
+                        }
+                        const path = filePaths.at(0)
+                        if (path === undefined) {
+                          return
+                        }
+                        handleChange(path)
+                      }}
+                    >
+                      {`[OPEN SYSTEM BROWSER]`}
+                    </TypographyButton>
+                  </Stack>
                 </Grid>
               </>
             )}
