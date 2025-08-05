@@ -1,13 +1,12 @@
 import { z } from "zod/v4"
-import { projectTagSchema } from "../project-tag/project-tag-entity"
 
-export const projectSchema = z.object({
+export const projectSchema = z.strictObject({
   uuid: z.uuidv4(),
   name: z.string().normalize().trim().nonempty(),
   pinned: z.boolean(),
   description: z.string().trim().normalize(),
   root: z.object({
-    path: z.string().normalize().trim().nonempty().nonoptional(),
+    path: z.string().normalize().trim().nonempty(),
     metadata: z
       .object({
         atime: z.object({
@@ -25,7 +24,13 @@ export const projectSchema = z.object({
       })
       .nullable(),
   }),
-  tags: projectTagSchema.array(),
+  tags: z
+    .object({
+      name: z.string().trim().nonempty().normalize(),
+      uuid: z.uuidv4(),
+      description: z.string().trim().normalize(),
+    })
+    .array(),
 })
 
 export type Project = z.infer<typeof projectSchema>

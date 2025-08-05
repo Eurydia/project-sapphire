@@ -36,6 +36,7 @@ export const TagCard: FC<Props> = memo(({ tag }) => {
           {tag.description !== "" && (
             <Typography>{tag.description}</Typography>
           )}
+          <Typography>{`${tag.projects.length} PROJECTS`}</Typography>
         </Stack>
       </Stack>
     </Paper>

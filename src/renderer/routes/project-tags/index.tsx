@@ -1,4 +1,4 @@
-import { ProjectTagService } from "@/api/project-group.service"
+import { ProjectTagService } from "@/api/project-tag.service"
 import { TagCard } from "@/components/data-display/tag-card"
 import { Grid, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"

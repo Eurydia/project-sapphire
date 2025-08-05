@@ -2,7 +2,7 @@ import { projectTagSchema } from "#/models/project-tag/project-tag-entity"
 import { uniq } from "lodash"
 
 export class ProjectTagService {
-  public static async list() {
+  static async list() {
     return window["db$tags"]
       .list()
       .then((response) =>
@@ -10,7 +10,7 @@ export class ProjectTagService {
       )
   }
 
-  public static async listNames() {
+  static async listNames() {
     return this.list().then((response) =>
       uniq(response.map(({ name }) => name)),
     )

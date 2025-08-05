@@ -1,5 +1,5 @@
 import { projectQuerySchema } from "#/models/project/dto/query-project.dto"
-import { ProjectTagService } from "@/api/project-group.service"
+import { ProjectTagService } from "@/api/project-tag.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectList } from "@/components/data-display/project-list"
 import { ProjectQueryForm } from "@/components/form/project-query-form"

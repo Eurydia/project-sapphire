@@ -1,4 +1,4 @@
-import { ProjectTagService } from "@/api/project-group.service"
+import { ProjectTagService } from "@/api/project-tag.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectForm } from "@/components/form/ProjectForm"
 import type { ProjectFormData } from "@/types/project-form-data"

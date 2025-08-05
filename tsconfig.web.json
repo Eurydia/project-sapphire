@@ -1,8 +1,8 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
   "include": [
-    "src/preload/*.d.ts",
-    "src/preload/*.gen.d.ts",
+    "electron.vite.config.*",
+    "src/preload/**/*",
     "src/shared/**/*",
     "src/renderer/**/*"
   ],
@@ -16,8 +16,8 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true,
     "verbatimModuleSyntax": true,
-    "noEmit": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
 

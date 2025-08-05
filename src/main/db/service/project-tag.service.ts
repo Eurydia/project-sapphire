@@ -6,7 +6,12 @@ import { ProjectTagEntity } from "../entity/project-tag.entity"
 
 const repo = AppDataSource.getRepository(ProjectTagEntity)
 const list = async () => {
-  return repo.find({ order: { name: "asc" } })
+  return repo.find({
+    order: { name: "asc" },
+    relations: {
+      projects: true,
+    },
+  })
 }
 
 const listByUuids = async (arg: unknown) => {
@@ -14,6 +19,9 @@ const listByUuids = async (arg: unknown) => {
   return repo.find({
     order: { name: "ASC" },
     where: { uuid: In(uuids) },
+    relations: {
+      projects: true,
+    },
   })
 }
 
@@ -28,6 +36,9 @@ const listByNames = async (arg: unknown) => {
   return repo.find({
     order: { name: "ASC" },
     where: { name: In(names) },
+    relations: {
+      projects: true,
+    },
   })
 }
 
