@@ -1,4 +1,4 @@
-import { openPath } from "@/api/fs"
+import { FileSystemService } from "@/api/file-system.service"
 import { ProjectService } from "@/api/project.service"
 import { useLoggerStore } from "@/stores/useLoggerStore"
 import {
@@ -74,7 +74,7 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
 
   const handleOpenRoot = useCallback(() => {
     logNotice(`opening root for project ${project.uuid}`)
-    openPath(project.root.path).then(
+    FileSystemService.openPath(project.root.path).then(
       () => {
         logNotice(`opened project root`)
         toast.success("opened in system explorer")

@@ -1,5 +1,5 @@
 import type { ProjectTree } from "#/models/project-tree/project-tree"
-import { openPath } from "@/api/fs"
+import { openPath } from "@/api/file-system.service"
 import { Divider, Link, Stack, Typography } from "@mui/material"
 import { useRouter } from "@tanstack/react-router"
 import { memo, type FC } from "react"

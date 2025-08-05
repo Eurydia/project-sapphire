@@ -1,4 +1,4 @@
-import { openDirDialog } from "@/api/fs"
+import { FileSystemService } from "@/api/file-system.service"
 import type { ProjectFormData } from "@/types/project-form-data"
 import { FolderOutlined } from "@mui/icons-material"
 import {
@@ -98,7 +98,7 @@ export const ProjectForm: FC<Props> = memo(
                                 }
                                 dirDialogOpenedRef.current = true
                                 const { canceled, filePaths } =
-                                  await openDirDialog()
+                                  await FileSystemService.openDirDialog()
                                 dirDialogOpenedRef.current = false
                                 if (canceled) {
                                   return

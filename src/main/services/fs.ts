@@ -1,11 +1,14 @@
+import { OpenDirDialogResult } from "#/results/open-dir-dialog.result"
 import { dialog, shell } from "electron"
 import { existsSync } from "fs"
 import { join, normalize } from "path"
 import { registerIpcMainServices } from "./core"
 
-const openDirDialog = () =>
-  dialog.showOpenDialog({ properties: ["openDirectory"] })
-
+const openDirDialog = async () => {
+  return dialog.showOpenDialog({
+    properties: ["openDirectory"],
+  }) satisfies Promise<OpenDirDialogResult>
+}
 const openPath = async (...segments: string[]) => {
   const path = normalize(join(...segments))
 
