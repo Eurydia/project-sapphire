@@ -1,4 +1,6 @@
+import type { UpdateProjectTagDto } from "#/models/project-tag/dto/update-project-tag.dto"
 import { projectTagSchema } from "#/models/project-tag/project-tag-entity"
+import { left, right } from "fp-ts/Either"
 import { uniq } from "lodash"
 
 export class ProjectTagService {
@@ -22,5 +24,12 @@ export class ProjectTagService {
       .then((response) =>
         projectTagSchema.nullable().parseAsync(response),
       )
+  }
+
+  static async update(dto: UpdateProjectTagDto) {
+    return this.provider
+      .update(dto)
+      .then((response) => right<Error, unknown>(response))
+      .catch((err) => left<Error, unknown>(err))
   }
 }

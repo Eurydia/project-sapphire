@@ -1,7 +1,8 @@
 import { updateProjectTagDtoSchema } from "#/models/project-tag/dto/update-project-tag.dto"
 import { ProjectTagService } from "@/api/project-tag.service"
+import { TypographyButton } from "@/components/input/typography-button"
+import { useLoggerStore } from "@/stores/useLoggerStore"
 import {
-  Button,
   Paper,
   Stack,
   TextField,
@@ -12,24 +13,41 @@ import {
   createFileRoute,
   notFound,
 } from "@tanstack/react-router"
+import { isLeft } from "fp-ts/lib/Either"
 import { memo, type FC } from "react"
-import { toast } from "react-toastify"
 
 const RouteComponent: FC = memo(() => {
   const { tag } = Route.useLoaderData()
   const navigate = Route.useNavigate()
+  const { logNotice, logWarn, logTrace } = useLoggerStore()
   const { Field, Subscribe, handleSubmit } = useForm({
     defaultValues: {
       name: tag.name,
       description: tag.description,
     },
-    validators: { onChangeAsync: updateProjectTagDtoSchema },
-    onSubmit: () => {
-      navigate({
-        to: "/project-tags/$uuid",
-        params: { uuid: tag.uuid },
+    validators: {
+      onChangeAsync: updateProjectTagDtoSchema.pick({
+        name: true,
+        description: true,
+      }),
+    },
+    onSubmit: async ({ value }) => {
+      const response = await ProjectTagService.update({
+        ...value,
+        uuid: tag.uuid,
       })
-      toast.info("!!PLACEHOLDER!!")
+      if (isLeft(response)) {
+        logWarn(
+          `failed to update ${tag} with error: ${response.left}`,
+        )
+      } else {
+        logNotice(`update success ${response.right}`)
+        logNotice(`navigating back to tag homepage`)
+        navigate({
+          to: "/project-tags/$uuid",
+          params: { uuid: tag.uuid },
+        })
+      }
     },
   })
   return (
@@ -67,31 +85,42 @@ const RouteComponent: FC = memo(() => {
           </Field>
         </Stack>
         <Stack spacing={0.5}>
-          <Typography>DESC</Typography>
-          <TextField
-            multiline
-            minRows={5}
-            defaultValue={tag.description}
-          />
+          <Typography>DESCRIPTION</Typography>
+          <Field name="description">
+            {({
+              state: { value },
+              handleBlur,
+              handleChange,
+            }) => (
+              <TextField
+                multiline
+                minRows={5}
+                value={value}
+                onBlur={handleBlur}
+                onChange={(e) => handleChange(e.target.value)}
+              />
+            )}
+          </Field>
         </Stack>
         <Stack alignItems="start">
           <Subscribe
-            selector={({
+            selector={({ canSubmit, isSubmitting }) => ({
               canSubmit,
               isSubmitting,
-              isValidating,
-            }) => ({ canSubmit, isSubmitting, isValidating })}
+            })}
           >
-            {({ canSubmit, isSubmitting, isValidating }) => (
-              <Button
-                disableElevation
-                disabled={
-                  !canSubmit || isSubmitting || isValidating
-                }
-                onClick={handleSubmit}
+            {({ canSubmit, isSubmitting }) => (
+              <TypographyButton
+                onClick={() => {
+                  if (!canSubmit) {
+                    return
+                  }
+                  handleSubmit()
+                }}
               >
-                {`CONFIRM`}
-              </Button>
+                {canSubmit && `[UPDATE]`}
+                {isSubmitting && `[SUBMITTING]`}
+              </TypographyButton>
             )}
           </Subscribe>
         </Stack>

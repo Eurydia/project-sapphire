@@ -30,6 +30,7 @@ type Action = {
   logWarn: (msg: string) => void
   logInfo: (msg: string) => void
   logError: (msg: string) => void
+  logTrace: (msg: string) => void
 }
 
 const newLog = (
@@ -72,6 +73,11 @@ export const useLoggerStore = create<State & Action>()(
             void state.logs.push(newLog(msg, LogLevel.info)),
         ),
       logWarn: (msg) =>
+        set(
+          (state) =>
+            void state.logs.push(newLog(msg, LogLevel.warn)),
+        ),
+      logTrace: (msg) =>
         set(
           (state) =>
             void state.logs.push(newLog(msg, LogLevel.warn)),

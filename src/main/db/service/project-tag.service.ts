@@ -1,5 +1,6 @@
+import { updateProjectTagDtoSchema } from "#/models/project-tag/dto/update-project-tag.dto"
 import { ProjectTag } from "#/models/project-tag/project-tag-entity"
-import { In } from "typeorm"
+import { EntityNotFoundError, In } from "typeorm"
 import { z } from "zod/v4"
 import { registerIpcMainServices } from "../../services/core"
 import { AppDataSource } from "../data-source"
@@ -50,9 +51,22 @@ const findByUUID = async (arg: unknown) => {
   }) satisfies Promise<ProjectTag | null>
 }
 
+const update = async (arg: unknown) => {
+  const dto = updateProjectTagDtoSchema.parse(arg)
+  return AppDataSource.transaction(async (mgr) => {
+    const repo = mgr.getRepository(ProjectTagEntity)
+    const tag = await repo.preload(dto)
+    if (tag === undefined) {
+      throw new EntityNotFoundError(ProjectTagEntity, dto.uuid)
+    }
+    return repo.save(tag)
+  })
+}
+
 registerIpcMainServices("db$tags", {
   list,
   listByNames,
   listByUuids,
   findByUUID,
+  update,
 })

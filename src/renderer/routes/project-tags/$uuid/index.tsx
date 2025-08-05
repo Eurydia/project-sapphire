@@ -9,7 +9,7 @@ function RouteComponent() {
   const { uuid } = Route.useParams()
   return (
     <StyledLink to="/project-tags/$uuid/edit" params={{ uuid }}>
-      [EDIT]
+      {`[EDIT]`}
     </StyledLink>
   )
 }
