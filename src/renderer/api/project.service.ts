@@ -5,6 +5,7 @@ import {
 } from "#/models/project/dto/query-project.dto"
 import type { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
 import { projectSchema } from "#/models/project/project"
+import { left, right } from "fp-ts/lib/Either"
 import { uniq } from "lodash"
 
 export class ProjectService {
@@ -35,9 +36,15 @@ export class ProjectService {
     return this.provider.createProject(dto)
   }
   static async unpin(uuid: string) {
-    return this.provider.unpin(uuid)
+    return this.provider
+      .unpin(uuid)
+      .then((resp) => right<Error, unknown>(resp))
+      .catch((err) => left<Error, unknown>(err))
   }
   static async pin(uuid: string) {
-    return this.provider.pin(uuid)
+    return this.provider
+      .pin(uuid)
+      .then((resp) => right<Error, unknown>(resp))
+      .catch((err) => left<Error, unknown>(err))
   }
 }

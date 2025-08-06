@@ -8,9 +8,8 @@ import { Grid, Paper, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
 import type { FC } from "react"
-import { memo } from "react"
 
-const RouteComponent: FC = memo(() => {
+const RouteComponent: FC = () => {
   const { projects, formOptions } = Route.useLoaderData()
   const navigate = Route.useNavigate()
   return (
@@ -31,11 +30,11 @@ const RouteComponent: FC = memo(() => {
         </Stack>
       </Grid>
       <Grid size="grow">
-        <ProjectList fetcher={projects} />
+        <ProjectList projects={projects} />
       </Grid>
     </Grid>
   )
-})
+}
 
 export const Route = createFileRoute("/projects/")({
   component: RouteComponent,

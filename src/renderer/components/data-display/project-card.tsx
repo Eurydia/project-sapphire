@@ -3,8 +3,9 @@ import { ProjectService } from "@/api/project.service"
 import { useLoggerStore } from "@/stores/useLoggerStore"
 import { Divider, Paper, Stack, Typography } from "@mui/material"
 import { useRouter } from "@tanstack/react-router"
+import { isLeft } from "fp-ts/lib/Either"
 import type { FC } from "react"
-import { memo, useCallback } from "react"
+import { useCallback } from "react"
 import { toast } from "react-toastify"
 import type { Project } from "src/shared/models/project/project"
 import { TypographyButton } from "../input/typography-button"
@@ -15,36 +16,33 @@ import { ProjectCardTagList } from "./project-card-tag-list"
 type Props = {
   project: Project
 }
-export const ProjectCard: FC<Props> = memo(({ project }) => {
+export const ProjectCard: FC<Props> = ({ project }) => {
   const { logWarn, logNotice } = useLoggerStore()
   const router = useRouter()
 
-  const handleUnpin = useCallback(() => {
-    logNotice(`unpinning project {uuid: ${project.uuid}}`)
-    ProjectService.unpin(project.uuid).then(
-      () => {
-        logNotice(`${project.uuid} is no longer pinned`)
-        router.invalidate({ sync: true })
-      },
-      (err) => {
-        logWarn(`failed to unpin project ${project}: ${err}`)
-      },
-    )
+  const handleUnpin = useCallback(async () => {
+    logNotice(`unpinning ${project.uuid}`)
+    const result = await ProjectService.unpin(project.uuid)
+    if (isLeft(result)) {
+      logWarn(
+        `failed to unpin project ${project.uuid} with error: ${result.left}`,
+      )
+    } else {
+      logNotice(`${project.uuid} is no longer pinned`)
+      await router.invalidate({ sync: true })
+    }
   }, [project, logNotice, logWarn, router])
 
-  const handlePin = useCallback(() => {
-    logNotice(`pinning project {uuid: ${project.uuid}}`)
-    ProjectService.pin(project.uuid).then(
-      () => {
-        logNotice(`${project.uuid} is now pinned`)
-        router.invalidate({ sync: true })
-      },
-      (err) => {
-        logWarn(
-          `failed to pin project ${project} with error: ${err}`,
-        )
-      },
-    )
+  const handlePin = useCallback(async () => {
+    const result = await ProjectService.pin(project.uuid)
+    if (isLeft(result)) {
+      logWarn(
+        `failed to pin project ${project.uuid} with error: ${result.left}`,
+      )
+    } else {
+      logNotice(`${project.uuid} is now pinned`)
+      await router.invalidate({ sync: true })
+    }
   }, [project, logNotice, logWarn, router])
 
   const handleTogglePin = useCallback(() => {
@@ -117,9 +115,9 @@ export const ProjectCard: FC<Props> = memo(({ project }) => {
             )}
           </Stack>
           <ProjectCardMetadata project={project} />
-          <ProjectCardTagList items={project.tags} />
+          <ProjectCardTagList project={project} />
         </Stack>
       </Stack>
     </Paper>
   )
-})
+}

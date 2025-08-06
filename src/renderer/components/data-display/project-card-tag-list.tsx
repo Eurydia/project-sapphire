@@ -1,14 +1,14 @@
-import type { ProjectTag } from "#/models/project-tag/project-tag-entity"
+import type { Project } from "#/models/project/project"
 import { Stack } from "@mui/material"
 import type { FC } from "react"
 import { Fragment, memo } from "react"
 import { StyledLink } from "../navigation/styled-link"
 
 type InnerProps = {
-  fetcher: ProjectTag[]
+  project: Project
 }
-const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
-  if (items.length === 0) {
+const Inner: FC<InnerProps> = memo(({ project }) => {
+  if (project.tags.length === 0) {
     return <Fragment />
   }
   return (
@@ -19,7 +19,7 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
       direction="row"
       alignItems="center"
     >
-      {items.map(({ name, uuid }) => (
+      {project.tags.map(({ name, uuid }) => (
         <StyledLink
           key={`tag-${uuid}`}
           to="/project-tags/$uuid"
@@ -33,10 +33,10 @@ const Inner: FC<InnerProps> = memo(({ fetcher: items }) => {
 })
 
 type Props = {
-  items: ProjectTag[]
+  project: Project
 }
 export const ProjectCardTagList: FC<Props> = memo(
-  ({ items }) => {
-    return <Inner fetcher={items} />
+  ({ project }) => {
+    return <Inner project={project} />
   },
 )
