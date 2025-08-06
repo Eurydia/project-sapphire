@@ -32,4 +32,18 @@ export class ProjectTagService {
       .then((response) => right<Error, unknown>(response))
       .catch((err) => left<Error, unknown>(err))
   }
+
+  static async pin(uuid: string) {
+    return this.provider
+      .pin(uuid)
+      .then((resp) => right<Error, unknown>(resp))
+      .catch((err) => left<Error, unknown>(err))
+  }
+
+  static async unpin(uuid: string) {
+    return this.provider
+      .unpin(uuid)
+      .then((resp) => right<Error, unknown>(resp))
+      .catch((err) => left<Error, unknown>(err))
+  }
 }

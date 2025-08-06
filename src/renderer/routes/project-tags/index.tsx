@@ -2,9 +2,9 @@ import { ProjectTagService } from "@/api/project-tag.service"
 import { TagCard } from "@/components/data-display/tag-card"
 import { Grid, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
-import { memo, type FC } from "react"
+import { type FC } from "react"
 
-const RouteComponent: FC = memo(() => {
+const RouteComponent: FC = () => {
   const { tags } = Route.useLoaderData()
   return (
     <Grid spacing={1} container>
@@ -18,7 +18,7 @@ const RouteComponent: FC = memo(() => {
       </Grid>
     </Grid>
   )
-})
+}
 
 export const Route = createFileRoute("/project-tags/")({
   component: RouteComponent,

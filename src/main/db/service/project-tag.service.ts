@@ -9,7 +9,7 @@ import { ProjectTagEntity } from "../entity/project-tag.entity"
 const repo = AppDataSource.getRepository(ProjectTagEntity)
 const list = async () => {
   return repo.find({
-    order: { name: "asc" },
+    order: { pinned: "DESC", name: "asc" },
     relations: {
       projects: true,
     },
@@ -19,7 +19,7 @@ const list = async () => {
 const listByUuids = async (arg: unknown) => {
   const uuids = z.uuidv4().array().parse(arg)
   return repo.find({
-    order: { name: "ASC", pinned: "ASC" },
+    order: { pinned: "desc", name: "ASC" },
     where: { uuid: In(uuids) },
     relations: {
       projects: true,
@@ -63,10 +63,36 @@ const update = async (arg: unknown) => {
   })
 }
 
+const pin = async (arg: unknown) => {
+  const uuid = z.uuidv4().parse(arg)
+  return AppDataSource.transaction(async (mgr) => {
+    const repo = mgr.getRepository(ProjectTagEntity)
+    const tag = await repo.preload({ uuid, pinned: true })
+    if (tag === undefined) {
+      throw new EntityNotFoundError(ProjectTagEntity, uuid)
+    }
+    return repo.save(tag)
+  })
+}
+
+const unpin = async (arg: unknown) => {
+  const uuid = z.uuidv4().parse(arg)
+  return AppDataSource.transaction(async (mgr) => {
+    const repo = mgr.getRepository(ProjectTagEntity)
+    const tag = await repo.preload({ uuid, pinned: false })
+    if (tag === undefined) {
+      throw new EntityNotFoundError(ProjectTagEntity, uuid)
+    }
+    return repo.save(tag)
+  })
+}
+
 registerIpcMainServices("db$tags", {
   list,
   listByNames,
   listByUuids,
   findByUUID,
   update,
+  pin,
+  unpin,
 })
