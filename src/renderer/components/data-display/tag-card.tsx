@@ -26,6 +26,11 @@ export const TagCard: FC<Props> = memo(({ tag }) => {
         </Stack>
         <Stack spacing={1}>
           <Typography variant="subtitle1">{tag.uuid}</Typography>
+          <Typography variant="subtitle1">
+            {tag.projects.length <= 1
+              ? `${tag.projects.length} PROJECT`
+              : `${tag.projects.length} PROJECTS`}
+          </Typography>
           <StyledLink
             variant="h4"
             to="/project-tags/$uuid"
@@ -34,13 +39,10 @@ export const TagCard: FC<Props> = memo(({ tag }) => {
             {tag.name}
           </StyledLink>
           {tag.description !== "" && (
-            <Typography>{tag.description}</Typography>
+            <Typography component="pre">
+              {tag.description}
+            </Typography>
           )}
-          <Typography>
-            {tag.projects.length <= 1
-              ? `${tag.projects.length} PROJECT`
-              : `${tag.projects.length} PROJECTS`}
-          </Typography>
         </Stack>
       </Stack>
     </Paper>

@@ -97,7 +97,7 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
       }}
     >
       <PanelGroup direction="vertical">
-        <Panel defaultSize={30}>
+        <Panel>
           <Box
             sx={{
               height: "100%",
@@ -112,7 +112,7 @@ export const LogInspector: FC<Props> = memo(({ children }) => {
           </Box>
         </Panel>
         <StyledHandle />
-        <Panel defaultSize={15} maxSize={80} minSize={15}>
+        <Panel defaultSize={15}>
           <Box
             sx={{
               height: "100%",
