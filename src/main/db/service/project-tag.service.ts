@@ -1,3 +1,7 @@
+import {
+  projectTagPaginationQueryDtoSchema,
+  ProjectTagPaginationResultDto,
+} from "#/models/project-tag/dto/pagination-project-tag.dto"
 import { updateProjectTagDtoSchema } from "#/models/project-tag/dto/update-project-tag.dto"
 import { ProjectTag } from "#/models/project-tag/project-tag-entity"
 import { EntityNotFoundError, In } from "typeorm"
@@ -7,13 +11,43 @@ import { AppDataSource } from "../data-source"
 import { ProjectTagEntity } from "../entity/project-tag.entity"
 
 const repo = AppDataSource.getRepository(ProjectTagEntity)
-const list = async () => {
-  return repo.find({
-    order: { pinned: "DESC", name: "asc" },
-    relations: {
-      projects: true,
+const list = async (arg: unknown) => {
+  const { pageIndex, resultsPerPage } =
+    projectTagPaginationQueryDtoSchema.parse(arg)
+  const skip = pageIndex * resultsPerPage
+  const { items, total } = await AppDataSource.transaction(
+    async (mgr) => {
+      const repo = mgr.getRepository(ProjectTagEntity)
+      const items = await repo.find({
+        order: { pinned: "DESC", name: "asc" },
+        relations: {
+          projects: true,
+        },
+        skip,
+        take: resultsPerPage,
+      })
+      const total = await repo.count()
+
+      return { items, total }
     },
+  )
+  const pageCount = Math.ceil(total / resultsPerPage)
+
+  return {
+    items,
+    total,
+    pageCount,
+    pageIndex,
+    resultsPerPage,
+  } satisfies ProjectTagPaginationResultDto
+}
+
+const listNames = async () => {
+  const results = await repo.find({
+    order: { name: "ASC" },
+    select: { name: true },
   })
+  return results.map(({ name }) => name)
 }
 
 const listByUuids = async (arg: unknown) => {
@@ -89,6 +123,7 @@ const unpin = async (arg: unknown) => {
 
 registerIpcMainServices("db$tags", {
   list,
+  listNames,
   listByNames,
   listByUuids,
   findByUUID,

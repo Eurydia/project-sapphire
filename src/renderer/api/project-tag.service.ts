@@ -1,22 +1,34 @@
+import {
+  projectTagPaginationResultDtoSchema,
+  type ProjectTagPaginationQueryDto,
+} from "#/models/project-tag/dto/pagination-project-tag.dto"
 import type { UpdateProjectTagDto } from "#/models/project-tag/dto/update-project-tag.dto"
 import { projectTagSchema } from "#/models/project-tag/project-tag-entity"
 import { left, right } from "fp-ts/Either"
-import { uniq } from "lodash"
+import { z } from "zod/v4"
 
 export class ProjectTagService {
   private static provider = window["db$tags"]
-  static async list() {
+  static async list(query: ProjectTagPaginationQueryDto) {
     return this.provider
-      .list()
-      .then((response) =>
-        projectTagSchema.array().parseAsync(response),
+      .list(query)
+      .then((resp) =>
+        projectTagPaginationResultDtoSchema.parseAsync(resp),
       )
   }
 
   static async listNames() {
-    return this.list().then((response) =>
-      uniq(response.map(({ name }) => name)),
-    )
+    return this.provider
+      .listNames()
+      .then((resp) =>
+        z
+          .string()
+          .trim()
+          .nonempty()
+          .normalize()
+          .array()
+          .parseAsync(resp),
+      )
   }
   static async findByUUID(uuid: string) {
     return this.provider
