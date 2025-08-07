@@ -2,7 +2,13 @@ import { projectTagPaginationQueryDtoSchema } from "#/models/project-tag/dto/pag
 import { ProjectTagService } from "@/api/project-tag.service"
 import { TagCard } from "@/components/data-display/tag-card"
 import { TypographyButton } from "@/components/input/typography-button"
-import { Grid, Stack, Typography } from "@mui/material"
+import {
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material"
 import {
   createFileRoute,
   useNavigate,
@@ -17,67 +23,88 @@ const RouteComponent: FC = () => {
   const navigate = useNavigate()
   return (
     <Grid spacing={1} container>
-      <Grid size={{ md: 3 }}></Grid>
-      <Grid size={{ md: "grow" }}>
-        <Stack spacing={0.5}>
-          <Typography>{`SHOWING: ${pageIndex * resultsPerPage + 1}-${pageIndex * resultsPerPage + resultsPerPage} OF ${total}`}</Typography>
-          <Typography>{`PAGE: ${pageIndex + 1} OF ${pageCount}`}</Typography>
-          <Stack direction="row" spacing={2}>
+      <Grid size={{ md: 3 }}>
+        <Paper>
+          <Stack
+            alignItems="flex-start"
+            spacing={2}
+            divider={<Divider flexItem />}
+          >
             <TypographyButton
-              onClick={() => {
-                if (pageIndex === 0) {
-                  return
-                }
-                navigate({
-                  to: ".",
-                  search: {
-                    resultsPerPage,
-                    pageIndex: pageIndex - 1,
-                  },
-                })
-              }}
+              onClick={() =>
+                navigate({ to: "/project-tags/create" })
+              }
             >
-              {`[PREV]`}
+              {`[ADD]`}
             </TypographyButton>
-            <TypographyButton
-              onClick={() => {
-                if (pageIndex === pageCount - 1) {
-                  return
-                }
-                navigate({
-                  to: ".",
-                  search: {
-                    resultsPerPage,
-                    pageIndex: pageIndex + 1,
-                  },
-                })
-              }}
-            >
-              {`[NEXT]`}
-            </TypographyButton>
-            {range(pageCount).map((index) =>
-              index === pageIndex ? (
-                <Typography
-                  key={`page-${index}`}
-                  fontWeight={900}
-                >
-                  {`${pageIndex + 1}`}
-                </Typography>
-              ) : (
-                <TypographyButton
-                  onClick={() =>
-                    navigate({
-                      to: ".",
-                      search: { pageIndex: index },
-                    })
-                  }
-                >
-                  {`[${index + 1}]`}
-                </TypographyButton>
-              ),
-            )}
+            <Stack spacing={0.5}>
+              <Typography>{`SHOWING: ${pageIndex * resultsPerPage + 1}-${pageIndex * resultsPerPage + resultsPerPage} OF ${total}`}</Typography>
+              <Stack>
+                <Typography>{`PAGE: ${pageIndex + 1} OF ${pageCount}`}</Typography>
+                <Stack spacing={2} direction="row">
+                  <TypographyButton
+                    onClick={() => {
+                      if (pageIndex === 0) {
+                        return
+                      }
+                      navigate({
+                        to: ".",
+                        search: {
+                          resultsPerPage,
+                          pageIndex: pageIndex - 1,
+                        },
+                      })
+                    }}
+                  >
+                    {`[PREV]`}
+                  </TypographyButton>
+                  <TypographyButton
+                    onClick={() => {
+                      if (pageIndex === pageCount - 1) {
+                        return
+                      }
+                      navigate({
+                        to: ".",
+                        search: {
+                          resultsPerPage,
+                          pageIndex: pageIndex + 1,
+                        },
+                      })
+                    }}
+                  >
+                    {`[NEXT]`}
+                  </TypographyButton>
+                </Stack>
+              </Stack>
+              <Stack direction="row" spacing={2} flexWrap="wrap">
+                {range(pageCount).map((index) =>
+                  index === pageIndex ? (
+                    <Typography
+                      key={`page-${index}`}
+                      fontWeight={900}
+                    >
+                      {`${pageIndex + 1}`}
+                    </Typography>
+                  ) : (
+                    <TypographyButton
+                      key={`page-${index}`}
+                      onClick={() =>
+                        navigate({
+                          to: ".",
+                          search: { pageIndex: index },
+                        })
+                      }
+                    >
+                      {`[${index + 1}]`}
+                    </TypographyButton>
+                  ),
+                )}
+              </Stack>
+            </Stack>
           </Stack>
-        </Stack>
+        </Paper>
+      </Grid>
+      <Grid size={{ md: "grow" }}>
         <Stack spacing={1}>
           {items.map((tag) => (
             <TagCard tag={tag} key={tag.uuid} />

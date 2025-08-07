@@ -1,3 +1,4 @@
+import type { CreateProjectTagDto } from "#/models/project-tag/dto/create-project-tag.dto"
 import {
   projectTagPaginationResultDtoSchema,
   type ProjectTagPaginationQueryDto,
@@ -15,6 +16,14 @@ export class ProjectTagService {
       .then((resp) =>
         projectTagPaginationResultDtoSchema.parseAsync(resp),
       )
+  }
+
+  static async create(dto: CreateProjectTagDto) {
+    return this.provider
+      .create(dto)
+      .then((resp) => z.uuidv4().parseAsync(resp))
+      .then((res) => right<Error, string>(res))
+      .catch((err) => left<Error, string>(err))
   }
 
   static async listNames() {

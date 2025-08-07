@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ProjectTagsIndexRouteImport } from './routes/project-tags/index'
 import { Route as ProjectsCreateRouteImport } from './routes/projects/create'
+import { Route as ProjectTagsCreateRouteImport } from './routes/project-tags/create'
 import { Route as ProjectsUuidRouteRouteImport } from './routes/projects/$uuid/route'
 import { Route as ProjectsUuidIndexRouteImport } from './routes/projects/$uuid/index'
 import { Route as ProjectTagsUuidIndexRouteImport } from './routes/project-tags/$uuid/index'
@@ -46,6 +47,11 @@ const ProjectsCreateRoute = ProjectsCreateRouteImport.update({
   id: '/create',
   path: '/create',
   getParentRoute: () => ProjectsRouteRoute,
+} as any)
+const ProjectTagsCreateRoute = ProjectTagsCreateRouteImport.update({
+  id: '/project-tags/create',
+  path: '/project-tags/create',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsUuidRouteRoute = ProjectsUuidRouteRouteImport.update({
   id: '/$uuid',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/projects': typeof ProjectsRouteRouteWithChildren
   '/projects/$uuid': typeof ProjectsUuidRouteRouteWithChildren
+  '/project-tags/create': typeof ProjectTagsCreateRoute
   '/projects/create': typeof ProjectsCreateRoute
   '/project-tags': typeof ProjectTagsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/project-tags/create': typeof ProjectTagsCreateRoute
   '/projects/create': typeof ProjectsCreateRoute
   '/project-tags': typeof ProjectTagsIndexRoute
   '/projects': typeof ProjectsIndexRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/projects': typeof ProjectsRouteRouteWithChildren
   '/projects/$uuid': typeof ProjectsUuidRouteRouteWithChildren
+  '/project-tags/create': typeof ProjectTagsCreateRoute
   '/projects/create': typeof ProjectsCreateRoute
   '/project-tags/': typeof ProjectTagsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/'
     | '/projects'
     | '/projects/$uuid'
+    | '/project-tags/create'
     | '/projects/create'
     | '/project-tags'
     | '/projects/'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/project-tags/create'
     | '/projects/create'
     | '/project-tags'
     | '/projects'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/'
     | '/projects'
     | '/projects/$uuid'
+    | '/project-tags/create'
     | '/projects/create'
     | '/project-tags/'
     | '/projects/'
@@ -170,6 +182,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ProjectsRouteRoute: typeof ProjectsRouteRouteWithChildren
+  ProjectTagsCreateRoute: typeof ProjectTagsCreateRoute
   ProjectTagsIndexRoute: typeof ProjectTagsIndexRoute
   ProjectTagsUuidEditRoute: typeof ProjectTagsUuidEditRoute
   ProjectTagsUuidIndexRoute: typeof ProjectTagsUuidIndexRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/projects/create'
       preLoaderRoute: typeof ProjectsCreateRouteImport
       parentRoute: typeof ProjectsRouteRoute
+    }
+    '/project-tags/create': {
+      id: '/project-tags/create'
+      path: '/project-tags/create'
+      fullPath: '/project-tags/create'
+      preLoaderRoute: typeof ProjectTagsCreateRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/projects/$uuid': {
       id: '/projects/$uuid'
@@ -300,6 +320,7 @@ const ProjectsRouteRouteWithChildren = ProjectsRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ProjectsRouteRoute: ProjectsRouteRouteWithChildren,
+  ProjectTagsCreateRoute: ProjectTagsCreateRoute,
   ProjectTagsIndexRoute: ProjectTagsIndexRoute,
   ProjectTagsUuidEditRoute: ProjectTagsUuidEditRoute,
   ProjectTagsUuidIndexRoute: ProjectTagsUuidIndexRoute,

@@ -1,3 +1,4 @@
+import { createProjectTagDtoSchema } from "#/models/project-tag/dto/create-project-tag.dto"
 import {
   projectTagPaginationQueryDtoSchema,
   ProjectTagPaginationResultDto,
@@ -85,6 +86,20 @@ const findByUUID = async (arg: unknown) => {
   }) satisfies Promise<ProjectTag | null>
 }
 
+const create = async (arg: unknown) => {
+  const dto = createProjectTagDtoSchema.parse(arg)
+  return AppDataSource.transaction(async (mgr) => {
+    const repo = mgr.getRepository(ProjectTagEntity)
+    const result = await repo.save(
+      repo.create({
+        name: dto.name,
+        description: dto.description,
+      }),
+    )
+    return result.uuid
+  })
+}
+
 const update = async (arg: unknown) => {
   const dto = updateProjectTagDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
@@ -128,6 +143,7 @@ registerIpcMainServices("db$tags", {
   listByUuids,
   findByUUID,
   update,
+  create,
   pin,
   unpin,
 })
