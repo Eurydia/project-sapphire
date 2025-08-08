@@ -7,7 +7,7 @@ import React from "react"
 const MUILinkComponent = React.forwardRef<
   HTMLAnchorElement,
   LinkProps
->((props, ref) => {
+>(({ sx, ...props }, ref) => {
   const {
     palette: {
       link: { hover, normal, visited },
@@ -28,6 +28,7 @@ const MUILinkComponent = React.forwardRef<
           textDecorationColor: hover,
           color: hover,
         },
+        ...sx,
       }}
     />
   )

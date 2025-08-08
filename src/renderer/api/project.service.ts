@@ -6,7 +6,7 @@ import {
 import type { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
 import { projectSchema } from "#/models/project/project"
 import { left, right } from "fp-ts/lib/Either"
-import { uniq } from "lodash"
+import z from "zod"
 
 export class ProjectService {
   private static provider = window["db$project"]
@@ -17,9 +17,9 @@ export class ProjectService {
   }
 
   static async listNames() {
-    return this.list(projectQuerySchema.parse({})).then(
-      (result) => uniq(result.map(({ name }) => name)),
-    )
+    return this.provider
+      .listNames()
+      .then((resp) => z.string().array().parseAsync(resp))
   }
 
   static async findByUuid(uuid: string) {

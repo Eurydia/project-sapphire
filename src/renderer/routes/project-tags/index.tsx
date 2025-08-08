@@ -1,7 +1,9 @@
 import { projectTagPaginationQueryDtoSchema } from "#/models/project-tag/dto/pagination-project-tag.dto"
 import { ProjectTagService } from "@/api/project-tag.service"
+import { ProjectService } from "@/api/project.service"
 import { TagCard } from "@/components/data-display/tag-card"
 import { TypographyButton } from "@/components/input/typography-button"
+import { StyledLink } from "@/components/navigation/styled-link"
 import {
   Autocomplete,
   Divider,
@@ -29,7 +31,12 @@ const RouteComponent: FC = () => {
     options,
   } = Route.useLoaderData()
   const navigate = useNavigate()
-  const [queryString, setQueryString] = useState<string[]>([])
+  const [queryString, setQueryString] = useState<
+    {
+      label: string
+      value: string
+    }[]
+  >([])
   const ref = useRef<HTMLInputElement>(null)
   useHotkeys("ctrl+k", () => {
     if (ref.current !== null) {
@@ -40,14 +47,21 @@ const RouteComponent: FC = () => {
     <Grid spacing={1} container>
       <Grid size={12}>
         <Paper>
-          <Stack spacing={1}>
+          <Stack spacing={1} alignItems="start">
             <Autocomplete
               popupIcon={false}
               fullWidth
               multiple
-              options={options.names.map(
-                (name) => `name:${name}`,
-              )}
+              options={[
+                ...options.names.map((name) => ({
+                  label: `name:"${name}"`,
+                  value: `name:${name}`,
+                })),
+                ...options.projectNames.map((name) => ({
+                  label: `project:"${name}"`,
+                  value: `project:${name}`,
+                })),
+              ]}
               value={queryString}
               onChange={(_, v) => setQueryString(v)}
               renderInput={(params) => (
@@ -72,18 +86,15 @@ const RouteComponent: FC = () => {
                 },
               }}
             />
-            <TypographyButton
-              onClick={() =>
-                navigate({
-                  to: ".",
-                  search: {
-                    query: queryString,
-                  },
-                })
-              }
+            <StyledLink
+              to="."
+              search={{
+                query: queryString.map(({ value }) => value),
+              }}
+              sx={{ textDecorationLine: "none" }}
             >
-              [SUBMIT]
-            </TypographyButton>
+              {`[SUBMIT]`}
+            </StyledLink>
           </Stack>
         </Paper>
       </Grid>
@@ -103,41 +114,30 @@ const RouteComponent: FC = () => {
             </TypographyButton>
 
             <Stack spacing={0.5}>
-              <Typography>{`SHOWING: ${pageIndex * resultsPerPage + 1}-${pageIndex * resultsPerPage + resultsPerPage} OF ${total}`}</Typography>
+              <Typography>{`SHOWING: ${pageIndex * resultsPerPage + 1}-${pageIndex * resultsPerPage + (resultsPerPage > items.length ? items.length : resultsPerPage)} OF ${total}`}</Typography>
               <Typography>{`PAGE: ${pageIndex + 1} OF ${pageCount}`}</Typography>
               <Stack spacing={2} direction="row">
-                <TypographyButton
-                  onClick={() => {
-                    if (pageIndex === 0) {
-                      return
-                    }
-                    navigate({
-                      to: ".",
-                      search: {
-                        resultsPerPage,
-                        pageIndex: pageIndex - 1,
-                      },
-                    })
+                <StyledLink
+                  to="."
+                  search={{
+                    pageIndex: Math.max(0, pageIndex - 1),
                   }}
+                  sx={{ textDecorationLine: "none" }}
                 >
                   {`[PREV]`}
-                </TypographyButton>
-                <TypographyButton
-                  onClick={() => {
-                    if (pageIndex === pageCount - 1) {
-                      return
-                    }
-                    navigate({
-                      to: ".",
-                      search: {
-                        resultsPerPage,
-                        pageIndex: pageIndex + 1,
-                      },
-                    })
+                </StyledLink>
+                <StyledLink
+                  to="."
+                  search={{
+                    pageIndex: Math.min(
+                      pageIndex + 1,
+                      pageCount - 1,
+                    ),
                   }}
+                  sx={{ textDecorationLine: "none" }}
                 >
                   {`[NEXT]`}
-                </TypographyButton>
+                </StyledLink>
               </Stack>
             </Stack>
           </Stack>
@@ -163,6 +163,7 @@ export const Route = createFileRoute("/project-tags/")({
   loader: async ({ deps: { search } }) => {
     const result = await ProjectTagService.list(search)
     const names = await ProjectTagService.listNames()
-    return { ...result, options: { names } }
+    const projectNames = await ProjectService.listNames()
+    return { ...result, options: { names, projectNames } }
   },
 })

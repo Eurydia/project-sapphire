@@ -4,10 +4,11 @@ import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
 import { normalize } from "path"
-import { FindOperator, In } from "typeorm"
+import { In } from "typeorm"
 import z4 from "zod/v4"
 import { AppDataSource } from "../data-source"
 import { ProjectEntity } from "../entity/project.entity"
+import { InOrUndefined } from "./helper"
 import {
   _fillTags,
   _fromTableEntity,
@@ -17,11 +18,7 @@ const repo = AppDataSource.getRepository(ProjectEntity)
 
 const list = (arg: unknown) => {
   const query = projectQuerySchema.parse(arg)
-  const InOrUndefined = <T>(
-    values: T[],
-  ): FindOperator<T> | undefined => {
-    return values.length > 0 ? In(values) : undefined
-  }
+
   return AppDataSource.transaction(async (mgr) => {
     const entities = await mgr.find(ProjectEntity, {
       where: {
@@ -43,6 +40,15 @@ const list = (arg: unknown) => {
     return items
   })
 }
+
+const listNames = async () => {
+  const results = await repo.find({
+    order: { name: "asc" },
+    select: { name: true },
+  })
+  return results.map(({ name }) => name)
+}
+
 const listByUuids = async (arg: unknown) => {
   const uuids = z4.uuidv4().array().parse(arg)
   return AppDataSource.transaction(async (mgr) => {
@@ -161,6 +167,7 @@ const upsertProject = async (arg: unknown) => {
 
 registerIpcMainServices("db$project", {
   list,
+  listNames,
   listByUuids,
   listByNames,
   unpin,

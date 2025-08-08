@@ -5,51 +5,42 @@ import {
 } from "#/models/project-tag/dto/pagination-project-tag.dto"
 import { updateProjectTagDtoSchema } from "#/models/project-tag/dto/update-project-tag.dto"
 import { ProjectTag } from "#/models/project-tag/project-tag-entity"
-import { EntityNotFoundError, FindOperator, In } from "typeorm"
+import { EntityNotFoundError, In } from "typeorm"
 import { z } from "zod/v4"
 import { registerIpcMainServices } from "../../services/core"
 import { AppDataSource } from "../data-source"
 import { ProjectTagEntity } from "../entity/project-tag.entity"
+import { InOrUndefined } from "./helper"
+import { extractQuery } from "./project-tag.service.helper"
 
 const repo = AppDataSource.getRepository(ProjectTagEntity)
+
 const list = async (arg: unknown) => {
   const { pageIndex, resultsPerPage, query } =
     projectTagPaginationQueryDtoSchema.parse(arg)
-
-  const skip = pageIndex * resultsPerPage
   const { items, total } = await AppDataSource.transaction(
     async (mgr) => {
-      let names: FindOperator<any> | undefined = undefined
-      if (query.length > 0) {
-        console.debug(query)
-        const nameQuery: string[] = []
-        const nameRegex = /^name:/i
-        for (const q of query) {
-          if (nameRegex.test(q)) {
-            nameQuery.push(
-              q
-                .replace(nameRegex, "")
-                .replace(/^"/, "")
-                .replace(/"$/, ""),
-            )
-          }
-        }
-        console.debug(nameQuery)
-        names = In(nameQuery)
-      }
       const repo = mgr.getRepository(ProjectTagEntity)
+      const { names, projectNames } = extractQuery(query)
+      console.debug(names, projectNames, query)
       const items = await repo.find({
         where: {
-          name: names,
+          name: InOrUndefined(names),
+          projects: { name: InOrUndefined(projectNames) },
         },
         order: { pinned: "DESC", name: "asc" },
         relations: {
           projects: true,
         },
-        skip,
+        skip: pageIndex * resultsPerPage,
         take: resultsPerPage,
       })
-      const total = await repo.count()
+      const total = await repo.count({
+        where: {
+          name: InOrUndefined(names),
+          projects: { name: InOrUndefined(projectNames) },
+        },
+      })
 
       return { items, total }
     },
