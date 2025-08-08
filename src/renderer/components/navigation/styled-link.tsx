@@ -20,6 +20,7 @@ const MUILinkComponent = React.forwardRef<
       sx={{
         color: normal,
         textDecorationColor: normal,
+        textDecorationLine: "none",
         "&:visited": {
           textDecorationColor: visited,
           color: visited,

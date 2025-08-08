@@ -8,11 +8,9 @@ const stringArraySchema = z
   .array()
   .default([])
 
-export const projectQuerySchema = z
-  .object({
-    names: stringArraySchema,
-    tags: stringArraySchema,
-  })
-  .default({ tags: [], names: [] })
+export const projectQuerySchema = z.object({
+  names: stringArraySchema.optional(),
+  tags: stringArraySchema.optional(),
+})
 
 export type ProjectQuery = z.infer<typeof projectQuerySchema>

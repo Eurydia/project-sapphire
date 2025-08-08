@@ -28,10 +28,14 @@ const list = (arg: unknown) => {
       order: {
         pinned: "DESC",
         name: "ASC",
+        tags: {
+          name: "ASC",
+        },
       },
       relations: {
         tags: true,
       },
+      relationLoadStrategy: "query",
     })
     const items: Project[] = []
     for (const entity of entities) {

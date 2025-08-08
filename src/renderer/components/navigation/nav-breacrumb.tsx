@@ -14,10 +14,12 @@ export const NavBreadcrumbs: FC = memo(() => {
   const segments = useMemo(() => {
     const segments = pathname.split("/")
     segments.shift()
-    const paths = segments.map((segment, index) => ({
-      path: segments.slice(0, index + 1).join("/"),
-      name: segment,
-    }))
+    const paths = segments
+      .filter((segment) => segment.trim().length !== 0)
+      .map((segment, index) => ({
+        path: segments.slice(0, index + 1).join("/"),
+        name: segment,
+      }))
     paths.unshift({ path: "/", name: "root" })
     return paths
   }, [pathname])

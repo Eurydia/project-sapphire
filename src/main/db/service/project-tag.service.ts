@@ -22,7 +22,6 @@ const list = async (arg: unknown) => {
     async (mgr) => {
       const repo = mgr.getRepository(ProjectTagEntity)
       const { names, projectNames } = extractQuery(query)
-      console.debug(names, projectNames, query)
       const items = await repo.find({
         where: {
           name: InOrUndefined(names),

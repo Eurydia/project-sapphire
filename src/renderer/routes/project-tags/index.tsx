@@ -90,6 +90,8 @@ const RouteComponent: FC = () => {
               to="."
               search={{
                 query: queryString.map(({ value }) => value),
+                pageIndex,
+                resultsPerPage,
               }}
               sx={{ textDecorationLine: "none" }}
             >
@@ -112,7 +114,6 @@ const RouteComponent: FC = () => {
             >
               {`[ADD]`}
             </TypographyButton>
-
             <Stack spacing={0.5}>
               <Typography>{`SHOWING: ${pageIndex * resultsPerPage + 1}-${pageIndex * resultsPerPage + (resultsPerPage > items.length ? items.length : resultsPerPage)} OF ${total}`}</Typography>
               <Typography>{`PAGE: ${pageIndex + 1} OF ${pageCount}`}</Typography>
@@ -120,6 +121,8 @@ const RouteComponent: FC = () => {
                 <StyledLink
                   to="."
                   search={{
+                    query: queryString.map(({ value }) => value),
+                    resultsPerPage,
                     pageIndex: Math.max(0, pageIndex - 1),
                   }}
                   sx={{ textDecorationLine: "none" }}
@@ -129,6 +132,8 @@ const RouteComponent: FC = () => {
                 <StyledLink
                   to="."
                   search={{
+                    query: queryString.map(({ value }) => value),
+                    resultsPerPage,
                     pageIndex: Math.min(
                       pageIndex + 1,
                       pageCount - 1,

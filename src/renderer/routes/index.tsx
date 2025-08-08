@@ -9,7 +9,7 @@ const RouteComponent = () => {
         <StyledLink to="/projects">{`[PROJECTS]`}</StyledLink>
       </Paper>
       <Paper>
-        <StyledLink to="/project-tags">{`[TAGS]`}</StyledLink>
+        <StyledLink to="/project-tags">{`[PROJECT TAGS]`}</StyledLink>
       </Paper>
     </Stack>
   )

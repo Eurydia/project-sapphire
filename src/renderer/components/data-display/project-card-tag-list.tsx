@@ -25,7 +25,7 @@ const Inner: FC<InnerProps> = memo(({ project }) => {
           to="/project-tags/$uuid"
           params={{ uuid }}
         >
-          {name}
+          {`[${name}]`}
         </StyledLink>
       ))}
     </Stack>
