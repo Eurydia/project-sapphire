@@ -2,6 +2,13 @@ import { z } from "zod/v4"
 import { projectTagSchema } from "../project-tag-entity"
 
 export const projectTagPaginationQueryDtoSchema = z.object({
+  query: z
+    .string()
+    .trim()
+    .normalize()
+    .nonempty()
+    .array()
+    .default([]),
   resultsPerPage: z.number().positive().default(5),
   pageIndex: z.number().nonnegative().default(0),
 })

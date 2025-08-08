@@ -40,7 +40,7 @@ export const RouteComponent: FC = memo(() => {
               {project.description}
             </Typography>
             <ProjectCardMetadata project={project} />
-            <ProjectCardTagList items={project.tags} />
+            <ProjectCardTagList project={project} />
           </Stack>
         </Paper>
       </Grid>

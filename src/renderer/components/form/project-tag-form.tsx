@@ -1,7 +1,7 @@
 import {
   projectTagFormDataSchema,
   type ProjectTagFormData,
-} from "#/models/project-tag/project-tag.form-data"
+} from "@/types/project-tag.form-data"
 import { Stack, TextField, Typography } from "@mui/material"
 import { useForm } from "@tanstack/react-form"
 import type { FC } from "react"

@@ -4,7 +4,8 @@
     "electron.vite.config.*",
     "src/main/**/*.ts",
     "src/shared/**/*.ts",
-    "src/preload/**/*"
+    "src/preload/**/*",
+    "src/renderer/types/project-tag.form-data.ts"
   ],
   "compilerOptions": {
     "composite": true,

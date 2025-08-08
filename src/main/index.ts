@@ -52,7 +52,7 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
-  const repo = await AppDataSource.initialize()
+  await AppDataSource.initialize()
   // if (!app.isPackaged) {
   //   const tagRepo = repo.getRepository(ProjectTagEntity)
   //   // await tagRepo.clear()

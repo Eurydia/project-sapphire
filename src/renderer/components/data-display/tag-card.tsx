@@ -71,25 +71,7 @@ export const TagCard: FC<Props> = ({ tag }) => {
             {tag.name}
           </StyledLink>
           {tag.description !== "" && (
-            <Typography
-              sx={{
-                overflow: "hidden",
-                maxHeight: { md: "7lh" },
-                "&:after": {
-                  content: "''",
-                  pointerEvents: "none",
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "2lh",
-                  background:
-                    "linear-gradient(transparent, black)",
-                },
-              }}
-            >
-              {tag.description}
-            </Typography>
+            <Typography>{tag.description}</Typography>
           )}
         </Stack>
       </Stack>

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProjectsRouteRouteImport } from './routes/projects/route'
+import { Route as ProjectTagsRouteRouteImport } from './routes/project-tags/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ProjectTagsIndexRouteImport } from './routes/project-tags/index'
@@ -28,6 +29,11 @@ const ProjectsRouteRoute = ProjectsRouteRouteImport.update({
   path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectTagsRouteRoute = ProjectTagsRouteRouteImport.update({
+  id: '/project-tags',
+  path: '/project-tags',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -39,9 +45,9 @@ const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   getParentRoute: () => ProjectsRouteRoute,
 } as any)
 const ProjectTagsIndexRoute = ProjectTagsIndexRouteImport.update({
-  id: '/project-tags/',
-  path: '/project-tags/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProjectTagsRouteRoute,
 } as any)
 const ProjectsCreateRoute = ProjectsCreateRouteImport.update({
   id: '/create',
@@ -49,9 +55,9 @@ const ProjectsCreateRoute = ProjectsCreateRouteImport.update({
   getParentRoute: () => ProjectsRouteRoute,
 } as any)
 const ProjectTagsCreateRoute = ProjectTagsCreateRouteImport.update({
-  id: '/project-tags/create',
-  path: '/project-tags/create',
-  getParentRoute: () => rootRouteImport,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => ProjectTagsRouteRoute,
 } as any)
 const ProjectsUuidRouteRoute = ProjectsUuidRouteRouteImport.update({
   id: '/$uuid',
@@ -64,9 +70,9 @@ const ProjectsUuidIndexRoute = ProjectsUuidIndexRouteImport.update({
   getParentRoute: () => ProjectsUuidRouteRoute,
 } as any)
 const ProjectTagsUuidIndexRoute = ProjectTagsUuidIndexRouteImport.update({
-  id: '/project-tags/$uuid/',
-  path: '/project-tags/$uuid/',
-  getParentRoute: () => rootRouteImport,
+  id: '/$uuid/',
+  path: '/$uuid/',
+  getParentRoute: () => ProjectTagsRouteRoute,
 } as any)
 const ProjectsUuidEditRoute = ProjectsUuidEditRouteImport.update({
   id: '/edit',
@@ -74,9 +80,9 @@ const ProjectsUuidEditRoute = ProjectsUuidEditRouteImport.update({
   getParentRoute: () => ProjectsUuidRouteRoute,
 } as any)
 const ProjectTagsUuidEditRoute = ProjectTagsUuidEditRouteImport.update({
-  id: '/project-tags/$uuid/edit',
-  path: '/project-tags/$uuid/edit',
-  getParentRoute: () => rootRouteImport,
+  id: '/$uuid/edit',
+  path: '/$uuid/edit',
+  getParentRoute: () => ProjectTagsRouteRoute,
 } as any)
 const ProjectsUuidTreeIndexRoute = ProjectsUuidTreeIndexRouteImport.update({
   id: '/tree/',
@@ -91,11 +97,12 @@ const ProjectsUuidTreeSplatRoute = ProjectsUuidTreeSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/project-tags': typeof ProjectTagsRouteRouteWithChildren
   '/projects': typeof ProjectsRouteRouteWithChildren
   '/projects/$uuid': typeof ProjectsUuidRouteRouteWithChildren
   '/project-tags/create': typeof ProjectTagsCreateRoute
   '/projects/create': typeof ProjectsCreateRoute
-  '/project-tags': typeof ProjectTagsIndexRoute
+  '/project-tags/': typeof ProjectTagsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/project-tags/$uuid/edit': typeof ProjectTagsUuidEditRoute
   '/projects/$uuid/edit': typeof ProjectsUuidEditRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/project-tags': typeof ProjectTagsRouteRouteWithChildren
   '/projects': typeof ProjectsRouteRouteWithChildren
   '/projects/$uuid': typeof ProjectsUuidRouteRouteWithChildren
   '/project-tags/create': typeof ProjectTagsCreateRoute
@@ -137,11 +145,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/project-tags'
     | '/projects'
     | '/projects/$uuid'
     | '/project-tags/create'
     | '/projects/create'
-    | '/project-tags'
+    | '/project-tags/'
     | '/projects/'
     | '/project-tags/$uuid/edit'
     | '/projects/$uuid/edit'
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/project-tags'
     | '/projects'
     | '/projects/$uuid'
     | '/project-tags/create'
@@ -181,11 +191,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProjectTagsRouteRoute: typeof ProjectTagsRouteRouteWithChildren
   ProjectsRouteRoute: typeof ProjectsRouteRouteWithChildren
-  ProjectTagsCreateRoute: typeof ProjectTagsCreateRoute
-  ProjectTagsIndexRoute: typeof ProjectTagsIndexRoute
-  ProjectTagsUuidEditRoute: typeof ProjectTagsUuidEditRoute
-  ProjectTagsUuidIndexRoute: typeof ProjectTagsUuidIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -195,6 +202,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/project-tags': {
+      id: '/project-tags'
+      path: '/project-tags'
+      fullPath: '/project-tags'
+      preLoaderRoute: typeof ProjectTagsRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -213,10 +227,10 @@ declare module '@tanstack/react-router' {
     }
     '/project-tags/': {
       id: '/project-tags/'
-      path: '/project-tags'
-      fullPath: '/project-tags'
+      path: '/'
+      fullPath: '/project-tags/'
       preLoaderRoute: typeof ProjectTagsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProjectTagsRouteRoute
     }
     '/projects/create': {
       id: '/projects/create'
@@ -227,10 +241,10 @@ declare module '@tanstack/react-router' {
     }
     '/project-tags/create': {
       id: '/project-tags/create'
-      path: '/project-tags/create'
+      path: '/create'
       fullPath: '/project-tags/create'
       preLoaderRoute: typeof ProjectTagsCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProjectTagsRouteRoute
     }
     '/projects/$uuid': {
       id: '/projects/$uuid'
@@ -248,10 +262,10 @@ declare module '@tanstack/react-router' {
     }
     '/project-tags/$uuid/': {
       id: '/project-tags/$uuid/'
-      path: '/project-tags/$uuid'
+      path: '/$uuid'
       fullPath: '/project-tags/$uuid'
       preLoaderRoute: typeof ProjectTagsUuidIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProjectTagsRouteRoute
     }
     '/projects/$uuid/edit': {
       id: '/projects/$uuid/edit'
@@ -262,10 +276,10 @@ declare module '@tanstack/react-router' {
     }
     '/project-tags/$uuid/edit': {
       id: '/project-tags/$uuid/edit'
-      path: '/project-tags/$uuid/edit'
+      path: '/$uuid/edit'
       fullPath: '/project-tags/$uuid/edit'
       preLoaderRoute: typeof ProjectTagsUuidEditRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ProjectTagsRouteRoute
     }
     '/projects/$uuid/tree/': {
       id: '/projects/$uuid/tree/'
@@ -283,6 +297,23 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface ProjectTagsRouteRouteChildren {
+  ProjectTagsCreateRoute: typeof ProjectTagsCreateRoute
+  ProjectTagsIndexRoute: typeof ProjectTagsIndexRoute
+  ProjectTagsUuidEditRoute: typeof ProjectTagsUuidEditRoute
+  ProjectTagsUuidIndexRoute: typeof ProjectTagsUuidIndexRoute
+}
+
+const ProjectTagsRouteRouteChildren: ProjectTagsRouteRouteChildren = {
+  ProjectTagsCreateRoute: ProjectTagsCreateRoute,
+  ProjectTagsIndexRoute: ProjectTagsIndexRoute,
+  ProjectTagsUuidEditRoute: ProjectTagsUuidEditRoute,
+  ProjectTagsUuidIndexRoute: ProjectTagsUuidIndexRoute,
+}
+
+const ProjectTagsRouteRouteWithChildren =
+  ProjectTagsRouteRoute._addFileChildren(ProjectTagsRouteRouteChildren)
 
 interface ProjectsUuidRouteRouteChildren {
   ProjectsUuidEditRoute: typeof ProjectsUuidEditRoute
@@ -319,11 +350,8 @@ const ProjectsRouteRouteWithChildren = ProjectsRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProjectTagsRouteRoute: ProjectTagsRouteRouteWithChildren,
   ProjectsRouteRoute: ProjectsRouteRouteWithChildren,
-  ProjectTagsCreateRoute: ProjectTagsCreateRoute,
-  ProjectTagsIndexRoute: ProjectTagsIndexRoute,
-  ProjectTagsUuidEditRoute: ProjectTagsUuidEditRoute,
-  ProjectTagsUuidIndexRoute: ProjectTagsUuidIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

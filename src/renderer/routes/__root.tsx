@@ -1,6 +1,5 @@
 import { globalStyle } from "@/app/global-style"
 import { theme } from "@/app/theme"
-import { LogInspector } from "@/components/data-display/log-inspector"
 import { NavBreadcrumbs } from "@/components/navigation/nav-breacrumb"
 import { Box, CssBaseline, ThemeProvider } from "@mui/material"
 import { createRootRoute, Outlet } from "@tanstack/react-router"
@@ -14,21 +13,19 @@ export const Route = createRootRoute({
         <ThemeProvider theme={theme}>
           {globalStyle}
           <CssBaseline />
-          <LogInspector>
-            <NavBreadcrumbs />
-            <Box
-              maxWidth="lg"
-              sx={{ marginX: "auto" }}
-              paddingY={1}
-            >
-              <Outlet />
-            </Box>
-            <ToastContainer
-              toastStyle={{ fontFamily: "monospace" }}
-              pauseOnFocusLoss={false}
-              position="bottom-left"
-            />
-          </LogInspector>
+          <NavBreadcrumbs />
+          <Box
+            maxWidth={{ md: "lg", sm: "md" }}
+            marginX="auto"
+            padding={2}
+          >
+            <Outlet />
+          </Box>
+          <ToastContainer
+            toastStyle={{ fontFamily: "monospace" }}
+            pauseOnFocusLoss={false}
+            position="bottom-left"
+          />
         </ThemeProvider>
         <TanStackRouterDevtools position="top-right" />
       </>

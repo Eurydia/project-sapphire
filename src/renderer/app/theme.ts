@@ -1,4 +1,5 @@
 import { alpha, createTheme, lighten } from "@mui/material"
+import { deepPurple } from "@mui/material/colors"
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -69,6 +70,7 @@ export const theme = createTheme({
   },
   palette: {
     mode: "dark",
+    primary: deepPurple,
     text: {
       primary: alpha("#fff", 0.8),
       secondary: alpha("#fff", 0.7),

@@ -1,10 +1,10 @@
+import type { Project } from "#/models/project/project"
 import { Paper, Stack, Typography } from "@mui/material"
 import { Link } from "@tanstack/react-router"
 import type { FC } from "react"
 import { memo } from "react"
-import type { ProjectTableEntity } from "src/shared/models/project/project-table-entity"
 
-type Props = { project: ProjectTableEntity }
+type Props = { project: Project }
 export const ProjectDetails: FC<Props> = memo(({ project }) => {
   return (
     <Paper variant="outlined">
@@ -18,7 +18,7 @@ export const ProjectDetails: FC<Props> = memo(({ project }) => {
           </Typography>
         </Link>
         <Typography variant="h3">{project.name}</Typography>
-        <Typography>{project.root}</Typography>
+        <Typography>{project.root.path}</Typography>
         {project.description !== "" && (
           <Typography>{project.description}</Typography>
         )}
