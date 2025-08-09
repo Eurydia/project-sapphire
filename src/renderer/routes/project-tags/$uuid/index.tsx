@@ -2,7 +2,13 @@ import { ProjectTagService } from "@/api/project-tag.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectList } from "@/components/data-display/project-list"
 import { StyledLink } from "@/components/navigation/styled-link"
-import { Grid, Paper, Stack, Typography } from "@mui/material"
+import {
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material"
 import {
   createFileRoute,
   notFound,
@@ -28,32 +34,29 @@ function RouteComponent() {
     <Grid spacing={1} container>
       <Grid size={{ md: 12 }}>
         <Paper>
-          <Stack direction="row" spacing={2} flexWrap="wrap">
-            <StyledLink
-              to="/project-tags/$uuid/edit"
-              params={{ uuid: entry.uuid }}
-              sx={{ textDecorationLine: "none" }}
-            >
-              {`[EDIT]`}
-            </StyledLink>
-          </Stack>
-        </Paper>
-      </Grid>
-      <Grid size={{ md: 12 }}>
-        <Paper>
-          <Stack spacing={0.5}>
-            <Typography variant="h4">{entry.name}</Typography>
-            {entry.description.trim().length > 0 && (
-              <Typography>{entry.description}</Typography>
-            )}
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={2} flexWrap="wrap">
+              <StyledLink
+                to="/project-tags/$uuid/edit"
+                params={{ uuid: entry.uuid }}
+                sx={{ textDecorationLine: "none" }}
+              >
+                {`[EDIT]`}
+              </StyledLink>
+            </Stack>
+            <Divider flexItem />
+            <Stack spacing={0.5}>
+              <Typography variant="h4">{entry.name}</Typography>
+              {entry.description.trim().length > 0 && (
+                <Typography>{entry.description}</Typography>
+              )}
+            </Stack>
           </Stack>
         </Paper>
       </Grid>
       <Grid size={{ md: 3 }}>
         <Paper>
           <Stack spacing={0.5}>
-            <Typography>{`SHOWING: 0-0 OF 0`}</Typography>
-            <Typography>{`PAGE: 1 OF 1`}</Typography>
             <Stack spacing={2} direction="row">
               <StyledLink
                 to="."
@@ -68,6 +71,8 @@ function RouteComponent() {
                 {`[NEXT]`}
               </StyledLink>
             </Stack>
+            <Typography>{`SHOWING: 0-0 OF 0`}</Typography>
+            <Typography>{`PAGE: 1 OF 1`}</Typography>
           </Stack>
         </Paper>
       </Grid>
