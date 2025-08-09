@@ -3,10 +3,10 @@ import type { ProjectFormData } from "@/types/project-form-data"
 import {
   Button,
   Chip,
-  Grid,
   Stack,
   TextField,
   Toolbar,
+  Typography,
 } from "@mui/material"
 import { useForm } from "@tanstack/react-form"
 import { memo, useRef, type FC } from "react"
@@ -23,16 +23,14 @@ type Props = {
 export const ProjectForm: FC<Props> = memo(
   ({ init, action, formOptions }) => {
     const { Field, Subscribe, handleSubmit } = useForm({
-      defaultValues:
-        init ??
-        ({
-          description: "",
-          name: "",
-          root: "",
-          techNames: [],
-          topicNames: [],
-          tagNames: [],
-        } as ProjectFormData),
+      defaultValues: init ?? {
+        description: "",
+        name: "",
+        root: "",
+        techNames: [],
+        topicNames: [],
+        tagNames: [],
+      },
       onSubmit: ({ value }) => {
         action(value)
       },
@@ -49,130 +47,121 @@ export const ProjectForm: FC<Props> = memo(
           e.stopPropagation()
         }}
       >
-        <Grid container spacing={1}>
-          <Field name="name">
-            {({ state, handleChange, handleBlur }) => (
-              <>
-                <Grid size={3}>{`NAME`}</Grid>
-                <Grid size={9}>
+        <Stack spacing={1}>
+          <Stack>
+            <TypographyButton>{`NAME`}</TypographyButton>
+            <Field name="name">
+              {({ state, handleChange, handleBlur }) => (
+                <TextField
+                  fullWidth
+                  multiline
+                  required
+                  minRows={1}
+                  onBlur={handleBlur}
+                  onChange={(e) => handleChange(e.target.value)}
+                  value={state.value}
+                />
+              )}
+            </Field>
+          </Stack>
+          <Stack>
+            <Typography>{`ROOT`}</Typography>
+            <Field name="root">
+              {({ state, handleChange, handleBlur }) => (
+                <Stack spacing={1} alignItems="start">
                   <TextField
                     fullWidth
                     multiline
-                    required
                     minRows={1}
                     onBlur={handleBlur}
                     onChange={(e) =>
                       handleChange(e.target.value)
                     }
                     value={state.value}
+                    required
                   />
-                </Grid>
-              </>
-            )}
-          </Field>
-          <Field name="root">
-            {({ state, handleChange, handleBlur }) => (
-              <>
-                <Grid size={3}>{`ROOT`}</Grid>
-                <Grid size={9}>
-                  <Stack spacing={1} alignItems="start">
-                    <TextField
-                      fullWidth
-                      multiline
-                      minRows={1}
-                      onBlur={handleBlur}
-                      onChange={(e) =>
-                        handleChange(e.target.value)
+                  <TypographyButton
+                    onClick={async () => {
+                      if (dirDialogOpenedRef.current) {
+                        return
                       }
-                      value={state.value}
-                      required
-                    />
-                    <TypographyButton
-                      onClick={async () => {
-                        if (dirDialogOpenedRef.current) {
-                          return
-                        }
-                        dirDialogOpenedRef.current = true
-                        const { canceled, filePaths } =
-                          await FileSystemService.openDirDialog()
-                        dirDialogOpenedRef.current = false
-                        if (canceled) {
-                          return
-                        }
-                        const path = filePaths.at(0)
-                        if (path === undefined) {
-                          return
-                        }
-                        handleChange(path)
-                      }}
-                    >
-                      {`[OPEN SYSTEM BROWSER]`}
-                    </TypographyButton>
-                  </Stack>
-                </Grid>
-              </>
-            )}
-          </Field>
-          <Field name="description">
-            {({ state, handleChange, handleBlur }) => (
-              <>
-                <Grid size={3}>{`DESC`}</Grid>
-                <Grid size={9}>
-                  <TextField
-                    fullWidth
-                    multiline
-                    minRows={4}
+                      dirDialogOpenedRef.current = true
+                      const { canceled, filePaths } =
+                        await FileSystemService.openDirDialog()
+                      dirDialogOpenedRef.current = false
+                      if (canceled) {
+                        return
+                      }
+                      const path = filePaths.at(0)
+                      if (path === undefined) {
+                        return
+                      }
+                      handleChange(path)
+                    }}
+                  >
+                    {`[OPEN SYSTEM BROWSER]`}
+                  </TypographyButton>
+                </Stack>
+              )}
+            </Field>
+          </Stack>
+          <Stack>
+            <Typography>{`DESC`}</Typography>
+            <Field name="description">
+              {({ state, handleChange, handleBlur }) => (
+                <TextField
+                  fullWidth
+                  multiline
+                  minRows={4}
+                  onBlur={handleBlur}
+                  onChange={(e) => handleChange(e.target.value)}
+                  value={state.value}
+                />
+              )}
+            </Field>
+          </Stack>
+          <Stack>
+            <Typography>{`TAGS`}</Typography>
+            <Field name="tagNames" mode="array">
+              {({
+                state,
+                removeValue,
+                pushValue,
+                handleBlur,
+              }) => (
+                <Stack spacing={0.5}>
+                  <AutocompleteTextField
+                    onSelect={pushValue}
+                    options={formOptions.tags}
+                    disabledOptions={state.value}
                     onBlur={handleBlur}
-                    onChange={(e) =>
-                      handleChange(e.target.value)
-                    }
-                    value={state.value}
                   />
-                </Grid>
-              </>
-            )}
-          </Field>
-          <Field name="tagNames" mode="array">
-            {({ state, removeValue, pushValue, handleBlur }) => (
-              <>
-                <Grid size={3}>{`TAGS`}</Grid>
-                <Grid size={9}>
-                  <Stack spacing={0.5}>
-                    <AutocompleteTextField
-                      onSelect={pushValue}
-                      options={formOptions.tags}
-                      disabledOptions={state.value}
-                      onBlur={handleBlur}
-                    />
-                    <Stack
-                      spacing={0.5}
-                      direction="row"
-                      flexWrap="wrap"
-                      useFlexGap
-                    >
-                      {state.value.map((_, index) => (
-                        <Field
-                          key={index}
-                          name={`tagNames[${index}]`}
-                        >
-                          {(subfield) => (
-                            <Chip
-                              variant="outlined"
-                              label={subfield.state.value}
-                              onDelete={() => removeValue(index)}
-                              sx={{ widthh: "fit-content" }}
-                            />
-                          )}
-                        </Field>
-                      ))}
-                    </Stack>
+                  <Stack
+                    spacing={0.5}
+                    direction="row"
+                    flexWrap="wrap"
+                    useFlexGap
+                  >
+                    {state.value.map((_, index) => (
+                      <Field
+                        key={index}
+                        name={`tagNames[${index}]`}
+                      >
+                        {(subfield) => (
+                          <Chip
+                            variant="outlined"
+                            label={subfield.state.value}
+                            onDelete={() => removeValue(index)}
+                            sx={{ widthh: "fit-content" }}
+                          />
+                        )}
+                      </Field>
+                    ))}
                   </Stack>
-                </Grid>
-              </>
-            )}
-          </Field>
-        </Grid>
-        <Grid size={{ md: 12 }}>
+                </Stack>
+              )}
+            </Field>
+          </Stack>
           <Subscribe
             selector={({
               isPristine,
@@ -196,7 +185,7 @@ export const ProjectForm: FC<Props> = memo(
               </Toolbar>
             )}
           </Subscribe>
-        </Grid>
+        </Stack>
       </Stack>
     )
   },

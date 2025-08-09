@@ -35,7 +35,11 @@ export const NavBreadcrumbs: FC = memo(() => {
         <Breadcrumbs>
           {segments.map(({ path, name }, index) =>
             index + 1 < segments.length ? (
-              <StyledLink key={`crumb-${index}`} to={path}>
+              <StyledLink
+                key={`crumb-${index}`}
+                to={path}
+                sx={{ textDecorationLine: "underline" }}
+              >
                 {name}
               </StyledLink>
             ) : (

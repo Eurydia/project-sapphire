@@ -74,6 +74,12 @@ export const ProjectCard: FC<Props> = ({ project }) => {
           <TypographyButton onClick={handleTogglePin}>
             {project.pinned ? `[UNPIN]` : `[PIN]`}
           </TypographyButton>
+          <StyledLink
+            to="/projects/$uuid/edit"
+            params={{ uuid: project.uuid }}
+          >
+            {`[EDIT]`}
+          </StyledLink>
           <TypographyButton onClick={handleOpenRoot}>
             {`[OPEN IN EXPLORER]`}
           </TypographyButton>
