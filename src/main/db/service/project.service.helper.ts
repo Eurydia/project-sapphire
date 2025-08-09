@@ -73,3 +73,27 @@ export const _fillTags = async (
   )
   return known.concat(added)
 }
+
+export const extractProjectQuery = (fragments: string[]) => {
+  const queries = {
+    names: { regex: /^name:/i, values: <string[]>[] },
+    tagNames: { regex: /^tag:/i, values: <string[]>[] },
+  }
+  const categories = Object.values(queries)
+  for (const fragment of fragments) {
+    for (const category of categories) {
+      if (category.regex.test(fragment)) {
+        category.values.push(
+          fragment.replace(category.regex, ""),
+        )
+        continue
+      }
+    }
+  }
+  return Object.fromEntries(
+    Object.entries(queries).map(([name, { values }]) => [
+      name,
+      values,
+    ]),
+  ) as { [k in keyof typeof queries]: string[] }
+}

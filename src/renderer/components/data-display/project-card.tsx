@@ -84,7 +84,7 @@ export const ProjectCard: FC<Props> = ({ project }) => {
             {`[OPEN IN EXPLORER]`}
           </TypographyButton>
         </Stack>
-        <Stack spacing={2} component="div">
+        <Stack spacing={2}>
           <Stack>
             <Typography
               variant="subtitle2"

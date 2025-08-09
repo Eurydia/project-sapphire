@@ -1,5 +1,8 @@
 import { createProjectDtoSchema } from "#/models/project/dto/create-project.dto"
-import { projectQuerySchema } from "#/models/project/dto/query-project.dto"
+import {
+  projectPaginationQuerySchema,
+  ProjectPaginationResult,
+} from "#/models/project/dto/pagination-project.dto"
 import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
@@ -12,37 +15,54 @@ import { InOrUndefined } from "./helper"
 import {
   _fillTags,
   _fromTableEntity,
+  extractProjectQuery,
 } from "./project.service.helper"
 
 const repo = AppDataSource.getRepository(ProjectEntity)
 
-const list = (arg: unknown) => {
-  const query = projectQuerySchema.parse(arg)
+const list = async (arg: unknown) => {
+  const { pageIndex, query, resultPerPage } =
+    projectPaginationQuerySchema.parse(arg)
 
-  return AppDataSource.transaction(async (mgr) => {
-    const entities = await mgr.find(ProjectEntity, {
-      where: {
-        name: InOrUndefined(query.names),
-        tags: { name: InOrUndefined(query.tags) },
-      },
-      order: {
-        pinned: "DESC",
-        name: "ASC",
-        tags: {
+  const { entities, totalCount } =
+    await AppDataSource.transaction(async (mgr) => {
+      const { names, tagNames } = extractProjectQuery(query)
+      const repo = mgr.getRepository(ProjectEntity)
+      const entities = await repo.find({
+        skip: resultPerPage * pageIndex,
+        take: resultPerPage,
+        where: {
+          name: InOrUndefined(names),
+          tags: { name: InOrUndefined(tagNames) },
+        },
+        order: {
+          pinned: "DESC",
           name: "ASC",
         },
-      },
-      relations: {
-        tags: true,
-      },
-      relationLoadStrategy: "query",
+        relations: {
+          tags: true,
+        },
+        relationLoadStrategy: "query",
+      })
+      const totalCount = await repo.count({
+        where: {
+          name: InOrUndefined(names),
+          tags: { name: InOrUndefined(tagNames) },
+        },
+      })
+      return { entities, totalCount }
     })
-    const items: Project[] = []
-    for (const entity of entities) {
-      items.push(await _fromTableEntity(entity))
-    }
-    return items
-  })
+  const items = <Project[]>[]
+  for (const entity of entities) {
+    items.push(await _fromTableEntity(entity))
+  }
+  return {
+    items,
+    pageIndex,
+    resultPerPage,
+    totalCount,
+    pageCount: Math.ceil(totalCount / resultPerPage),
+  } satisfies ProjectPaginationResult
 }
 
 const listNames = async () => {
