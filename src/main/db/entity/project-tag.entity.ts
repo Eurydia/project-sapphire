@@ -6,7 +6,7 @@ import {
 } from "typeorm"
 import { ProjectEntity } from "./project.entity"
 
-@Entity()
+@Entity({ orderBy: { name: "ASC" } })
 export class ProjectTagEntity {
   @PrimaryGeneratedColumn("uuid")
   uuid: string
