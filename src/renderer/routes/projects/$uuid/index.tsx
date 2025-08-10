@@ -1,8 +1,16 @@
+import { FileSystemService } from "@/api/file-system.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
 import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
+import { TypographyButton } from "@/components/input/typography-button"
 import { StyledLink } from "@/components/navigation/styled-link"
-import { Grid, Paper, Stack, Typography } from "@mui/material"
+import {
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material"
 import {
   createFileRoute,
   notFound,
@@ -14,21 +22,37 @@ export const RouteComponent: FC = memo(() => {
   const { project } = Route.useLoaderData()
 
   return (
-    <Grid container spacing={1} maxWidth="lg" marginX="auto">
-      <Grid size={{ md: 4 }}>
+    <Grid container spacing={1} maxWidth="md" marginX="auto">
+      <Grid size={{ md: 12 }}>
         <Paper variant="outlined">
-          <Stack>
-            <Stack direction="row" spacing={0.5}>
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={2}>
+              <TypographyButton
+                onClick={() => {
+                  if (project.pinned) {
+                    ProjectService.unpin(project.uuid)
+                  } else {
+                    ProjectService.pin(project.uuid)
+                  }
+                }}
+              >
+                {project.pinned ? "[UNPIN]" : "[PIN]"}
+              </TypographyButton>
               <StyledLink
                 to="/projects/$uuid/edit"
                 params={{ uuid: project.uuid }}
               >
                 {`[EDIT]`}
               </StyledLink>
+              <TypographyButton
+                onClick={() =>
+                  FileSystemService.openPath(project.root.path)
+                }
+              >
+                {`[OPEN IN EXPLORER]`}
+              </TypographyButton>
             </Stack>
-            <Typography variant="subtitle1">
-              {project.root.path}
-            </Typography>
+            <Divider flexItem />
             <Typography variant="h3">{project.name}</Typography>
             <Typography
               fontStyle={

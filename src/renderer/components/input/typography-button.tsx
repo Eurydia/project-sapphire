@@ -12,6 +12,7 @@ export const TypographyButton: FC<TypographyProps> = memo(
     } = useTheme()
     return (
       <Typography
+        tabIndex={0}
         {...rest}
         sx={{
           textAlign: "center",
