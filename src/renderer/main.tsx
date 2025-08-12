@@ -7,6 +7,7 @@ import { StrictMode } from "react"
 import ReactDOM from "react-dom/client"
 
 // Import the generated route tree
+import { HotkeysProvider } from "react-hotkeys-hook"
 import { routeTree } from "./routeTree.gen"
 
 const memoryHistory = createMemoryHistory({
@@ -37,7 +38,9 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <HotkeysProvider>
+        <RouterProvider router={router} />
+      </HotkeysProvider>
     </StrictMode>,
   )
 }
