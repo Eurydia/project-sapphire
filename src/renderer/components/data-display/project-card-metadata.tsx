@@ -1,80 +1,64 @@
 import { Stack, Typography } from "@mui/material"
-import { Fragment, memo, useMemo, type FC } from "react"
+import { memo, useMemo, type FC } from "react"
 import type { Project } from "src/shared/models/project/project"
-
-type InnerProps = {
-  fetcher: Project
-}
-const Inner: FC<InnerProps> = memo(({ fetcher: project }) => {
-  const items: {
-    label: string
-    value?: { fromNow: string; exact: string }
-  }[] = useMemo(() => {
-    if (project.root.metadata === null) {
-      return [
-        { label: "accessed" },
-        { label: "modified" },
-        { label: "created" },
-      ]
-    }
-    const { ctime, atime, mtime } = project.root.metadata
-    return [
-      {
-        label: "accessed",
-        value: atime,
-      },
-      {
-        label: "modified",
-        value: mtime,
-      },
-      {
-        label: "created",
-        value: ctime,
-      },
-    ]
-  }, [project.root.metadata])
-
-  return (
-    <Fragment>
-      {items.map(({ label, value }, index) => (
-        <Stack
-          key={`item-${index}`}
-          rowGap={0}
-          columnGap={1}
-          flexDirection="row"
-          useFlexGap
-          flexWrap="wrap"
-        >
-          <Typography variant="subtitle2" color="textSecondary">
-            {`${label}:`}
-          </Typography>
-          {value === undefined && (
-            <Typography variant="subtitle2" color="warning">
-              {`unavailable`}
-            </Typography>
-          )}
-          {value !== undefined && (
-            <Typography
-              color="textSecondary"
-              variant="subtitle2"
-            >
-              {`${value.fromNow} @ ${value.exact}`}
-            </Typography>
-          )}
-        </Stack>
-      ))}
-    </Fragment>
-  )
-})
 
 type Props = {
   project: Project
 }
 export const ProjectCardMetadata: FC<Props> = memo(
   ({ project }) => {
+    const items: {
+      label: string
+      value?: { fromNow: string; exact: string }
+    }[] = useMemo(() => {
+      return [
+        {
+          label: "root accessed",
+          value: project.root.metadata?.atime ?? undefined,
+        },
+        {
+          label: "root modified",
+          value: project.root.metadata?.mtime ?? undefined,
+        },
+        {
+          label: "root created",
+          value: project.root.metadata?.ctime ?? undefined,
+        },
+      ]
+    }, [project.root.metadata])
+
     return (
       <Stack>
-        <Inner fetcher={project} />
+        {items.map(({ label, value }) => (
+          <Stack
+            key={`item-${label}`}
+            rowGap={0}
+            columnGap={1}
+            flexDirection="row"
+            useFlexGap
+            flexWrap="wrap"
+          >
+            <Typography
+              variant="subtitle2"
+              color="textSecondary"
+            >
+              {`${label}:`}
+            </Typography>
+            {value === undefined && (
+              <Typography variant="subtitle2" color="warning">
+                {`unavailable`}
+              </Typography>
+            )}
+            {value !== undefined && (
+              <Typography
+                color="textSecondary"
+                variant="subtitle2"
+              >
+                {`${value.fromNow} @ ${value.exact}`}
+              </Typography>
+            )}
+          </Stack>
+        ))}
       </Stack>
     )
   },

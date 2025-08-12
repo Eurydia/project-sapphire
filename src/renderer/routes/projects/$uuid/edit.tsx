@@ -8,6 +8,7 @@ import {
   createFileRoute,
   notFound,
 } from "@tanstack/react-router"
+import { isLeft } from "fp-ts/lib/Either"
 import type { FC } from "react"
 import { memo, useCallback } from "react"
 import { toast } from "react-toastify"
@@ -61,13 +62,13 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/$uuid/edit")({
   component: RouteComponent,
   loader: async ({ params: { uuid } }) => {
-    const project = await ProjectService.findByUuid(uuid)
-    if (project === null) {
+    const result = await ProjectService.findByUuid(uuid)
+    if (isLeft(result)) {
       throw notFound()
     }
 
     return {
-      project,
+      project: result.right,
       formOptions: {
         tags: await ProjectTagService.listNames(),
       },
