@@ -7,7 +7,7 @@ import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
 import { normalize } from "path"
-import { In } from "typeorm"
+import { EntityNotFoundError, In } from "typeorm"
 import z4 from "zod/v4"
 import { AppDataSource } from "../data-source"
 import { ProjectEntity } from "../entity/project.entity"
@@ -37,7 +37,7 @@ const list = async (arg: unknown) => {
         },
         order: {
           pinned: "DESC",
-          name: "ASC",
+          lastVisited: "ASC",
         },
         relations: {
           tags: true,
@@ -118,16 +118,25 @@ const listByNames = async (arg: unknown) => {
 
 const findByUuid = async (arg: unknown) => {
   const uuid = z4.uuidv4().parse(arg)
+
   return AppDataSource.transaction(async (mgr) => {
-    const entity = await mgr.findOne(ProjectEntity, {
+    const repo = mgr.getRepository(ProjectEntity)
+    const hasProject = await repo.exists({
       where: { uuid },
       relations: { tags: true },
     })
-    if (entity === null) {
-      return null
+    if (!hasProject) {
+      throw new EntityNotFoundError(ProjectEntity, { uuid })
     }
-    const item = await _fromTableEntity(entity)
-    return item satisfies Project
+    await repo.update(
+      { uuid },
+      { lastVisited: () => "CURRENT_TIMESTAMP" },
+    )
+    const entity = await repo.findOneOrFail({
+      where: { uuid },
+      relations: { tags: true },
+    })
+    return await _fromTableEntity(entity)
   })
 }
 

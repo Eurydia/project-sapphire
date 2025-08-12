@@ -5,6 +5,8 @@ export const projectSchema = z.strictObject({
   name: z.string().normalize().trim().nonempty(),
   pinned: z.boolean(),
   description: z.string().trim().normalize(),
+  created: z.iso.date(),
+  lastVisited: z.iso.date().nullable(),
   root: z.object({
     path: z.string().normalize().trim().nonempty(),
     metadata: z

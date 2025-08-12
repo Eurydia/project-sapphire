@@ -1,6 +1,8 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -13,6 +15,13 @@ import { ProjectTreeEntity } from "./project-tree.entity"
 export class ProjectEntity {
   @PrimaryGeneratedColumn("uuid")
   uuid: string
+
+  @CreateDateColumn()
+  created: string
+
+  @Index()
+  @Column({ type: "date", nullable: true })
+  lastVisited: string | null
 
   @Column({ type: "text" })
   name: string

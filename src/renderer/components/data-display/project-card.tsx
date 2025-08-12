@@ -10,7 +10,6 @@ import { toast } from "react-toastify"
 import type { Project } from "src/shared/models/project/project"
 import { TypographyButton } from "../input/typography-button"
 import { StyledLink } from "../navigation/styled-link"
-import { ProjectCardMetadata } from "./project-card-metadata"
 import { ProjectCardTagList } from "./project-card-tag-list"
 
 type Props = {
@@ -120,7 +119,6 @@ export const ProjectCard: FC<Props> = ({ project }) => {
               <Typography>{project.description}</Typography>
             )}
           </Stack>
-          <ProjectCardMetadata project={project} />
           <ProjectCardTagList project={project} />
         </Stack>
       </Stack>

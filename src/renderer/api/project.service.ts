@@ -12,7 +12,6 @@ import z from "zod"
 export class ProjectService {
   private static provider = window["db$project"]
   static async list(query: ProjectPaginationQuery) {
-    console.debug(query)
     return this.provider
       .list(projectPaginationQuerySchema.parse(query))
       .then((resp) =>
@@ -29,9 +28,9 @@ export class ProjectService {
   static async findByUuid(uuid: string) {
     return this.provider
       .findByUuid(uuid)
-      .then((response) =>
-        projectSchema.nullable().parseAsync(response),
-      )
+      .then((resp) => projectSchema.parseAsync(resp))
+      .then((resp) => right(resp))
+      .catch((err) => left(err))
   }
   static async upsert(dto: UpsertProjectDto) {
     return this.provider.upsertProject(dto)
