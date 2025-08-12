@@ -59,7 +59,7 @@ const list = async (arg: unknown) => {
   return {
     items,
     pageIndex,
-    resultPerPage,
+    resultsPerPage: resultPerPage,
     totalCount,
     pageCount: Math.ceil(totalCount / resultPerPage),
   } satisfies ProjectPaginationResult

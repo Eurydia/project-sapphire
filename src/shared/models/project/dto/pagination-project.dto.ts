@@ -20,7 +20,7 @@ export type ProjectPaginationQuery = z.infer<
 export const projectPaginationResultSchema = z.object({
   items: projectSchema.array(),
   pageIndex: z.number().int().nonnegative(),
-  resultPerPage: z.number().int().positive(),
+  resultsPerPage: z.number().int().positive(),
   totalCount: z.number().int().nonnegative(),
   pageCount: z.number().int().nonnegative(),
 })

@@ -2,30 +2,16 @@ import { projectPaginationQuerySchema } from "#/models/project/dto/pagination-pr
 import { ProjectTagService } from "@/api/project-tag.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectList } from "@/components/data-display/project-list"
+import { ProjectListPaginationControl } from "@/components/data-display/project-list-pagination-control"
 import { ProjectQueryForm } from "@/components/form/project-query-form"
 import { StyledLink } from "@/components/navigation/styled-link"
-import {
-  Divider,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material"
+import { Divider, Grid, Paper, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
 import type { FC } from "react"
 
 const RouteComponent: FC = () => {
-  const {
-    paginationResult: {
-      items,
-      pageCount,
-      pageIndex,
-      totalCount,
-      resultPerPage,
-    },
-    formOptions,
-  } = Route.useLoaderData()
+  const { paginationResult, formOptions } = Route.useLoaderData()
   const { query } = Route.useSearch()
   const navigate = Route.useNavigate()
   return (
@@ -38,8 +24,6 @@ const RouteComponent: FC = () => {
                 to: "/projects",
                 search: {
                   query,
-                  pageIndex,
-                  resultPerPage,
                 },
               })
             }}
@@ -51,42 +35,15 @@ const RouteComponent: FC = () => {
         <Paper variant="outlined">
           <Stack spacing={2} divider={<Divider flexItem />}>
             <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
-            <Stack spacing={0.5}>
-              <Typography>{`SHOWING: ${pageIndex * resultPerPage + 1}-${pageIndex * resultPerPage + (resultPerPage > items.length ? items.length : resultPerPage)} OF ${totalCount}`}</Typography>
-              <Typography>{`PAGE: ${pageIndex + 1} OF ${pageCount}`}</Typography>
-              <Stack spacing={2} direction="row">
-                <StyledLink
-                  to="."
-                  search={{
-                    query,
-                    resultPerPage,
-                    pageIndex: Math.max(0, pageIndex - 1),
-                  }}
-                  sx={{ textDecorationLine: "none" }}
-                >
-                  {`[PREV]`}
-                </StyledLink>
-                <StyledLink
-                  to="."
-                  search={{
-                    query,
-                    resultPerPage,
-                    pageIndex: Math.min(
-                      pageIndex + 1,
-                      pageCount - 1,
-                    ),
-                  }}
-                  sx={{ textDecorationLine: "none" }}
-                >
-                  {`[NEXT]`}
-                </StyledLink>
-              </Stack>
-            </Stack>
+            <ProjectListPaginationControl
+              query={query}
+              pagination={paginationResult}
+            />
           </Stack>
         </Paper>
       </Grid>
       <Grid size="grow">
-        <ProjectList projects={items} />
+        <ProjectList projects={paginationResult.items} />
       </Grid>
     </Grid>
   )
