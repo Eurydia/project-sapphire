@@ -1,6 +1,5 @@
 import type { CreateProjectDto } from "#/models/project/dto/create-project.dto"
 import {
-  projectPaginationQuerySchema,
   projectPaginationResultSchema,
   type ProjectPaginationQuery,
 } from "#/models/project/dto/pagination-project.dto"
@@ -11,9 +10,10 @@ import z from "zod"
 
 export class ProjectService {
   private static provider = window["db$project"]
+
   static async list(query: ProjectPaginationQuery) {
     return this.provider
-      .list(projectPaginationQuerySchema.parse(query))
+      .list(query)
       .then((resp) =>
         projectPaginationResultSchema.parseAsync(resp),
       )
@@ -28,7 +28,10 @@ export class ProjectService {
   static async findByUuid(uuid: string) {
     return this.provider
       .findByUuid(uuid)
-      .then((resp) => projectSchema.parseAsync(resp))
+      .then((resp) => {
+        console.debug(resp)
+        return projectSchema.parseAsync(resp)
+      })
       .then((resp) => right(resp))
       .catch((err) => left(err))
   }

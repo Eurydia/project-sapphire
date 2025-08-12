@@ -37,7 +37,7 @@ const list = async (arg: unknown) => {
         },
         order: {
           pinned: "DESC",
-          lastVisited: "ASC",
+          lastVisited: "DESC",
         },
         relations: {
           tags: true,

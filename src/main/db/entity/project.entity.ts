@@ -17,11 +17,11 @@ export class ProjectEntity {
   uuid: string
 
   @CreateDateColumn()
-  created: string
+  created: Date
 
   @Index()
   @Column({ type: "date", nullable: true })
-  lastVisited: string | null
+  lastVisited: Date | null
 
   @Column({ type: "text" })
   name: string
