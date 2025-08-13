@@ -44,7 +44,10 @@ const RouteComponent: FC = memo(() => {
   )
 
   return (
-    <Paper variant="outlined">
+    <Paper
+      variant="outlined"
+      sx={{ maxWidth: "md", marginX: "auto" }}
+    >
       <ProjectForm
         init={{
           description: project.description,

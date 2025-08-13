@@ -37,7 +37,7 @@ export const ProjectQueryForm: FC<Props> = memo(
     const [value, setValue] = useState<typeof options>([])
 
     return (
-      <Stack spacing={1} alignItems="flex-start">
+      <Stack spacing={2} alignItems="flex-start">
         <Autocomplete
           multiple
           value={value}
@@ -54,15 +54,18 @@ export const ProjectQueryForm: FC<Props> = memo(
             },
           }}
         />
-        <StyledLink
-          to="/projects"
-          search={{
-            ...search,
-            query: value.map(({ value }) => value),
-          }}
-        >
-          {`[SEARCH]`}
-        </StyledLink>
+        <Stack spacing={2} direction={"row"}>
+          <StyledLink
+            to="/projects"
+            search={{
+              ...search,
+              query: value.map(({ value }) => value),
+            }}
+          >
+            {`[SEARCH]`}
+          </StyledLink>
+          <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
+        </Stack>
       </Stack>
     )
   },

@@ -6,13 +6,14 @@ import {
 import { memo, type FC } from "react"
 
 export const TypographyButton: FC<ButtonBaseProps> = memo(
-  (props) => {
+  ({ sx, ...rest }) => {
     const {
       palette: { link },
     } = useTheme()
     return (
       <Typography
-        component="button"
+        tabIndex={0}
+        {...rest}
         sx={{
           textAlign: "center",
           userSelect: "none",

@@ -4,8 +4,7 @@ import { ProjectService } from "@/api/project.service"
 import { ProjectList } from "@/components/data-display/project-list"
 import { ProjectListPaginationControl } from "@/components/data-display/project-list-pagination-control"
 import { ProjectQueryForm } from "@/components/form/project-query-form"
-import { StyledLink } from "@/components/navigation/styled-link"
-import { Divider, Grid, Paper, Stack } from "@mui/material"
+import { Grid, Paper } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
 import type { FC } from "react"
@@ -25,13 +24,10 @@ const RouteComponent: FC = () => {
       </Grid>
       <Grid size={{ md: 4 }}>
         <Paper variant="outlined">
-          <Stack spacing={2} divider={<Divider flexItem />}>
-            <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
-            <ProjectListPaginationControl
-              search={search}
-              pagination={paginationResult}
-            />
-          </Stack>
+          <ProjectListPaginationControl
+            search={search}
+            pagination={paginationResult}
+          />
         </Paper>
       </Grid>
       <Grid size="grow">

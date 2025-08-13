@@ -41,10 +41,7 @@ export const ProjectListPaginationControl: FC<Props> = ({
           ].map(({ value, label }) => {
             if (value === search.orderBy) {
               return (
-                <Typography
-                  fontStyle="italic"
-                  key={`order-${value}`}
-                >
+                <Typography key={`order-${value}`}>
                   {label}
                 </Typography>
               )
@@ -73,10 +70,7 @@ export const ProjectListPaginationControl: FC<Props> = ({
             {range(5, 20, 5).map((size) => {
               if (size === search.resultsPerPage) {
                 return (
-                  <Typography
-                    fontStyle="italic"
-                    key={`size-${size}`}
-                  >
+                  <Typography key={`size-${size}`}>
                     {size}
                   </Typography>
                 )

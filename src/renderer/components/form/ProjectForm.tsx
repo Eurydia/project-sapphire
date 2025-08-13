@@ -47,9 +47,9 @@ export const ProjectForm: FC<Props> = memo(
           e.stopPropagation()
         }}
       >
-        <Stack spacing={1}>
-          <Stack>
-            <TypographyButton>{`NAME`}</TypographyButton>
+        <Stack spacing={2}>
+          <Stack spacing={1}>
+            <Typography>{`NAME`}</Typography>
             <Field name="name">
               {({ state, handleChange, handleBlur }) => (
                 <TextField
@@ -64,7 +64,7 @@ export const ProjectForm: FC<Props> = memo(
               )}
             </Field>
           </Stack>
-          <Stack>
+          <Stack spacing={1}>
             <Typography>{`ROOT`}</Typography>
             <Field name="root">
               {({ state, handleChange, handleBlur }) => (
@@ -105,7 +105,7 @@ export const ProjectForm: FC<Props> = memo(
               )}
             </Field>
           </Stack>
-          <Stack>
+          <Stack spacing={1}>
             <Typography>{`DESC`}</Typography>
             <Field name="description">
               {({ state, handleChange, handleBlur }) => (
@@ -120,7 +120,7 @@ export const ProjectForm: FC<Props> = memo(
               )}
             </Field>
           </Stack>
-          <Stack>
+          <Stack spacing={1}>
             <Typography>{`TAGS`}</Typography>
             <Field name="tagNames" mode="array">
               {({
