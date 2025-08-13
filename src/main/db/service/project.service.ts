@@ -21,26 +21,25 @@ import {
 const repo = AppDataSource.getRepository(ProjectEntity)
 
 const list = async (arg: unknown) => {
-  const {
-    pageIndex,
-    query,
-    resultsPerPage: resultPerPage,
-  } = projectPaginationQuerySchema.parse(arg)
+  const { pageIndex, query, resultsPerPage, orderBy } =
+    projectPaginationQuerySchema.parse(arg)
 
   const { entities, totalCount } =
     await AppDataSource.transaction(async (mgr) => {
       const { names, tagNames } = extractProjectQuery(query)
       const repo = mgr.getRepository(ProjectEntity)
       const entities = await repo.find({
-        skip: resultPerPage * pageIndex,
-        take: resultPerPage,
+        skip: resultsPerPage * pageIndex,
+        take: resultsPerPage,
         where: {
           name: InOrUndefined(names),
           tags: { name: InOrUndefined(tagNames) },
         },
         order: {
           pinned: "DESC",
-          lastVisited: "DESC",
+          lastVisited:
+            orderBy === "lastVisited" ? "DESC" : undefined,
+          name: orderBy === "name" ? "ASC" : undefined,
         },
         relations: {
           tags: true,
@@ -62,9 +61,9 @@ const list = async (arg: unknown) => {
   return {
     items,
     pageIndex,
-    resultsPerPage: resultPerPage,
+    resultsPerPage: resultsPerPage,
     totalCount,
-    pageCount: Math.ceil(totalCount / resultPerPage),
+    pageCount: Math.ceil(totalCount / resultsPerPage),
   } satisfies ProjectPaginationResult
 }
 
