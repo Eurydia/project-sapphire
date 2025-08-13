@@ -21,8 +21,11 @@ import {
 const repo = AppDataSource.getRepository(ProjectEntity)
 
 const list = async (arg: unknown) => {
-  const { pageIndex, query, resultPerPage } =
-    projectPaginationQuerySchema.parse(arg)
+  const {
+    pageIndex,
+    query,
+    resultsPerPage: resultPerPage,
+  } = projectPaginationQuerySchema.parse(arg)
 
   const { entities, totalCount } =
     await AppDataSource.transaction(async (mgr) => {

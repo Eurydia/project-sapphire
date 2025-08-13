@@ -13,7 +13,7 @@ export const projectTagPaginationQueryDtoSchema = z.object({
   pageIndex: z.number().nonnegative().default(0),
 })
 
-export type ProjectTagPaginationQueryDto = z.infer<
+export type ProjectTagPaginationDtoQuery = z.infer<
   typeof projectTagPaginationQueryDtoSchema
 >
 

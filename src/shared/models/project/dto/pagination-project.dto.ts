@@ -10,7 +10,10 @@ export const projectPaginationQuerySchema = z.object({
     .array()
     .default([]),
   pageIndex: z.number().int().nonnegative().default(0),
-  resultPerPage: z.number().int().positive().default(5),
+  resultsPerPage: z.number().int().positive().default(5),
+  orderBy: z
+    .enum(["name", "lastVisited"])
+    .default("lastVisited"),
 })
 
 export type ProjectPaginationQuery = z.infer<

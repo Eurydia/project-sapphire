@@ -12,7 +12,7 @@ import type { FC } from "react"
 
 const RouteComponent: FC = () => {
   const { paginationResult, formOptions } = Route.useLoaderData()
-  const { query } = Route.useSearch()
+  const search = Route.useSearch()
   const navigate = Route.useNavigate()
   return (
     <Grid container spacing={1}>
@@ -36,7 +36,7 @@ const RouteComponent: FC = () => {
           <Stack spacing={2} divider={<Divider flexItem />}>
             <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
             <ProjectListPaginationControl
-              query={query}
+              search={search}
               pagination={paginationResult}
             />
           </Stack>
