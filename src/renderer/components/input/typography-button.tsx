@@ -1,4 +1,5 @@
 import {
+  ButtonBase,
   Typography,
   useTheme,
   type ButtonBaseProps,
@@ -6,25 +7,30 @@ import {
 import { memo, type FC } from "react"
 
 export const TypographyButton: FC<ButtonBaseProps> = memo(
-  ({ sx, ...rest }) => {
+  ({ sx, children, ...rest }) => {
     const {
       palette: { link },
     } = useTheme()
     return (
-      <Typography
-        tabIndex={0}
+      <ButtonBase
         {...rest}
-        sx={{
-          textAlign: "center",
-          userSelect: "none",
-          cursor: "pointer",
-          color: link.normal,
-          "&:hover": {
-            color: link.hover,
-          },
-          ...sx,
-        }}
-      />
+        disableRipple
+        disableTouchRipple
+        sx={sx}
+      >
+        <Typography
+          tabIndex={0}
+          sx={{
+            userSelect: "none",
+            color: link.normal,
+            "&:hover": {
+              color: link.hover,
+            },
+          }}
+        >
+          {children}
+        </Typography>
+      </ButtonBase>
     )
   },
 )
