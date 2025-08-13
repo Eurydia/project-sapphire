@@ -13,20 +13,12 @@ import type { FC } from "react"
 const RouteComponent: FC = () => {
   const { paginationResult, formOptions } = Route.useLoaderData()
   const search = Route.useSearch()
-  const navigate = Route.useNavigate()
   return (
     <Grid container spacing={1}>
       <Grid size={{ md: 12 }}>
         <Paper variant="outlined">
           <ProjectQueryForm
-            onSubmit={(query) => {
-              navigate({
-                to: "/projects",
-                search: {
-                  query,
-                },
-              })
-            }}
+            search={search}
             formOptions={formOptions}
           />
         </Paper>

@@ -1,21 +1,17 @@
-import { Autocomplete, TextField } from "@mui/material"
-import {
-  memo,
-  useCallback,
-  useMemo,
-  useState,
-  type FC,
-} from "react"
+import type { ProjectPaginationQuery } from "#/models/project/dto/pagination-project.dto"
+import { Autocomplete, Stack, TextField } from "@mui/material"
+import { memo, useMemo, useState, type FC } from "react"
+import { StyledLink } from "../navigation/styled-link"
 
 type Props = {
-  onSubmit: (query: string[]) => unknown
+  search: ProjectPaginationQuery
   formOptions: {
     tags: string[]
     projects: string[]
   }
 }
 export const ProjectQueryForm: FC<Props> = memo(
-  ({ onSubmit, formOptions }) => {
+  ({ formOptions, search }) => {
     const options = useMemo(() => {
       return formOptions.tags
         .map((opt) => [
@@ -39,18 +35,9 @@ export const ProjectQueryForm: FC<Props> = memo(
     }, [formOptions])
 
     const [value, setValue] = useState<typeof options>([])
-    const handleSubmit = useCallback(() => {
-      onSubmit(value.map(({ value }) => value))
-    }, [onSubmit, value])
 
     return (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          handleSubmit()
-        }}
-      >
+      <Stack spacing={1} alignItems="flex-start">
         <Autocomplete
           multiple
           value={value}
@@ -59,8 +46,24 @@ export const ProjectQueryForm: FC<Props> = memo(
           fullWidth
           options={options}
           renderInput={(param) => <TextField {...param} />}
+          popupIcon={false}
+          slotProps={{
+            paper: { sx: { padding: 0 } },
+            chip: {
+              size: "medium",
+            },
+          }}
         />
-      </form>
+        <StyledLink
+          to="/projects"
+          search={{
+            ...search,
+            query: value.map(({ value }) => value),
+          }}
+        >
+          {`[SEARCH]`}
+        </StyledLink>
+      </Stack>
     )
   },
 )
