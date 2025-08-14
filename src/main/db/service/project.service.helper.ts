@@ -38,7 +38,7 @@ const _getMetadata = async (root: string) => {
 export const _fromTableEntity = async (
   entity: ProjectEntity,
 ) => {
-  const { root, ...rest } = entity
+  const { root, created, lastVisited, ...rest } = entity
   const metadata = await _getMetadata(root)
 
   return {
@@ -47,6 +47,17 @@ export const _fromTableEntity = async (
       path: root,
       metadata,
     },
+    created: {
+      exact: moment(created).toISOString(),
+      fromNow: moment(created).fromNow(),
+    },
+    lastVisited:
+      lastVisited === null
+        ? null
+        : {
+            exact: moment(lastVisited).toISOString(),
+            fromNow: moment(lastVisited).fromNow(),
+          },
   } satisfies Project
 }
 

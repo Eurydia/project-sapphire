@@ -67,7 +67,7 @@ export const ProjectCard: FC<Props> = ({ project }) => {
   }, [project.root, project.uuid, logWarn, logNotice])
 
   return (
-    <Paper variant="outlined">
+    <Paper component="div">
       <Stack spacing={2} divider={<Divider flexItem />}>
         <Stack spacing={2} direction="row">
           <TypographyButton onClick={handleTogglePin}>

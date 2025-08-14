@@ -1,7 +1,7 @@
 import { createProjectTagDtoSchema } from "#/models/project-tag/dto/create-project-tag.dto"
 import {
-  projectTagPaginationQueryDtoSchema,
-  ProjectTagPaginationResultDto,
+  projectTagPaginationQuerySchema,
+  ProjectTagPaginationResult,
 } from "#/models/project-tag/dto/pagination-project-tag.dto"
 import { updateProjectTagDtoSchema } from "#/models/project-tag/dto/update-project-tag.dto"
 import { ProjectTag } from "#/models/project-tag/project-tag-entity"
@@ -17,7 +17,7 @@ const repo = AppDataSource.getRepository(ProjectTagEntity)
 
 const list = async (arg: unknown) => {
   const { pageIndex, resultsPerPage, query } =
-    projectTagPaginationQueryDtoSchema.parse(arg)
+    projectTagPaginationQuerySchema.parse(arg)
   const { items, total } = await AppDataSource.transaction(
     async (mgr) => {
       const repo = mgr.getRepository(ProjectTagEntity)
@@ -52,7 +52,7 @@ const list = async (arg: unknown) => {
     pageCount,
     pageIndex,
     resultsPerPage,
-  } satisfies ProjectTagPaginationResultDto
+  } satisfies ProjectTagPaginationResult
 }
 
 const listNames = async () => {

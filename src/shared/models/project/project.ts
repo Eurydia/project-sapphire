@@ -5,8 +5,10 @@ export const projectSchema = z.strictObject({
   name: z.string().normalize().trim().nonempty(),
   pinned: z.boolean(),
   description: z.string().trim().normalize(),
-  created: z.date(),
-  lastVisited: z.coerce.date().nullable(),
+  created: z.object({ exact: z.string(), fromNow: z.string() }),
+  lastVisited: z
+    .object({ exact: z.string(), fromNow: z.string() })
+    .nullable(),
   root: z.object({
     path: z.string().normalize().trim().nonempty(),
     metadata: z

@@ -1,7 +1,7 @@
 import { z } from "zod/v4"
 import { projectTagSchema } from "../project-tag-entity"
 
-export const projectTagPaginationQueryDtoSchema = z.object({
+export const projectTagPaginationQuerySchema = z.object({
   query: z
     .string()
     .trim()
@@ -13,11 +13,11 @@ export const projectTagPaginationQueryDtoSchema = z.object({
   pageIndex: z.number().nonnegative().default(0),
 })
 
-export type ProjectTagPaginationDtoQuery = z.infer<
-  typeof projectTagPaginationQueryDtoSchema
+export type ProjectTagPaginationQuery = z.infer<
+  typeof projectTagPaginationQuerySchema
 >
 
-export const projectTagPaginationResultDtoSchema = z.object({
+export const projectTagPaginationResultSchema = z.object({
   items: projectTagSchema.array(),
   total: z.number().nonnegative(),
   pageIndex: z.number().nonnegative(),
@@ -25,6 +25,6 @@ export const projectTagPaginationResultDtoSchema = z.object({
   resultsPerPage: z.number().positive(),
 })
 
-export type ProjectTagPaginationResultDto = z.infer<
-  typeof projectTagPaginationResultDtoSchema
+export type ProjectTagPaginationResult = z.infer<
+  typeof projectTagPaginationResultSchema
 >

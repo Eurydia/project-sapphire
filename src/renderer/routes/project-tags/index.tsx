@@ -1,4 +1,4 @@
-import { projectTagPaginationQueryDtoSchema } from "#/models/project-tag/dto/pagination-project-tag.dto"
+import { projectTagPaginationQuerySchema } from "#/models/project-tag/dto/pagination-project-tag.dto"
 import { ProjectTagService } from "@/api/project-tag.service"
 import { ProjectService } from "@/api/project.service"
 import { TagCard } from "@/components/data-display/tag-card"
@@ -161,9 +161,7 @@ const RouteComponent: FC = () => {
 
 export const Route = createFileRoute("/project-tags/")({
   component: RouteComponent,
-  validateSearch: zodValidator(
-    projectTagPaginationQueryDtoSchema,
-  ),
+  validateSearch: zodValidator(projectTagPaginationQuerySchema),
   loaderDeps: ({ search }) => ({ search }),
   loader: async ({ deps: { search } }) => {
     const result = await ProjectTagService.list(search)

@@ -1,6 +1,6 @@
 {
   "name": "project-sapphire",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Project Sapphire",
   "main": "./out/main/index.js",
   "author": "https://github.com/eurydia",

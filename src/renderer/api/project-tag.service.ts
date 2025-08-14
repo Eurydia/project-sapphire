@@ -1,7 +1,7 @@
 import type { CreateProjectTagDto } from "#/models/project-tag/dto/create-project-tag.dto"
 import {
-  projectTagPaginationResultDtoSchema,
-  type ProjectTagPaginationQueryDto,
+  projectTagPaginationResultSchema,
+  type ProjectTagPaginationQuery,
 } from "#/models/project-tag/dto/pagination-project-tag.dto"
 import type { UpdateProjectTagDto } from "#/models/project-tag/dto/update-project-tag.dto"
 import { projectTagSchema } from "#/models/project-tag/project-tag-entity"
@@ -10,11 +10,11 @@ import { z } from "zod/v4"
 
 export class ProjectTagService {
   private static provider = window["db$tags"]
-  static async list(query: ProjectTagPaginationQueryDto) {
+  static async list(query: ProjectTagPaginationQuery) {
     return this.provider
       .list(query)
       .then((resp) =>
-        projectTagPaginationResultDtoSchema.parseAsync(resp),
+        projectTagPaginationResultSchema.parseAsync(resp),
       )
   }
 

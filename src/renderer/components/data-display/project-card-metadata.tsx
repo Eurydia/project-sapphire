@@ -13,6 +13,14 @@ export const ProjectCardMetadata: FC<Props> = memo(
     }[] = useMemo(() => {
       return [
         {
+          label: "project opened",
+          value: project.lastVisited ?? undefined,
+        },
+        {
+          label: "project added",
+          value: project.created,
+        },
+        {
           label: "root accessed",
           value: project.root.metadata?.atime ?? undefined,
         },
