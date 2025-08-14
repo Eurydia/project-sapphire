@@ -2,6 +2,7 @@ import { FileSystemService } from "@/api/file-system.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
 import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
+import { ProjectTreeExplorer } from "@/components/data-display/project-tree-explorer"
 import { TypographyButton } from "@/components/input/typography-button"
 import { StyledLink } from "@/components/navigation/styled-link"
 import {
@@ -68,6 +69,9 @@ export const RouteComponent: FC = memo(() => {
             <ProjectCardTagList project={project} />
           </Stack>
         </Paper>
+      </Grid>
+      <Grid size={{ md: 12 }}>
+        <ProjectTreeExplorer tree={undefined} />
       </Grid>
     </Grid>
   )

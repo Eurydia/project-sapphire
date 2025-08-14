@@ -38,28 +38,19 @@ export const ProjectListPaginationControl: FC<Props> = ({
           {[
             { value: "lastVisited", label: "LAST VISITED" },
             { value: "name", label: "NAME" },
-          ].map(({ value, label }) => {
-            if (value === search.orderBy) {
-              return (
-                <Typography key={`order-${value}`}>
-                  {label}
-                </Typography>
-              )
-            }
-            return (
-              <StyledLink
-                to="/projects"
-                search={{
-                  ...search,
-                  orderBy:
-                    value as ProjectPaginationQuery["orderBy"],
-                }}
-                key={`order-${value}`}
-              >
-                {`[${label}]`}
-              </StyledLink>
-            )
-          })}
+          ].map(({ value, label }) => (
+            <StyledLink
+              to="/projects"
+              search={{
+                ...search,
+                orderBy:
+                  value as ProjectPaginationQuery["orderBy"],
+              }}
+              key={`order-${value}`}
+            >
+              {`[${label}${value === search.orderBy ? "*" : ""}]`}
+            </StyledLink>
+          ))}
         </Stack>
       </Stack>
 
@@ -67,27 +58,18 @@ export const ProjectListPaginationControl: FC<Props> = ({
         <Typography>{`SHOWING: ${entryStart}-${entryEnd} OF ${totalCount}`}</Typography>
         <Stack direction="row" spacing={2}>
           <Stack spacing={2} direction="row" flexWrap="wrap">
-            {range(5, 20, 5).map((size) => {
-              if (size === search.resultsPerPage) {
-                return (
-                  <Typography key={`size-${size}`}>
-                    {size}
-                  </Typography>
-                )
-              }
-              return (
-                <StyledLink
-                  to="/projects"
-                  search={{
-                    ...search,
-                    resultsPerPage: size,
-                  }}
-                  key={`size-${size}`}
-                >
-                  {`[${size}]`}
-                </StyledLink>
-              )
-            })}
+            {range(5, 20, 5).map((size) => (
+              <StyledLink
+                to="/projects"
+                search={{
+                  ...search,
+                  resultsPerPage: size,
+                }}
+                key={`size-${size}`}
+              >
+                {`[${size}${size === search.resultsPerPage ? "*" : ""}]`}
+              </StyledLink>
+            ))}
           </Stack>
         </Stack>
       </Stack>

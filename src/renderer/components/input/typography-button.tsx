@@ -16,6 +16,7 @@ export const TypographyButton: FC<ButtonBaseProps> = memo(
         {...rest}
         disableRipple
         disableTouchRipple
+        tabIndex={-1}
         sx={sx}
       >
         <Typography

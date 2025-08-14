@@ -28,10 +28,7 @@ export class ProjectService {
   static async findByUuid(uuid: string) {
     return this.provider
       .findByUuid(uuid)
-      .then((resp) => {
-        console.debug(resp)
-        return projectSchema.parseAsync(resp)
-      })
+      .then((resp) => projectSchema.parseAsync(resp))
       .then((resp) => right(resp))
       .catch((err) => left(err))
   }
@@ -44,13 +41,13 @@ export class ProjectService {
   static async unpin(uuid: string) {
     return this.provider
       .unpin(uuid)
-      .then((resp) => right<Error, unknown>(resp))
-      .catch((err) => left<Error, unknown>(err))
+      .then((resp) => right(resp))
+      .catch((err) => left(err))
   }
   static async pin(uuid: string) {
     return this.provider
       .pin(uuid)
-      .then((resp) => right<Error, unknown>(resp))
-      .catch((err) => left<Error, unknown>(err))
+      .then((resp) => right(resp))
+      .catch((err) => left(err))
   }
 }

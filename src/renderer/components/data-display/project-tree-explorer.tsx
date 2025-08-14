@@ -1,7 +1,8 @@
 import type { ProjectTree } from "#/models/project-tree/project-tree"
+import { FileSystemService } from "@/api/file-system.service"
 import { Divider, Link, Stack, Typography } from "@mui/material"
-import { useRouter } from "@tanstack/react-router"
 import { memo, type FC } from "react"
+import { TypographyButton } from "../input/typography-button"
 import { StyledLink } from "../navigation/styled-link"
 
 type Props = {
@@ -11,7 +12,6 @@ export const ProjectTreeExplorer: FC<Props> = memo(
   ({
     tree: { dirs, files, parentPath, path, projectUuid, readme },
   }) => {
-    const router = useRouter()
     return (
       <Stack divider={<Divider flexItem />} spacing={2}>
         {dirs.map((name, i) => (
@@ -28,15 +28,13 @@ export const ProjectTreeExplorer: FC<Props> = memo(
         ))}
         {files.map((name, i) => (
           <Stack key={`file-${i}`} spacing={0.5}>
-            <Typography
-              // onClick={() => openPath(parentPath, name)}
-              sx={{
-                cursor: "pointer",
-                textDecorationLine: "underline",
-              }}
+            <TypographyButton
+              onClick={() =>
+                FileSystemService.openPath(parentPath, name)
+              }
             >
               {name}
-            </Typography>
+            </TypographyButton>
             <Stack
               spacing={2}
               direction="row"
@@ -44,19 +42,7 @@ export const ProjectTreeExplorer: FC<Props> = memo(
                 <Divider flexItem orientation="vertical" />
               }
             >
-              <Link
-                sx={{ cursor: "pointer" }}
-                // onClick={() =>
-                // upsertTree({
-                //   path,
-                //   projectUuid: projectUuid,
-                //   readme:
-                //     readme !== null && readme.name === name
-                //       ? null
-                //       : name,
-                // }).then(() => router.invalidate())
-                // }
-              >
+              <Link sx={{ cursor: "pointer" }}>
                 {readme !== null && readme.name === name
                   ? "unset"
                   : "set"}
