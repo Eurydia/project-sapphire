@@ -1,7 +1,7 @@
 import type { CreateProjectDto } from "#/models/project/dto/create-project.dto"
 import {
   projectPaginationResultSchema,
-  type ProjectPaginationQuery,
+  type ProjectPaginationQueryRaw,
 } from "#/models/project/dto/pagination-project.dto"
 import type { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
 import { projectSchema } from "#/models/project/project"
@@ -11,7 +11,7 @@ import z from "zod"
 export class ProjectService {
   private static provider = window["db$project"]
 
-  static async list(query: ProjectPaginationQuery) {
+  static async list(query: ProjectPaginationQueryRaw) {
     return this.provider
       .list(query)
       .then((resp) =>

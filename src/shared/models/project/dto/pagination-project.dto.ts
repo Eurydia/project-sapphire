@@ -3,10 +3,20 @@ import { projectSchema } from "../project"
 
 export const projectPaginationQuerySchema = z.object({
   query: z
-    .string()
-    .trim()
-    .normalize()
-    .nonempty()
+    .union([
+      z
+        .string()
+        .normalize()
+        .trim()
+        .nonempty()
+        .startsWith("name:"),
+      z
+        .string()
+        .normalize()
+        .trim()
+        .nonempty()
+        .startsWith("tag:"),
+    ])
     .array()
     .default([]),
   pageIndex: z.number().int().nonnegative().default(0),
@@ -17,6 +27,10 @@ export const projectPaginationQuerySchema = z.object({
 })
 
 export type ProjectPaginationQuery = z.infer<
+  typeof projectPaginationQuerySchema
+>
+
+export type ProjectPaginationQueryRaw = z.input<
   typeof projectPaginationQuerySchema
 >
 
