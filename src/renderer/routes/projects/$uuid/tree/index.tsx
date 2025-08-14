@@ -6,6 +6,7 @@ import {
   createFileRoute,
   notFound,
 } from "@tanstack/react-router"
+import { isLeft } from "fp-ts/lib/Either"
 import { memo, type FC } from "react"
 
 const RouteComponent: FC = memo(() => {
@@ -21,14 +22,12 @@ const RouteComponent: FC = memo(() => {
 export const Route = createFileRoute("/projects/$uuid/tree/")({
   component: RouteComponent,
   loader: async ({ params: { uuid } }) => {
-    const project = await ProjectService.findByUuid(uuid)
-    if (project === null) {
+    const result = await ProjectService.findByUuid(uuid)
+    if (isLeft(result)) {
       throw notFound()
     }
 
-    const tree = await ProjectTreeService.getRootTree(
-      project.uuid,
-    )
-    return { tree, project }
+    const tree = await ProjectTreeService.getRootTree(uuid)
+    return { tree, project: result.right }
   },
 })

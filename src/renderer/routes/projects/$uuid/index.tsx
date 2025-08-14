@@ -1,4 +1,5 @@
 import { FileSystemService } from "@/api/file-system.service"
+import { ProjectTreeService } from "@/api/project-tree.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
 import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
@@ -21,7 +22,7 @@ import type { FC } from "react"
 import { memo } from "react"
 
 export const RouteComponent: FC = memo(() => {
-  const { project } = Route.useLoaderData()
+  const { project, tree } = Route.useLoaderData()
 
   return (
     <Grid container spacing={1} maxWidth="md" marginX="auto">
@@ -71,7 +72,9 @@ export const RouteComponent: FC = memo(() => {
         </Paper>
       </Grid>
       <Grid size={{ md: 12 }}>
-        <ProjectTreeExplorer tree={undefined} />
+        <Paper>
+          <ProjectTreeExplorer tree={tree} />
+        </Paper>
       </Grid>
     </Grid>
   )
@@ -84,6 +87,7 @@ export const Route = createFileRoute("/projects/$uuid/")({
     if (isLeft(result)) {
       throw notFound()
     }
-    return { project: result.right }
+    const tree = await ProjectTreeService.getRootTree(uuid)
+    return { project: result.right, tree }
   },
 })

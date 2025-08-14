@@ -49,13 +49,13 @@ const getRootTree = async (arg: unknown) => {
   })
 }
 
-const getTree = async (query: unknown) => {
+const getTree = async (arg: unknown) => {
   const { uuid, segments } = z
     .object({
       uuid: z.uuidv4(),
       segments: z.string().trim().normalize(),
     })
-    .parse(query)
+    .parse(arg)
 
   return AppDataSource.transaction(async (mgr) => {
     const project = await mgr.findOne(ProjectEntity, {

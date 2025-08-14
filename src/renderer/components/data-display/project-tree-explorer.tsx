@@ -1,6 +1,6 @@
 import type { ProjectTree } from "#/models/project-tree/project-tree"
 import { FileSystemService } from "@/api/file-system.service"
-import { Divider, Link, Stack, Typography } from "@mui/material"
+import { Divider, Stack, Typography } from "@mui/material"
 import { memo, type FC } from "react"
 import { TypographyButton } from "../input/typography-button"
 import { StyledLink } from "../navigation/styled-link"
@@ -20,34 +20,33 @@ export const ProjectTreeExplorer: FC<Props> = memo(
             to="/projects/$uuid/tree/$"
             params={{
               uuid: projectUuid,
-              _splat: path !== "" ? `${path}/${name}` : name,
+              _splat: path !== null ? `${path}/${name}` : name,
             }}
           >
             {`${name}/`}
           </StyledLink>
         ))}
         {files.map((name, i) => (
-          <Stack key={`file-${i}`} spacing={0.5}>
+          <Stack
+            key={`file-${i}`}
+            direction="row"
+            justifyContent={"space-between"}
+            spacing={2}
+          >
             <TypographyButton
-              onClick={() =>
+              onClick={async () =>
                 FileSystemService.openPath(parentPath, name)
               }
             >
               {name}
             </TypographyButton>
-            <Stack
-              spacing={2}
-              direction="row"
-              divider={
-                <Divider flexItem orientation="vertical" />
-              }
-            >
-              <Link sx={{ cursor: "pointer" }}>
+            <Stack spacing={2} direction="row">
+              <TypographyButton>
                 {readme !== null && readme.name === name
-                  ? "unset"
-                  : "set"}
-              </Link>
-              <Typography>exclude</Typography>
+                  ? "[unset]"
+                  : "[set]"}
+              </TypographyButton>
+              <Typography>[exclude]</Typography>
             </Stack>
           </Stack>
         ))}
