@@ -1,5 +1,6 @@
 import {
   RouterProvider,
+  createHashHistory,
   createRouter,
 } from "@tanstack/react-router"
 import { StrictMode } from "react"
@@ -9,6 +10,7 @@ import ReactDOM from "react-dom/client"
 import { HotkeysProvider } from "react-hotkeys-hook"
 import { routeTree } from "./routeTree.gen"
 
+const hashHistory = createHashHistory()
 // Create a new router instance
 const router = createRouter({
   routeTree,
@@ -17,6 +19,7 @@ const router = createRouter({
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  history: hashHistory,
 })
 
 // Register the router instance for type safety

@@ -7,14 +7,23 @@ export type ServiceProvider = Record<
   (...args: any[]) => Promise<any>
 >
 
-;(() => {
-  const glob = globSync(
-    join(__dirname, "..", "..", "src", "preload", "*.gen.d.ts"),
-  )
-  for (const file of glob) {
-    rmSync(file)
-  }
-})()
+if (!app.isPackaged) {
+  ;(() => {
+    const glob = globSync(
+      join(
+        __dirname,
+        "..",
+        "..",
+        "src",
+        "preload",
+        "*.gen.d.ts",
+      ),
+    )
+    for (const file of glob) {
+      rmSync(file)
+    }
+  })()
+}
 
 export const registerIpcMainServices = (
   providerName: string,
