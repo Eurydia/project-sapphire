@@ -26,9 +26,6 @@ export class ProjectEntity {
   @Column({ type: "text" })
   name: string
 
-  @Column({ type: "text" })
-  root: string
-
   @Column({ type: "boolean", default: false })
   pinned: boolean
 

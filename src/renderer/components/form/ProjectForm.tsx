@@ -1,4 +1,3 @@
-import { FileSystemService } from "@/api/file-system.service"
 import type { ProjectFormData } from "@/types/project-form-data"
 import {
   Button,
@@ -9,9 +8,8 @@ import {
   Typography,
 } from "@mui/material"
 import { useForm } from "@tanstack/react-form"
-import { memo, useRef, type FC } from "react"
+import { memo, type FC } from "react"
 import { AutocompleteTextField } from "../input/AutocompeleteTextField"
-import { TypographyButton } from "../input/typography-button"
 
 type Props = {
   init?: ProjectFormData
@@ -26,7 +24,6 @@ export const ProjectForm: FC<Props> = memo(
       defaultValues: init ?? {
         description: "",
         name: "",
-        root: "",
         techNames: [],
         topicNames: [],
         tagNames: [],
@@ -35,8 +32,6 @@ export const ProjectForm: FC<Props> = memo(
         action(value)
       },
     })
-
-    const dirDialogOpenedRef = useRef(false)
 
     return (
       <Stack
@@ -65,48 +60,7 @@ export const ProjectForm: FC<Props> = memo(
             </Field>
           </Stack>
           <Stack spacing={1}>
-            <Typography>{`ROOT`}</Typography>
-            <Field name="root">
-              {({ state, handleChange, handleBlur }) => (
-                <Stack spacing={1} alignItems="start">
-                  <TextField
-                    fullWidth
-                    multiline
-                    minRows={1}
-                    onBlur={handleBlur}
-                    onChange={(e) =>
-                      handleChange(e.target.value)
-                    }
-                    value={state.value}
-                    required
-                  />
-                  <TypographyButton
-                    onClick={async () => {
-                      if (dirDialogOpenedRef.current) {
-                        return
-                      }
-                      dirDialogOpenedRef.current = true
-                      const { canceled, filePaths } =
-                        await FileSystemService.openDirDialog()
-                      dirDialogOpenedRef.current = false
-                      if (canceled) {
-                        return
-                      }
-                      const path = filePaths.at(0)
-                      if (path === undefined) {
-                        return
-                      }
-                      handleChange(path)
-                    }}
-                  >
-                    {`[OPEN SYSTEM BROWSER]`}
-                  </TypographyButton>
-                </Stack>
-              )}
-            </Field>
-          </Stack>
-          <Stack spacing={1}>
-            <Typography>{`DESC`}</Typography>
+            <Typography>{`DESCRIPTION`}</Typography>
             <Field name="description">
               {({ state, handleChange, handleBlur }) => (
                 <TextField

@@ -9,25 +9,6 @@ export const projectSchema = z.strictObject({
   lastVisited: z
     .object({ exact: z.string(), fromNow: z.string() })
     .nullable(),
-  root: z.object({
-    path: z.string().normalize().trim().nonempty(),
-    metadata: z
-      .object({
-        atime: z.object({
-          fromNow: z.string(),
-          exact: z.string(),
-        }),
-        ctime: z.object({
-          fromNow: z.string(),
-          exact: z.string(),
-        }),
-        mtime: z.object({
-          fromNow: z.string(),
-          exact: z.string(),
-        }),
-      })
-      .nullable(),
-  }),
   tags: z
     .object({
       name: z.string().trim().nonempty().normalize(),

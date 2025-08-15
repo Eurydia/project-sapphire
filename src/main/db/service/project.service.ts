@@ -6,7 +6,6 @@ import {
 import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
-import { normalize } from "path"
 import { EntityNotFoundError, In } from "typeorm"
 import z4 from "zod/v4"
 import { AppDataSource } from "../data-source"
@@ -175,10 +174,8 @@ const createProject = async (arg: unknown) => {
   return AppDataSource.transaction(async (mgr) => {
     const tags = await _fillTags(mgr, dto)
     const project = mgr.create(ProjectEntity, {
-      name: dto.name,
-      root: normalize(dto.root).trim(),
+      ...dto,
       pinned: false,
-      description: dto.description,
       tags,
     })
     return mgr.save(ProjectEntity, project)
@@ -190,10 +187,7 @@ const upsertProject = async (arg: unknown) => {
   return AppDataSource.transaction(async (mgr) => {
     const tags = await _fillTags(mgr, dto)
     const project = await mgr.preload(ProjectEntity, {
-      uuid: dto.uuid,
-      root: dto.root,
-      name: dto.name,
-      description: dto.description,
+      ...dto,
       tags,
     })
     return mgr.save(project)
