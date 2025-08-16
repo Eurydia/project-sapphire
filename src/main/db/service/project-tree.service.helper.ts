@@ -1,12 +1,5 @@
 import { ProjectTree } from "#/models/project-tree/project-tree"
-import {
-  existsSync,
-  PathLike,
-  readdirSync,
-  readFileSync,
-  statSync,
-} from "fs"
-import { join } from "path"
+import { PathLike, readdirSync } from "fs"
 import { ProjectTreeEntity } from "../entity/project-tree.entity"
 
 export const readDirectoryEntires = (path: PathLike) => {
@@ -32,26 +25,9 @@ export const getTreeReadme = (
   if (tree === null || tree.readme === undefined) {
     return null
   }
-  const path = join(tree.project.root, tree.path, tree.readme)
-  if (!existsSync(path)) {
-    return {
-      name: tree.readme,
-      content: null,
-    } satisfies ProjectTree["readme"]
-  }
-
-  const pathStat = statSync(path)
-  if (!pathStat.isFile()) {
-    return {
-      name: tree.readme,
-      content: null,
-    } satisfies ProjectTree["readme"]
-  }
-
-  const fileContent = readFileSync(path)
 
   return {
     name: tree.readme,
-    content: String(fileContent),
+    content: "",
   } satisfies ProjectTree["readme"]
 }

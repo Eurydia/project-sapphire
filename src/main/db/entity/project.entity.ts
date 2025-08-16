@@ -23,6 +23,7 @@ export class ProjectEntity {
   @Column({ type: "date", nullable: true })
   lastVisited: Date | null
 
+  @Index()
   @Column({ type: "text" })
   name: string
 
@@ -40,5 +41,6 @@ export class ProjectEntity {
   tags: ProjectTagEntity[]
 
   @OneToMany(() => ProjectTreeEntity, (tree) => tree.project)
+  @JoinTable()
   trees: ProjectTreeEntity[]
 }

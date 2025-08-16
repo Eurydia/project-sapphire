@@ -6,9 +6,7 @@ import { ProjectEntity } from "./entity/project.entity"
 export const AppDataSource = new DataSource({
   type: "better-sqlite3",
   database: "sapphire-database.sqlite",
-  synchronize: true,
-  // logging: true,
   entities: [ProjectEntity, ProjectTagEntity, ProjectTreeEntity],
-  migrations: [],
   subscribers: [],
+  synchronize: true,
 })

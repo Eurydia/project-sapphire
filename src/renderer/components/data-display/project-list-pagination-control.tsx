@@ -23,17 +23,22 @@ export const ProjectListPaginationControl: FC<Props> = ({
     totalCount,
   } = pagination
 
-  const entryStart = pageIndex * resultsPerPage + 1
+  let entryStart = pageIndex * resultsPerPage
+  if (items.length > 0) {
+    entryStart += 1
+  }
+
   let entryEnd = pageIndex * resultsPerPage
   if (resultsPerPage > items.length) {
     entryEnd += items.length
   } else {
     entryEnd += resultsPerPage
   }
+
   return (
     <Stack spacing={1}>
       <Stack>
-        <Typography>{`ORDER BY`}</Typography>
+        <Typography>{`ORDER BY:`}</Typography>
         <Stack spacing={2} direction="row" flexWrap="wrap">
           {[
             { value: "lastVisited", label: "LAST VISITED" },
@@ -74,7 +79,7 @@ export const ProjectListPaginationControl: FC<Props> = ({
         </Stack>
       </Stack>
       <Stack>
-        <Typography>{`PAGE: ${pageIndex + 1} OF ${pageCount}`}</Typography>
+        <Typography>{`PAGE: ${pageCount > 0 ? pageIndex + 1 : 0} OF ${pageCount}`}</Typography>
         <Stack spacing={2} direction="row">
           <StyledLink
             to="."
@@ -89,7 +94,10 @@ export const ProjectListPaginationControl: FC<Props> = ({
             to="."
             search={{
               ...search,
-              pageIndex: Math.min(pageIndex + 1, pageCount - 1),
+              pageIndex: Math.min(
+                pageIndex + 1,
+                Math.max(pageCount - 1, 0),
+              ),
             }}
           >
             {`[NEXT]`}

@@ -14,7 +14,7 @@ const RouteComponent: FC = () => {
   const search = Route.useSearch()
   return (
     <Grid container spacing={1}>
-      <Grid size={{ md: 12 }}>
+      <Grid size={12}>
         <Paper variant="outlined">
           <ProjectQueryForm
             search={search}
@@ -22,7 +22,7 @@ const RouteComponent: FC = () => {
           />
         </Paper>
       </Grid>
-      <Grid size={{ md: 4 }}>
+      <Grid size={{ sm: 12, md: 4 }}>
         <Paper variant="outlined">
           <ProjectListPaginationControl
             search={search}

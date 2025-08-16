@@ -53,36 +53,7 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
   await AppDataSource.initialize()
-  // if (!app.isPackaged) {
-  //   const tagRepo = repo.getRepository(ProjectTagEntity)
-  //   // await tagRepo.clear()
 
-  //   for (let i = 0; i < 10; i++) {
-  //     await tagRepo.save(
-  //       tagRepo.create({
-  //         name: faker.lorem.word() + i,
-  //         description: faker.lorem.sentences(),
-  //         pinned: faker.datatype.boolean(),
-  //       }),
-  //     )
-  //   }
-
-  //   const tags = await tagRepo.find()
-
-  //   const project = repo.getRepository(ProjectEntity)
-  //   // await project.clear()
-  //   for (let i = 0; i < 10; i++) {
-  //     await project.save(
-  //       project.create({
-  //         name: faker.lorem.word() + i,
-  //         description: faker.lorem.sentences(),
-  //         pinned: faker.datatype.boolean(),
-  //         root: faker.system.directoryPath(),
-  //         tags: faker.helpers.arrayElements(tags, 3),
-  //       }),
-  //     )
-  //   }
-  // }
   // Set app user model id for windows
   electronApp.setAppUserModelId("io.github.eurydia")
 

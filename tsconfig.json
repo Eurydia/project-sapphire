@@ -1,4 +1,9 @@
 {
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.node.json" },
