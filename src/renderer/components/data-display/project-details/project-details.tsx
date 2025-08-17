@@ -18,7 +18,7 @@ export const ProjectDetails: FC<Props> = memo(({ project }) => {
           </Typography>
         </Link>
         <Typography variant="h3">{project.name}</Typography>
-        <Typography>{project.root.path}</Typography>
+        {/* <Typography>{project.root.path}</Typography> */}
         {project.description !== "" && (
           <Typography>{project.description}</Typography>
         )}

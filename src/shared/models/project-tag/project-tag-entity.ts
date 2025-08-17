@@ -5,7 +5,6 @@ export const projectTagSchema = z.strictObject({
   pinned: z.boolean(),
   name: z.string().trim().normalize().nonempty(),
   description: z.string().trim().normalize(),
-  color: z.string(),
   projects: z
     .object({
       name: z.string().trim().normalize().nonempty(),

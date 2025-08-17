@@ -1,52 +1,51 @@
 import { CreateProjectDto } from "#/models/project/dto/create-project.dto"
 import { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
-import { existsSync, statSync } from "fs"
 import moment from "moment"
-import { normalize } from "path"
 import { EntityManager, In } from "typeorm"
 import { ProjectTagEntity } from "../entity/project-tag.entity"
 import { ProjectEntity } from "../entity/project.entity"
 
-const _getMetadata = async (root: string) => {
-  const path = normalize(root).trim()
-  if (!existsSync(path)) {
-    return null
-  }
-  const pathStat = statSync(path)
-  if (!pathStat.isDirectory()) {
-    return null
-  }
-  const { birthtime, atime, mtime } = pathStat
+// const _getMetadata = async (root: string) => {
+//   const path = normalize(root).trim()
+//   if (!existsSync(path)) {
+//     return null
+//   }
+//   return null
+// const pathStat = statSync(path)
+// if (!pathStat.isDirectory()) {
+//   return null
+// }
+// const { birthtime, atime, mtime } = pathStat
 
-  return {
-    atime: {
-      exact: moment(atime).toISOString(),
-      fromNow: moment(atime).fromNow(),
-    },
-    ctime: {
-      exact: moment(birthtime).toISOString(),
-      fromNow: moment(birthtime).fromNow(),
-    },
-    mtime: {
-      exact: moment(mtime).toISOString(),
-      fromNow: moment(mtime).fromNow(),
-    },
-  } satisfies Project["root"]["metadata"]
-}
+// return {
+//   atime: {
+//     exact: moment(atime).toISOString(),
+//     fromNow: moment(atime).fromNow(),
+//   },
+//   ctime: {
+//     exact: moment(birthtime).toISOString(),
+//     fromNow: moment(birthtime).fromNow(),
+//   },
+//   mtime: {
+//     exact: moment(mtime).toISOString(),
+//     fromNow: moment(mtime).fromNow(),
+//   },
+// } satisfies Project["root"]["metadata"]
+// }
 
 export const _fromTableEntity = async (
   entity: ProjectEntity,
 ) => {
-  const { root, created, lastVisited, ...rest } = entity
-  const metadata = await _getMetadata(root)
+  const { created, lastVisited, ...rest } = entity
+  // const metadata = await _getMetadata(root)
 
   return {
     ...rest,
-    root: {
-      path: root,
-      metadata,
-    },
+    // root: {
+    //   path: root,
+    //   metadata,
+    // },
     created: {
       exact: moment(created).toISOString(),
       fromNow: moment(created).fromNow(),

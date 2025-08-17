@@ -1,4 +1,3 @@
-import { FileSystemService } from "@/api/file-system.service"
 import { ProjectTreeService } from "@/api/project-tree.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
@@ -47,13 +46,13 @@ export const RouteComponent: FC = memo(() => {
               >
                 {`[EDIT]`}
               </StyledLink>
-              <TypographyButton
+              {/* <TypographyButton
                 onClick={() =>
                   FileSystemService.openPath(project.root.path)
                 }
               >
                 {`[OPEN IN EXPLORER]`}
-              </TypographyButton>
+              </TypographyButton> */}
             </Stack>
             <Divider flexItem />
             <Typography variant="h3">{project.name}</Typography>

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Auto1755377678703 implements MigrationInterface {
-    name = 'Auto1755377678703'
+export class Auto1755378264474 implements MigrationInterface {
+    name = 'Auto1755378264474'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "project_tag_entity" ("uuid" varchar PRIMARY KEY NOT NULL, "pinned" boolean NOT NULL DEFAULT (0), "name" text NOT NULL, "description" text NOT NULL DEFAULT (''), CONSTRAINT "UQ_39859da1b1e8725680e470e0ef3" UNIQUE ("name"))`);

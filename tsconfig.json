@@ -8,9 +8,5 @@
   "references": [
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.web.json" }
-  ],
-  "include": [
-    "src/shared/**/*",
-    "src/renderer/types/project-tag.form-data.ts"
   ]
 }

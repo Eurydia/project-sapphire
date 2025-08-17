@@ -20,20 +20,20 @@ export const ProjectCardMetadata: FC<Props> = memo(
           label: "project added",
           value: project.created,
         },
-        {
-          label: "root accessed",
-          value: project.root.metadata?.atime ?? undefined,
-        },
-        {
-          label: "root modified",
-          value: project.root.metadata?.mtime ?? undefined,
-        },
-        {
-          label: "root created",
-          value: project.root.metadata?.ctime ?? undefined,
-        },
+        // {
+        //   label: "root accessed",
+        //   value: project.root.metadata?.atime ?? undefined,
+        // },
+        // {
+        //   label: "root modified",
+        //   value: project.root.metadata?.mtime ?? undefined,
+        // },
+        // {
+        //   label: "root created",
+        //   value: project.root.metadata?.ctime ?? undefined,
+        // },
       ]
-    }, [project.root.metadata])
+    }, [project])
 
     return (
       <Stack>

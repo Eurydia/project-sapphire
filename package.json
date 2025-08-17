@@ -7,8 +7,8 @@
   "author": "https://github.com/eurydia",
   "homepage": "https://github.com/eurydia/project-sapphire",
   "scripts": {
-    "typeorm": "typeorm-ts-node-esm ./node_modules/typeorm/cli -d ./scripts/data-source.cli.ts",
-    "mig:gen": "npm run typeorm -- migration:generate ./src/main/db/migrations/Auto",
+    "mig:gen": "npx typeorm-ts-node-commonjs migration:generate .\\src\\main\\db\\migrations\\Auto -d .\\scripts\\data-source.migration.ts",
+    "mig:run": "npx typeorm-ts-node-commonjs migration:run -d .\\scripts\\data-source.migration.ts",
     "format": "prettier --write .",
     "lint": "eslint --cache .",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
@@ -47,7 +47,6 @@
     "react-hotkeys-hook": "^5.1.0",
     "react-resizable-panels": "^3.0.3",
     "reflect-metadata": "^0.2.2",
-    "sql.js": "^1.13.0",
     "typeorm": "^0.3.25",
     "uuid": "^11.1.0",
     "zod": "^3.25.71",
