@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm"
 import { ProjectTagEntity } from "./project-tag.entity"
+import { ProjectTaskEntity } from "./project-task.entity"
 import { ProjectTreeEntity } from "./project-tree.entity"
 
 @Entity()
@@ -35,12 +36,19 @@ export class ProjectEntity {
 
   @ManyToMany(() => ProjectTagEntity, (tag) => tag.projects, {
     cascade: true,
-    eager: true,
   })
   @JoinTable()
   tags: ProjectTagEntity[]
 
-  @OneToMany(() => ProjectTreeEntity, (tree) => tree.project)
+  @OneToMany(() => ProjectTreeEntity, (tree) => tree.project, {
+    cascade: true,
+  })
   @JoinTable()
   trees: ProjectTreeEntity[]
+
+  @OneToMany(() => ProjectTaskEntity, (task) => task.project, {
+    cascade: true,
+  })
+  @JoinTable()
+  tasks: ProjectTaskEntity[]
 }
