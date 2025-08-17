@@ -9,6 +9,5 @@ export const AppDataSource = new DataSource({
   database: "sapphire-database.sqlite",
   entities: [ProjectEntity, ProjectTagEntity, ProjectTreeEntity],
   subscribers: [],
-  synchronize: true,
   migrations: [Auto1755378264474],
 })
