@@ -44,6 +44,7 @@
     "match-sorter": "^8.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-dropzone": "^14.2.10",
     "react-hotkeys-hook": "^5.1.0",
     "react-resizable-panels": "^3.0.3",
     "reflect-metadata": "^0.2.2",

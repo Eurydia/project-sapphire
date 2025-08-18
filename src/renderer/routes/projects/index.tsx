@@ -4,36 +4,43 @@ import { ProjectService } from "@/api/project.service"
 import { ProjectList } from "@/components/data-display/project-list"
 import { ProjectListPaginationControl } from "@/components/data-display/project-list-pagination-control"
 import { ProjectQueryForm } from "@/components/form/project-query-form"
-import { Grid, Paper } from "@mui/material"
+import { StyledLink } from "@/components/navigation/styled-link"
+import { Divider, Grid, Paper, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
-import type { FC } from "react"
+import { Fragment, type FC } from "react"
 
 const RouteComponent: FC = () => {
   const { paginationResult, formOptions } = Route.useLoaderData()
   const search = Route.useSearch()
   return (
-    <Grid container spacing={1}>
-      <Grid size={12}>
-        <Paper variant="outlined">
-          <ProjectQueryForm
-            search={search}
-            formOptions={formOptions}
-          />
-        </Paper>
+    <Fragment>
+      <Grid container spacing={1}>
+        <Grid size={12}>
+          <Paper variant="outlined">
+            <ProjectQueryForm
+              search={search}
+              formOptions={formOptions}
+            />
+          </Paper>
+        </Grid>
+        <Grid size={{ sm: 12, md: 4 }}>
+          <Paper variant="outlined">
+            <Stack spacing={2}>
+              <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
+              <Divider flexItem />
+              <ProjectListPaginationControl
+                search={search}
+                pagination={paginationResult}
+              />
+            </Stack>
+          </Paper>
+        </Grid>
+        <Grid size="grow">
+          <ProjectList projects={paginationResult.items} />
+        </Grid>
       </Grid>
-      <Grid size={{ sm: 12, md: 4 }}>
-        <Paper variant="outlined">
-          <ProjectListPaginationControl
-            search={search}
-            pagination={paginationResult}
-          />
-        </Paper>
-      </Grid>
-      <Grid size="grow">
-        <ProjectList projects={paginationResult.items} />
-      </Grid>
-    </Grid>
+    </Fragment>
   )
 }
 

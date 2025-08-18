@@ -1,6 +1,7 @@
 import type { ProjectPaginationQuery } from "#/models/project/dto/pagination-project.dto"
 import { Autocomplete, Stack, TextField } from "@mui/material"
-import { memo, useMemo, useState, type FC } from "react"
+import { memo, useMemo, useRef, useState, type FC } from "react"
+import { useHotkeys } from "react-hotkeys-hook"
 import { StyledLink } from "../navigation/styled-link"
 
 type Props = {
@@ -35,7 +36,13 @@ export const ProjectQueryForm: FC<Props> = memo(
     }, [formOptions])
 
     const [value, setValue] = useState<typeof options>([])
-
+    const searchInputRef = useRef<HTMLInputElement | null>(null)
+    useHotkeys("ctrl+k", () => {
+      if (searchInputRef.current === null) {
+        return
+      }
+      searchInputRef.current.focus()
+    })
     return (
       <Stack spacing={2} alignItems="flex-start">
         <Autocomplete
@@ -45,7 +52,13 @@ export const ProjectQueryForm: FC<Props> = memo(
           disableClearable
           fullWidth
           options={options}
-          renderInput={(param) => <TextField {...param} />}
+          renderInput={(param) => (
+            <TextField
+              {...param}
+              inputRef={searchInputRef}
+              placeholder="[CTRL] + [K]"
+            />
+          )}
           popupIcon={false}
           slotProps={{
             paper: { sx: { padding: 0 } },
@@ -64,7 +77,6 @@ export const ProjectQueryForm: FC<Props> = memo(
           >
             {`[SEARCH]`}
           </StyledLink>
-          <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
         </Stack>
       </Stack>
     )
