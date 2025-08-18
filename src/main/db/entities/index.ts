@@ -1,5 +1,5 @@
 export const entities = Object.values(
-  import.meta.glob("./entity/*.entity.ts", {
+  import.meta.glob("./*.entity.ts", {
     eager: true,
   }),
 )

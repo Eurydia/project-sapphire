@@ -10,7 +10,6 @@ import {
 } from "typeorm"
 import { ProjectTagEntity } from "./project-tag.entity"
 import { ProjectTaskEntity } from "./project-task.entity"
-import { ProjectTreeEntity } from "./project-tree.entity"
 
 @Entity()
 export class ProjectEntity {
@@ -39,12 +38,6 @@ export class ProjectEntity {
   })
   @JoinTable()
   tags: ProjectTagEntity[]
-
-  @OneToMany(() => ProjectTreeEntity, (tree) => tree.project, {
-    cascade: true,
-  })
-  @JoinTable()
-  trees: ProjectTreeEntity[]
 
   @OneToMany(() => ProjectTaskEntity, (task) => task.project, {
     cascade: true,

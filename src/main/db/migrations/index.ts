@@ -1,5 +1,5 @@
 export const migrations = Object.values(
-  import.meta.glob("./migrations/*-Auto.ts", {
+  import.meta.glob("./*-Auto.ts", {
     eager: true,
   }),
 )

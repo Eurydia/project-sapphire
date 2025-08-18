@@ -1,18 +1,9 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm"
-import { ProjectEntity } from "./project.entity"
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class ProjectTreeEntity {
   @PrimaryGeneratedColumn("uuid")
   uuid: number
-
-  @ManyToOne(() => ProjectEntity, (project) => project.trees)
-  project: ProjectEntity
 
   @Column({ type: "text", unique: true })
   path: string
