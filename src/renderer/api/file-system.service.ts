@@ -1,14 +1,16 @@
 import { openDirDialogResultSchema } from "#/results/open-dir-dialog.result"
+import { left, right } from "fp-ts/lib/Either"
 
 export class FileSystemService {
+  private static provider = window["fs"]
   static async openPath(...segments: string[]) {
-    return window.fs.openPath(...segments)
+    return this.provider.openPath(...segments)
   }
   static async openDirDialog() {
-    return window.fs
+    return this.provider
       .openDirDialog()
-      .then((response) =>
-        openDirDialogResultSchema.parseAsync(response),
-      )
+      .then((res) => openDirDialogResultSchema.parseAsync(res))
+      .then((res) => right(res))
+      .catch((err) => left(err))
   }
 }

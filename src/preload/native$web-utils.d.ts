@@ -1,6 +1,6 @@
 export declare global {
   interface Window {
-    ["webUtils"]: {
+    ["native$web-utils"]: {
       getPathForFile: (a: File) => Promise<string>
     }
   }

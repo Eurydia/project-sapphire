@@ -6,6 +6,6 @@ registerIpcRendererServices("db$project")
 registerIpcRendererServices("db$tags")
 registerIpcRendererServices("db$project-tree")
 
-contextBridge.exposeInMainWorld("webUtils", {
+contextBridge.exposeInMainWorld("native$web-utils", {
   getPathForFile: async (f: File) => webUtils.getPathForFile(f),
 })

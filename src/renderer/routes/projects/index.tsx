@@ -1,64 +1,26 @@
 import { projectPaginationQuerySchema } from "#/models/project/dto/pagination-project.dto"
+import { FileSystemService } from "@/api/file-system.service"
 import { ProjectTagService } from "@/api/project-tag.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectList } from "@/components/data-display/project-list"
 import { ProjectListPaginationControl } from "@/components/data-display/project-list-pagination-control"
 import { ProjectQueryForm } from "@/components/form/project-query-form"
+import { TypographyButton } from "@/components/input/typography-button"
 import { StyledLink } from "@/components/navigation/styled-link"
 import { Divider, Grid, Paper, Stack } from "@mui/material"
-import { createFileRoute } from "@tanstack/react-router"
+import {
+  createFileRoute,
+  useRouter,
+} from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
+import { isLeft } from "fp-ts/lib/Either"
+import { basename } from "pathe"
 import { type FC } from "react"
 
 const RouteComponent: FC = () => {
   const { paginationResult, formOptions } = Route.useLoaderData()
   const search = Route.useSearch()
-
-  const onDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-  }
-
-  const onDrop = async (e: React.DragEvent) => {
-    e.preventDefault()
-
-    // Collect absolute paths from dropped items
-    // Electron adds a non-standard `.path` on File objects.
-    const fileList = Array.from(e.dataTransfer?.files ?? [])
-    console.debug(fileList)
-    console.debug(
-      await window.webUtils.getPathForFile(fileList[0]),
-    )
-    // Keep only directories; returns { path, name } for each folder
-    // const folders =
-    //   await window.folderDrop.filterDirectories(allPaths)
-
-    // // Use them however you like:
-    // console.log("Dropped folders:", folders)
-    // const dirHandles: FileSystemDirectoryHandle[] = []
-    // for (const it of items) {
-    //   if ("getAsFileSystemHandle" in it) {
-    //     const handle = await (it as any).getAsFileSystemHandle()
-    //     if (handle && handle.kind === "directory") {
-    //       dirHandles.push(handle)
-    //     }
-    //   }
-    // }
-
-    // const picked: DroppedDir[] = []
-    // for (let i = 0; i < dirHandles.length; i++) {
-    //   const h = dirHandles[i]
-    //   const uri = uris[i]
-    //   if (uri?.startsWith("file://")) {
-    //     picked.push({
-    //       name: h.name,
-    //       path: window.folders.fileURLToPath(uri),
-    //     })
-    //   }
-    // }
-
-    // setDirs((prev) => [...prev, ...picked])
-  }
-
+  const router = useRouter()
   return (
     <Grid container spacing={1}>
       <Grid size={12}>
@@ -72,10 +34,34 @@ const RouteComponent: FC = () => {
       <Grid size={{ sm: 12, md: 4 }}>
         <Paper variant="outlined">
           <Stack spacing={2} divider={<Divider flexItem />}>
-            <div onDragOver={onDragOver} onDrop={onDrop}>
-              Drop folder(s) here
-            </div>
-            <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
+            <Stack direction="row" spacing={2}>
+              <TypographyButton
+                onClick={async () => {
+                  const result =
+                    await FileSystemService.openDirDialog()
+                  if (isLeft(result)) {
+                    return
+                  }
+
+                  if (result.right.canceled) {
+                    return
+                  }
+                  const path = result.right.filePaths.at(0)
+                  if (path === undefined) {
+                    return
+                  }
+
+                  await ProjectService.create({
+                    name: basename(path),
+                    description: "",
+                    tagNames: [],
+                  }).then(() => router.invalidate())
+                }}
+              >
+                {`[QUICK ADD]`}
+              </TypographyButton>
+              <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
+            </Stack>
             <ProjectListPaginationControl
               search={search}
               pagination={paginationResult}
