@@ -9,7 +9,7 @@ import { EntityNotFoundError, In } from "typeorm"
 import { z } from "zod/v4"
 import { registerIpcMainServices } from "../../services/core"
 import { AppDataSource } from "../data-source"
-import { ProjectTagEntity } from "../entity/project-tag.entity"
+import { ProjectTagEntity } from "../entities/project-tag.entity"
 import { InOrUndefined } from "./helper"
 import { extractQuery } from "./project-tag.service.helper"
 

@@ -1,6 +1,6 @@
 import { ProjectTree } from "#/models/project-tree/project-tree"
 import { PathLike, readdirSync } from "fs"
-import { ProjectTreeEntity } from "../entity/project-tree.entity"
+import { ProjectTreeEntity } from "../entities/project-tree.entity"
 
 export const readDirectoryEntires = (path: PathLike) => {
   const files: string[] = []

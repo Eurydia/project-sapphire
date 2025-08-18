@@ -9,7 +9,7 @@ import { registerIpcMainServices } from "@/services/core"
 import { EntityNotFoundError, In } from "typeorm"
 import z4 from "zod/v4"
 import { AppDataSource } from "../data-source"
-import { ProjectEntity } from "../entity/project.entity"
+import { ProjectEntity } from "../entities/project.entity"
 import { InOrUndefined } from "./helper"
 import {
   _fillTags,

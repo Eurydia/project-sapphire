@@ -1,7 +1,7 @@
 import { registerIpcMainServices } from "@/services/core"
 import { z } from "zod/v4"
 import { AppDataSource } from "../data-source"
-import { ProjectEntity } from "../entity/project.entity"
+import { ProjectEntity } from "../entities/project.entity"
 
 const getRootTree = async (arg: unknown) => {
   const uuid = z.uuidv4().parse(arg)

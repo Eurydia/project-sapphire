@@ -3,8 +3,8 @@ import { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import moment from "moment"
 import { EntityManager, In } from "typeorm"
-import { ProjectTagEntity } from "../entity/project-tag.entity"
-import { ProjectEntity } from "../entity/project.entity"
+import { ProjectTagEntity } from "../entities/project-tag.entity"
+import { ProjectEntity } from "../entities/project.entity"
 
 // const _getMetadata = async (root: string) => {
 //   const path = normalize(root).trim()
