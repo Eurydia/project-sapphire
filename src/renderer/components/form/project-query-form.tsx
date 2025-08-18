@@ -56,7 +56,9 @@ export const ProjectQueryForm: FC<Props> = memo(
             <TextField
               {...param}
               inputRef={searchInputRef}
-              placeholder="[CTRL] + [K]"
+              placeholder={
+                value.length === 0 ? "[CTRL] + [K]" : undefined
+              }
             />
           )}
           popupIcon={false}
