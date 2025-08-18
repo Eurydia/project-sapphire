@@ -11,7 +11,6 @@
     "jsx": "react-jsx",
     "module": "es2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable", "ES2023.Array"],
-    "types": ["vite/client"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

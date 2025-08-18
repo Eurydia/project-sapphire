@@ -9,7 +9,6 @@ import { Divider, Grid, Paper, Stack } from "@mui/material"
 import { createFileRoute } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
 import { type FC } from "react"
-type DroppedDir = { name: string; path: string }
 
 const RouteComponent: FC = () => {
   const { paginationResult, formOptions } = Route.useLoaderData()
@@ -22,19 +21,19 @@ const RouteComponent: FC = () => {
   const onDrop = async (e: React.DragEvent) => {
     e.preventDefault()
 
-    const uriList = e.dataTransfer.getData("text/uri-list")
-
-    const items = Array.from(e.dataTransfer.items || [])
-    console.debug(items, uriList, e.dataTransfer)
+    // Collect absolute paths from dropped items
+    // Electron adds a non-standard `.path` on File objects.
+    const fileList = Array.from(e.dataTransfer?.files ?? [])
+    console.debug(fileList)
     console.debug(
-      items
-        .map((e) => e.webkitGetAsEntry())
-        .filter((e) => e !== null)
-        .filter(
-          (e): e is FileSystemDirectoryEntry => e.isDirectory,
-        )
-        .map((e, i) => e),
+      await window.webUtils.getPathForFile(fileList[0]),
     )
+    // Keep only directories; returns { path, name } for each folder
+    // const folders =
+    //   await window.folderDrop.filterDirectories(allPaths)
+
+    // // Use them however you like:
+    // console.log("Dropped folders:", folders)
     // const dirHandles: FileSystemDirectoryHandle[] = []
     // for (const it of items) {
     //   if ("getAsFileSystemHandle" in it) {
