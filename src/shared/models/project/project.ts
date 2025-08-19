@@ -1,19 +1,29 @@
 import { z } from "zod/v4"
 
-export const projectSchema = z.strictObject({
+const nameString = z.string().trim().normalize().nonempty()
+const descString = z.string().trim().normalize().nullable()
+export const projectSchema = z.object({
   uuid: z.uuidv4(),
-  name: z.string().normalize().trim().nonempty(),
+  name: nameString,
   pinned: z.boolean(),
-  description: z.string().trim().normalize(),
-  created: z.object({ exact: z.string(), fromNow: z.string() }),
-  lastVisited: z
-    .object({ exact: z.string(), fromNow: z.string() })
-    .nullable(),
+  description: descString,
+  created: z.iso.datetime(),
+  lastVisited: z.iso.datetime().nullable(),
   tags: z
     .object({
-      name: z.string().trim().nonempty().normalize(),
       uuid: z.uuidv4(),
-      description: z.string().trim().normalize(),
+      name: nameString,
+      description: descString,
+    })
+    .array(),
+  workspaces: z
+    .object({
+      uuid: z.uuidv4(),
+      name: nameString,
+      root: z.string().trim().normalize().nonempty(),
+      createdAt: z.iso.datetime().nullable(),
+      lastOpened: z.iso.datetime().nullable(),
+      description: descString,
     })
     .array(),
 })

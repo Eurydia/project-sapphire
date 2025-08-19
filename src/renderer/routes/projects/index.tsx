@@ -14,7 +14,6 @@ import {
 } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
 import { isLeft } from "fp-ts/lib/Either"
-import { basename } from "pathe"
 import { type FC } from "react"
 
 const RouteComponent: FC = () => {
@@ -46,16 +45,13 @@ const RouteComponent: FC = () => {
                   if (result.right.canceled) {
                     return
                   }
-                  const path = result.right.filePaths.at(0)
-                  if (path === undefined) {
+                  if (result.right.filePaths.length === 0) {
                     return
                   }
 
-                  await ProjectService.create({
-                    name: basename(path),
-                    description: "",
-                    tagNames: [],
-                  }).then(() => router.invalidate())
+                  await ProjectService.createManyFromPaths(
+                    result.right.filePaths,
+                  ).then(() => router.invalidate())
                 }}
               >
                 {`[QUICK ADD]`}

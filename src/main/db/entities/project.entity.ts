@@ -8,8 +8,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm"
+import { ProjectRepositoryEntity } from "./project-repository.entity"
 import { ProjectTagEntity } from "./project-tag.entity"
-import { ProjectTaskEntity } from "./project-task.entity"
+import { ProjectWorkspaceEntity } from "./project-workspace.entity"
 
 @Entity()
 export class ProjectEntity {
@@ -30,18 +31,34 @@ export class ProjectEntity {
   @Column({ type: "boolean", default: false })
   pinned: boolean
 
-  @Column({ type: "text" })
-  description: string
+  @Column({ type: "text", nullable: true, default: null })
+  description: string | null
 
   @ManyToMany(() => ProjectTagEntity, (tag) => tag.projects, {
-    cascade: true,
+    eager: true,
   })
   @JoinTable()
   tags: ProjectTagEntity[]
 
-  @OneToMany(() => ProjectTaskEntity, (task) => task.project, {
-    cascade: true,
-  })
-  @JoinTable()
-  tasks: ProjectTaskEntity[]
+  @OneToMany(
+    () => ProjectWorkspaceEntity,
+    (workspace) => workspace.project,
+    {
+      cascade: ["insert"],
+      orphanedRowAction: "delete",
+      eager: true,
+    },
+  )
+  workspaces: ProjectWorkspaceEntity[]
+
+  @OneToMany(
+    () => ProjectRepositoryEntity,
+    (repository) => repository.project,
+    {
+      cascade: ["insert"],
+      orphanedRowAction: "delete",
+      eager: true,
+    },
+  )
+  repositories: ProjectRepositoryEntity[]
 }

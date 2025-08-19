@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -10,29 +9,25 @@ import {
 import { ProjectEntity } from "./project.entity"
 
 @Entity()
-export class ProjectWorkspaceEntity {
+export class ProjectRepositoryEntity {
   @PrimaryGeneratedColumn("uuid")
   uuid: string
 
   @CreateDateColumn()
   createdAt: Date
 
-  @Index()
-  @Column({ type: "date", nullable: true })
-  lastOpened: Date | null
-
-  @Column({ type: "text", unique: false })
+  @Column({ type: "text" })
   name: string
 
   @Column({ type: "text" })
-  root: string
+  url: string
 
   @Column({ type: "text", default: null, nullable: true })
   description: string | null
 
   @ManyToOne(
     () => ProjectEntity,
-    (project) => project.workspaces,
+    (project) => project.repositories,
     { onDelete: "CASCADE", nullable: false },
   )
   @JoinColumn()

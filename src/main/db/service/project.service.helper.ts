@@ -37,26 +37,25 @@ import { ProjectEntity } from "../entities/project.entity"
 export const _fromTableEntity = async (
   entity: ProjectEntity,
 ) => {
-  const { created, lastVisited, ...rest } = entity
-  // const metadata = await _getMetadata(root)
+  const { created, lastVisited, workspaces, ...rest } = entity
 
   return {
     ...rest,
-    // root: {
-    //   path: root,
-    //   metadata,
-    // },
-    created: {
-      exact: moment(created).toISOString(),
-      fromNow: moment(created).fromNow(),
-    },
+    created: moment(created).toISOString(),
     lastVisited:
       lastVisited === null
         ? null
-        : {
-            exact: moment(lastVisited).toISOString(),
-            fromNow: moment(lastVisited).fromNow(),
-          },
+        : moment(lastVisited).toISOString(),
+    workspaces: workspaces.map(
+      ({ createdAt, lastOpened, ...rest }) => ({
+        ...rest,
+        createdAt: moment(createdAt).toISOString(),
+        lastOpened:
+          lastOpened === null
+            ? null
+            : moment(lastOpened).toISOString(),
+      }),
+    ),
   } satisfies Project
 }
 

@@ -6,6 +6,6 @@ export default new DataSource({
   database: "sapphire-database.sqlite",
   synchronize: false,
   logging: false,
-  entities: ["src/main/db/entity/**/*.entity.ts"],
+  entities: ["src/main/db/entities/**/*.entity.ts"],
   migrations: ["src/main/db/migrations/**/*-Auto.ts"],
 })

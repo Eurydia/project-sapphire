@@ -50,9 +50,8 @@ const RouteComponent: FC = memo(() => {
     >
       <ProjectForm
         init={{
-          description: project.description,
+          description: project.description ?? "",
           name: project.name,
-          // root: project.root.path,
           tagNames: project.tags.map(({ name }) => name),
         }}
         action={handleSubmit}

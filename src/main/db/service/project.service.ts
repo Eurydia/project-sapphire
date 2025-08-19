@@ -6,8 +6,10 @@ import {
 import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
+import { existsSync, statSync } from "fs"
+import { basename, isAbsolute, normalize } from "path"
 import { EntityNotFoundError, In } from "typeorm"
-import z4 from "zod/v4"
+import z4, { z } from "zod/v4"
 import { AppDataSource } from "../data-source"
 import { ProjectEntity } from "../entities/project.entity"
 import { InOrUndefined } from "./helper"
@@ -39,9 +41,6 @@ const list = async (arg: unknown) => {
           lastVisited:
             orderBy === "lastVisited" ? "DESC" : undefined,
           name: orderBy === "name" ? "ASC" : undefined,
-        },
-        relations: {
-          tags: true,
         },
         relationLoadStrategy: "query",
       })
@@ -83,7 +82,6 @@ const listByUuids = async (arg: unknown) => {
         pinned: "DESC",
         name: "ASC",
       },
-      relations: { tags: true },
     })
     const items: Project[] = []
     for (const entity of entities) {
@@ -107,7 +105,6 @@ const listByNames = async (arg: unknown) => {
         pinned: "DESC",
         name: "ASC",
       },
-      relations: { tags: true },
     })
     const items: Project[] = []
     for (const entity of entities) {
@@ -124,7 +121,6 @@ const findByUuid = async (arg: unknown) => {
     const repo = mgr.getRepository(ProjectEntity)
     const hasProject = await repo.exists({
       where: { uuid },
-      relations: { tags: true },
     })
     if (!hasProject) {
       throw new EntityNotFoundError(ProjectEntity, { uuid })
@@ -135,7 +131,6 @@ const findByUuid = async (arg: unknown) => {
     )
     const entity = await repo.findOneOrFail({
       where: { uuid },
-      relations: { tags: true },
     })
     return await _fromTableEntity(entity)
   })
@@ -169,7 +164,7 @@ const unpin = async (arg: unknown) => {
   })
 }
 
-const createProject = async (arg: unknown) => {
+const create = async (arg: unknown) => {
   const dto = createProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const tags = await _fillTags(mgr, dto)
@@ -179,6 +174,38 @@ const createProject = async (arg: unknown) => {
       tags,
     })
     return mgr.save(ProjectEntity, project)
+  })
+}
+
+const createManyFromPaths = async (arg: unknown) => {
+  // create a new project with a single workspace inside
+  // repeat for each path given
+  const paths = z
+    .string()
+    .trim()
+    .nonempty()
+    .normalize()
+    .array()
+    .parse(arg)
+
+  const normPaths = paths
+    .filter(
+      (path) =>
+        existsSync(path) &&
+        statSync(path).isDirectory() &&
+        isAbsolute(path),
+    )
+    .map((path) => normalize(path))
+
+  return AppDataSource.manager.transaction(async (mgr) => {
+    const repo = mgr.getRepository(ProjectEntity)
+    const entities = normPaths.map((path) =>
+      repo.create({
+        name: basename(path),
+        workspaces: [{ name: basename(path), root: path }],
+      }),
+    )
+    return repo.save(entities)
   })
 }
 
@@ -202,6 +229,7 @@ registerIpcMainServices("db$project", {
   unpin,
   pin,
   findByUuid,
-  createProject,
+  create,
   upsertProject,
+  createManyFromPaths,
 })

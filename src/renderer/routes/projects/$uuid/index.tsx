@@ -1,8 +1,6 @@
-import { ProjectTreeService } from "@/api/project-tree.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
 import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
-import { ProjectTreeExplorer } from "@/components/data-display/project-tree-explorer"
 import { TypographyButton } from "@/components/input/typography-button"
 import { StyledLink } from "@/components/navigation/styled-link"
 import {
@@ -21,7 +19,7 @@ import type { FC } from "react"
 import { memo } from "react"
 
 export const RouteComponent: FC = memo(() => {
-  const { project, tree } = Route.useLoaderData()
+  const { project } = Route.useLoaderData()
 
   return (
     <Grid container spacing={1} maxWidth="md" marginX="auto">
@@ -71,9 +69,18 @@ export const RouteComponent: FC = memo(() => {
         </Paper>
       </Grid>
       <Grid size={{ md: 12 }}>
-        <Paper>
-          <ProjectTreeExplorer tree={tree} />
-        </Paper>
+        <Stack>
+          {project.workspaces.map((ws) => (
+            <Paper key={ws.uuid}>
+              <Stack>
+                <Typography>{ws.uuid}</Typography>
+                <Typography>{ws.name}</Typography>
+                <Typography>{ws.root}</Typography>
+                <Typography>{ws.description}</Typography>
+              </Stack>
+            </Paper>
+          ))}
+        </Stack>
       </Grid>
     </Grid>
   )
@@ -86,7 +93,6 @@ export const Route = createFileRoute("/projects/$uuid/")({
     if (isLeft(result)) {
       throw notFound()
     }
-    const tree = await ProjectTreeService.getRootTree(uuid)
-    return { project: result.right, tree }
+    return { project: result.right }
   },
 })

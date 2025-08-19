@@ -36,8 +36,12 @@ export class ProjectService {
     return this.provider.upsertProject(dto)
   }
   static async create(dto: CreateProjectDto) {
-    return this.provider.createProject(dto)
+    return this.provider.create(dto)
   }
+  static async createManyFromPaths(paths: string[]) {
+    return this.provider.createManyFromPaths(paths)
+  }
+
   static async unpin(uuid: string) {
     return this.provider
       .unpin(uuid)
