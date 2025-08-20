@@ -1,4 +1,5 @@
 import { Stack, Typography } from "@mui/material"
+import moment from "moment"
 import { memo, useMemo, type FC } from "react"
 import type { Project } from "src/shared/models/project/project"
 
@@ -14,11 +15,20 @@ export const ProjectCardMetadata: FC<Props> = memo(
       return [
         {
           label: "project opened",
-          value: project.lastVisited ?? undefined,
+          value:
+            project.lastVisited === null
+              ? undefined
+              : {
+                  exact: project.lastVisited,
+                  fromNow: moment(project.lastVisited).fromNow(),
+                },
         },
         {
           label: "project added",
-          value: project.created,
+          value: {
+            exact: project.created,
+            fromNow: moment(project.created).fromNow(),
+          },
         },
         // {
         //   label: "root accessed",

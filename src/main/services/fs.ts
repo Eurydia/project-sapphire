@@ -25,7 +25,11 @@ const openDirDialog = async (arg: unknown) => {
     .default({})
     .parse(arg)
   return dialog.showOpenDialog({
-    properties: ["openDirectory", "multiSelections"],
+    properties: [
+      "openDirectory",
+      "multiSelections",
+      "dontAddToRecent",
+    ],
     ...options,
   }) satisfies Promise<OpenDirDialogResult>
 }

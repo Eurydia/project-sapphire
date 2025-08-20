@@ -6,8 +6,8 @@ import {
 import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
-import { existsSync, statSync } from "fs"
-import { basename, isAbsolute, normalize } from "path"
+import { existsSync, readFileSync, statSync } from "fs"
+import { basename, isAbsolute, join, normalize } from "path"
 import { EntityNotFoundError, In } from "typeorm"
 import z4, { z } from "zod/v4"
 import { AppDataSource } from "../data-source"
@@ -199,12 +199,19 @@ const createManyFromPaths = async (arg: unknown) => {
 
   return AppDataSource.manager.transaction(async (mgr) => {
     const repo = mgr.getRepository(ProjectEntity)
-    const entities = normPaths.map((path) =>
-      repo.create({
+    const entities = normPaths.map((path) => {
+      const readmePath = join(path, "readme.md")
+      const desc =
+        existsSync(readmePath) && statSync(readmePath).isFile()
+          ? String(readFileSync(readmePath))
+          : null
+
+      return repo.create({
         name: basename(path),
         workspaces: [{ name: basename(path), root: path }],
-      }),
-    )
+        description: desc,
+      })
+    })
     return repo.save(entities)
   })
 }

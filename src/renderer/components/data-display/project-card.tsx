@@ -116,7 +116,9 @@ export const ProjectCard: FC<Props> = ({ project }) => {
               </StyledLink>
             </Typography>
             {project.description !== "" && (
-              <Typography>{project.description}</Typography>
+              <Typography component="pre">
+                {project.description}
+              </Typography>
             )}
           </Stack>
           <ProjectCardTagList project={project} />

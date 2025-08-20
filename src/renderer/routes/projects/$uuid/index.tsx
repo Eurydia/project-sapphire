@@ -1,3 +1,4 @@
+import { FileSystemService } from "@/api/file-system.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
 import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
@@ -69,18 +70,28 @@ export const RouteComponent: FC = memo(() => {
         </Paper>
       </Grid>
       <Grid size={{ md: 12 }}>
-        <Stack>
-          {project.workspaces.map((ws) => (
-            <Paper key={ws.uuid}>
-              <Stack>
-                <Typography>{ws.uuid}</Typography>
-                <Typography>{ws.name}</Typography>
-                <Typography>{ws.root}</Typography>
-                <Typography>{ws.description}</Typography>
-              </Stack>
-            </Paper>
-          ))}
-        </Stack>
+        <Paper>
+          <Stack spacing={2}>
+            <Typography variant="h4">WORKSPACES</Typography>
+            <Stack spacing={1} divider={<Divider flexItem />}>
+              {project.workspaces.map((ws) => (
+                <Stack key={ws.uuid}>
+                  <Typography>{ws.uuid}</Typography>
+                  <Typography>{ws.root}</Typography>
+                  <TypographyButton
+                    onClick={() => {
+                      FileSystemService.openPath(ws.root)
+                    }}
+                    slotProps={{ typography: { variant: "h5" } }}
+                  >
+                    {ws.name}
+                  </TypographyButton>
+                  <Typography>{ws.description}</Typography>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        </Paper>
       </Grid>
     </Grid>
   )
