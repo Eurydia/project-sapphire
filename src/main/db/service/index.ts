@@ -1,3 +1,5 @@
-import "./project-tag.service"
-import "./project-tree.service"
-import "./project.service"
+export default Object.values(
+  import.meta.glob("./*.service.ts", {
+    eager: true,
+  }),
+)

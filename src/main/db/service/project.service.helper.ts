@@ -37,7 +37,13 @@ import { ProjectEntity } from "../entities/project.entity"
 export const _fromTableEntity = async (
   entity: ProjectEntity,
 ) => {
-  const { created, lastVisited, workspaces, ...rest } = entity
+  const {
+    created,
+    lastVisited,
+    workspaces,
+    repositories,
+    ...rest
+  } = entity
 
   return {
     ...rest,
@@ -56,6 +62,10 @@ export const _fromTableEntity = async (
             : moment(lastOpened).toISOString(),
       }),
     ),
+    repositories: repositories.map(({ createdAt, ...rest }) => ({
+      ...rest,
+      createdAt: moment(createdAt).toISOString(),
+    })),
   } satisfies Project
 }
 

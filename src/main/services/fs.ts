@@ -49,7 +49,13 @@ const openPath = async (...args: unknown[]) => {
   return shell.openPath(path)
 }
 
+const openURL = async (arg: unknown) => {
+  const url = z.url().parse(arg)
+  return shell.openExternal(url, {})
+}
+
 registerIpcMainServices("fs", {
   openDirDialog,
   openPath,
+  openURL,
 })

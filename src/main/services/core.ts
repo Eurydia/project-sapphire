@@ -25,6 +25,14 @@ if (!app.isPackaged) {
   })()
 }
 
+const PROVIDER_NAMES: string[] = []
+
+;(() => {
+  ipcMain.handle("system$__getIpcMainProviderNames", () => {
+    return JSON.stringify(PROVIDER_NAMES)
+  })
+})()
+
 export const registerIpcMainServices = (
   providerName: string,
   serviceProvider: ServiceProvider,
@@ -36,7 +44,8 @@ export const registerIpcMainServices = (
       handler(...args),
     )
   }
-  ipcMain.handle(`${providerName}:__getRegisteredServices`, () =>
+  PROVIDER_NAMES.push(providerName)
+  ipcMain.handle(`${providerName}$__getRegisteredServices`, () =>
     JSON.stringify(Object.keys(serviceProvider)),
   )
 

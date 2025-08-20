@@ -1,0 +1,13 @@
+import z from "zod/v4"
+
+export const projectRepositorySchema = z.object({
+  name: z.string(),
+  uuid: z.uuidv4(),
+  description: z.string().nullable(),
+  url: z.url(),
+  createdAt: z.iso.datetime(),
+})
+
+export type ProjectRepository = z.infer<
+  typeof projectRepositorySchema
+>

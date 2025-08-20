@@ -8,13 +8,13 @@ const invokeHandlerProvider = (
   return (...args: any[]) => ipcRenderer.invoke(channel, ...args)
 }
 
-export const registerIpcRendererServices = (
+export const registerIpcRendererServices = async (
   providerName: string,
 ) => {
   ipcRenderer
-    .invoke(`${providerName}:__getRegisteredServices`)
-    .then((resp: any) => {
-      const services = JSON.parse(resp) as string[]
+    .invoke(`${providerName}$__getRegisteredServices`)
+    .then((resp) => JSON.parse(resp))
+    .then((services: string[]) => {
       const api = Object.fromEntries(
         services.map((service) => [
           service,

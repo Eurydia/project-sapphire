@@ -26,6 +26,15 @@ export const projectSchema = z.object({
       description: descString,
     })
     .array(),
+  repositories: z
+    .object({
+      uuid: z.uuidv4(),
+      name: z.string(),
+      description: z.string().nullable(),
+      createdAt: z.iso.datetime(),
+      url: z.url(),
+    })
+    .array(),
 })
 
 export type Project = z.infer<typeof projectSchema>

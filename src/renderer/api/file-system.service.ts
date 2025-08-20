@@ -13,4 +13,11 @@ export class FileSystemService {
       .then((res) => right(res))
       .catch((err) => left(err))
   }
+
+  static async openURL(url: string) {
+    return this.provider
+      .openURL(url)
+      .then((resp) => right(resp))
+      .catch((err) => left(err))
+  }
 }
