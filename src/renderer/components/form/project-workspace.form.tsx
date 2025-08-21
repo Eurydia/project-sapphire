@@ -5,6 +5,7 @@ import {
 import { Stack, TextField, Typography } from "@mui/material"
 import { useForm } from "@tanstack/react-form"
 import type { FC } from "react"
+import { DirectoryInput } from "../input/directory-input"
 import { TypographyButton } from "../input/typography-button"
 
 type Props = {
@@ -60,10 +61,10 @@ export const ProjectWorkspaceForm: FC<Props> = ({
             handleBlur,
             handleChange,
           }) => (
-            <TextField
-              value={value}
+            <DirectoryInput
               onBlur={handleBlur}
-              onChange={(e) => handleChange(e.target.value)}
+              onChange={handleChange}
+              value={value}
               error={isDirty && errors.length > 0}
             />
           )}
