@@ -52,16 +52,10 @@ export const _fromTableEntity = async (
       lastVisited === null
         ? null
         : moment(lastVisited).toISOString(),
-    workspaces: workspaces.map(
-      ({ createdAt, lastOpened, ...rest }) => ({
-        ...rest,
-        createdAt: moment(createdAt).toISOString(),
-        lastOpened:
-          lastOpened === null
-            ? null
-            : moment(lastOpened).toISOString(),
-      }),
-    ),
+    workspaces: workspaces.map(({ createdAt, ...rest }) => ({
+      ...rest,
+      createdAt: moment(createdAt).toISOString(),
+    })),
     repositories: repositories.map(({ createdAt, ...rest }) => ({
       ...rest,
       createdAt: moment(createdAt).toISOString(),

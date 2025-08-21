@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -17,18 +16,11 @@ export class ProjectWorkspaceEntity {
   @CreateDateColumn()
   createdAt: Date
 
-  @Index()
-  @Column({ type: "date", nullable: true })
-  lastOpened: Date | null
-
   @Column({ type: "text", unique: false })
   name: string
 
   @Column({ type: "text" })
   root: string
-
-  @Column({ type: "text", default: null, nullable: true })
-  description: string | null
 
   @ManyToOne(
     () => ProjectEntity,

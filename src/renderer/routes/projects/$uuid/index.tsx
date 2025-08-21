@@ -82,6 +82,7 @@ export const RouteComponent: FC = memo(() => {
   const router = useRouter()
   const [repoDialogVisible, setRepoDialogVisible] =
     useState(false)
+  const [wsDialogVisible, setWsDialogVisible] = useState(false)
   return (
     <Fragment>
       <Grid container spacing={1} maxWidth="md" marginX="auto">
@@ -106,13 +107,6 @@ export const RouteComponent: FC = memo(() => {
                 >
                   {`[EDIT]`}
                 </StyledLink>
-                {/* <TypographyButton
-                onClick={() =>
-                  FileSystemService.openPath(project.root.path)
-                }
-              >
-                {`[OPEN IN EXPLORER]`}
-              </TypographyButton> */}
               </Stack>
               <Divider flexItem />
               <Typography variant="h3">
@@ -130,27 +124,23 @@ export const RouteComponent: FC = memo(() => {
           <Stack spacing={2}>
             <Paper>
               <Stack spacing={2}>
+                <TypographyButton
+                  onClick={() => setWsDialogVisible(true)}
+                >
+                  [ADD]
+                </TypographyButton>
+                <Divider flexItem />
                 <Typography variant="h4">WORKSPACES</Typography>
                 <Stack
                   spacing={1}
                   divider={<Divider flexItem />}
                 >
-                  {project.workspaces.map((ws) => (
-                    <Stack key={ws.uuid}>
-                      <Typography>{ws.uuid}</Typography>
-                      <Typography>{ws.root}</Typography>
-                      <TypographyButton
-                        onClick={() => {
-                          FileSystemService.openPath(ws.root)
-                        }}
-                        slotProps={{
-                          typography: { variant: "h5" },
-                        }}
-                      >
-                        {ws.name}
-                      </TypographyButton>
-                      <Typography>{ws.description}</Typography>
-                    </Stack>
+                  {project.repositories.map((repo) => (
+                    <RepoCard
+                      key={repo.uuid}
+                      project={project}
+                      repo={repo}
+                    />
                   ))}
                 </Stack>
               </Stack>
@@ -186,6 +176,27 @@ export const RouteComponent: FC = memo(() => {
       <Dialog
         open={repoDialogVisible}
         onClose={() => setRepoDialogVisible(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <ProjectRepositoryForm
+          onSubmit={async (formData) => {
+            const result = await ProjectRepositoryService.create(
+              {
+                projectUUID: project.uuid,
+                ...formData,
+              },
+            )
+            if (isRight(result)) {
+              setRepoDialogVisible(false)
+              await router.invalidate()
+            }
+          }}
+        />
+      </Dialog>
+      <Dialog
+        open={wsDialogVisible}
+        onClose={() => setWsDialogVisible(false)}
         maxWidth="md"
         fullWidth
       >

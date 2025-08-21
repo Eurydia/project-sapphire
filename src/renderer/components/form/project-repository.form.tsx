@@ -17,7 +17,6 @@ export const ProjectRepositoryForm: FC<Props> = ({
 }) => {
   const { Field, handleSubmit, Subscribe } = useForm({
     defaultValues: init ?? {
-      description: "",
       name: "",
       url: "",
     },
@@ -57,26 +56,6 @@ export const ProjectRepositoryForm: FC<Props> = ({
             state: {
               value,
               meta: { isDirty, errors },
-            },
-            handleBlur,
-            handleChange,
-          }) => (
-            <TextField
-              value={value}
-              onBlur={handleBlur}
-              onChange={(e) => handleChange(e.target.value)}
-              error={isDirty && errors.length > 0}
-            />
-          )}
-        </Field>
-      </Stack>
-      <Stack>
-        <Typography>{`DESC`}</Typography>
-        <Field name="description">
-          {({
-            state: {
-              value,
-              meta: { errors, isDirty },
             },
             handleBlur,
             handleChange,

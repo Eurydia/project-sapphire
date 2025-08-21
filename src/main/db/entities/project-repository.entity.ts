@@ -22,9 +22,6 @@ export class ProjectRepositoryEntity {
   @Column({ type: "text" })
   url: string
 
-  @Column({ type: "text", default: null, nullable: true })
-  description: string | null
-
   @ManyToOne(
     () => ProjectEntity,
     (project) => project.repositories,

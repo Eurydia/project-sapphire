@@ -22,15 +22,12 @@ export const projectSchema = z.object({
       name: nameString,
       root: z.string().trim().normalize().nonempty(),
       createdAt: z.iso.datetime().nullable(),
-      lastOpened: z.iso.datetime().nullable(),
-      description: descString,
     })
     .array(),
   repositories: z
     .object({
       uuid: z.uuidv4(),
       name: z.string(),
-      description: z.string().nullable(),
       createdAt: z.iso.datetime(),
       url: z.url(),
     })
