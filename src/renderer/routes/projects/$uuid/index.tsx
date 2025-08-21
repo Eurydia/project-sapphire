@@ -1,11 +1,14 @@
 import type { ProjectRepository } from "#/models/project-repository/project-repository"
+import type { ProjectWorkspace } from "#/models/project-workspace/project-workspace"
 import type { Project } from "#/models/project/project"
 import { FileSystemService } from "@/api/file-system.service"
 import { ProjectRepositoryService } from "@/api/project-repository.service"
+import { ProjectWorkspaceService } from "@/api/project-workspace.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
 import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
 import { ProjectRepositoryForm } from "@/components/form/project-repository.form"
+import { ProjectWorkspaceForm } from "@/components/form/project-workspace.form"
 import { TypographyButton } from "@/components/input/typography-button"
 import { StyledLink } from "@/components/navigation/styled-link"
 import {
@@ -63,6 +66,57 @@ const RepoCard: FC<{
                 await ProjectRepositoryService.update({
                   projectUUID: project.uuid,
                   uuid: repo.uuid,
+                  ...formData,
+                })
+              if (isRight(result)) {
+                setDialogVisible(false)
+                await router.invalidate()
+              }
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+    </Fragment>
+  )
+}
+
+const WsCard: FC<{
+  project: Project
+  ws: ProjectWorkspace
+}> = ({ ws, project }) => {
+  const [dialogOpen, setDialogVisible] = useState(false)
+  const router = useRouter()
+  return (
+    <Fragment key={ws.uuid}>
+      <Stack direction="row" justifyContent="space-between">
+        <TypographyButton
+          onClick={() => {
+            FileSystemService.openPath(ws.root)
+          }}
+          slotProps={{
+            typography: { variant: "h5" },
+          }}
+        >
+          {ws.name}
+        </TypographyButton>
+        <TypographyButton onClick={() => setDialogVisible(true)}>
+          [EDIT]
+        </TypographyButton>
+      </Stack>
+      <Dialog
+        open={dialogOpen}
+        maxWidth="md"
+        fullWidth
+        onClose={() => setDialogVisible(false)}
+      >
+        <DialogContent>
+          <ProjectWorkspaceForm
+            init={ws}
+            onSubmit={async (formData) => {
+              const result =
+                await ProjectWorkspaceService.update({
+                  projectUUID: project.uuid,
+                  uuid: ws.uuid,
                   ...formData,
                 })
               if (isRight(result)) {
@@ -135,11 +189,11 @@ export const RouteComponent: FC = memo(() => {
                   spacing={1}
                   divider={<Divider flexItem />}
                 >
-                  {project.repositories.map((repo) => (
-                    <RepoCard
-                      key={repo.uuid}
+                  {project.workspaces.map((ws) => (
+                    <WsCard
+                      key={ws.uuid}
                       project={project}
-                      repo={repo}
+                      ws={ws}
                     />
                   ))}
                 </Stack>
@@ -179,20 +233,21 @@ export const RouteComponent: FC = memo(() => {
         maxWidth="md"
         fullWidth
       >
-        <ProjectRepositoryForm
-          onSubmit={async (formData) => {
-            const result = await ProjectRepositoryService.create(
-              {
-                projectUUID: project.uuid,
-                ...formData,
-              },
-            )
-            if (isRight(result)) {
-              setRepoDialogVisible(false)
-              await router.invalidate()
-            }
-          }}
-        />
+        <DialogContent>
+          <ProjectRepositoryForm
+            onSubmit={async (formData) => {
+              const result =
+                await ProjectRepositoryService.create({
+                  projectUUID: project.uuid,
+                  ...formData,
+                })
+              if (isRight(result)) {
+                setRepoDialogVisible(false)
+                await router.invalidate()
+              }
+            }}
+          />
+        </DialogContent>
       </Dialog>
       <Dialog
         open={wsDialogVisible}
@@ -200,20 +255,21 @@ export const RouteComponent: FC = memo(() => {
         maxWidth="md"
         fullWidth
       >
-        <ProjectRepositoryForm
-          onSubmit={async (formData) => {
-            const result = await ProjectRepositoryService.create(
-              {
-                projectUUID: project.uuid,
-                ...formData,
-              },
-            )
-            if (isRight(result)) {
-              setRepoDialogVisible(false)
-              await router.invalidate()
-            }
-          }}
-        />
+        <DialogContent>
+          <ProjectWorkspaceForm
+            onSubmit={async (formData) => {
+              const result =
+                await ProjectWorkspaceService.create({
+                  projectUUID: project.uuid,
+                  ...formData,
+                })
+              if (isRight(result)) {
+                setRepoDialogVisible(false)
+                await router.invalidate()
+              }
+            }}
+          />
+        </DialogContent>
       </Dialog>
     </Fragment>
   )

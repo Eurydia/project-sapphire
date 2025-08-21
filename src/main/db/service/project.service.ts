@@ -177,7 +177,7 @@ const create = async (arg: unknown) => {
   })
 }
 
-const createManyFromPaths = async (arg: unknown) => {
+const createFromPaths = async (arg: unknown) => {
   // create a new project with a single workspace inside
   // repeat for each path given
   const paths = z
@@ -216,7 +216,7 @@ const createManyFromPaths = async (arg: unknown) => {
   })
 }
 
-const upsertProject = async (arg: unknown) => {
+const upsert = async (arg: unknown) => {
   const dto = upsertProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const tags = await _fillTags(mgr, dto)
@@ -233,10 +233,10 @@ registerIpcMainServices("db$project", {
   listNames,
   listByUuids,
   listByNames,
+  findByUuid,
   unpin,
   pin,
-  findByUuid,
   create,
-  upsertProject,
-  createManyFromPaths,
+  createFromPaths,
+  upsert,
 })

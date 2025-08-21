@@ -49,7 +49,7 @@ const RouteComponent: FC = () => {
                     return
                   }
 
-                  await ProjectService.createManyFromPaths(
+                  await ProjectService.createFromPaths(
                     result.right.filePaths,
                   ).then(() => router.invalidate())
                 }}

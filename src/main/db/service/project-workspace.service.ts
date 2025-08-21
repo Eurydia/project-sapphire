@@ -4,6 +4,7 @@ import { registerIpcMainServices } from "@/services/core"
 import { EntityNotFoundError } from "typeorm"
 import { AppDataSource } from "../data-source"
 import { ProjectRepositoryEntity } from "../entities/project-repository.entity"
+import { ProjectWorkspaceEntity } from "../entities/project-workspace.entity"
 import { ProjectEntity } from "../entities/project.entity"
 
 const add = (arg: unknown) => {
@@ -11,9 +12,7 @@ const add = (arg: unknown) => {
     projectRepositoryCreateDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
     const projectRepo = mgr.getRepository(ProjectEntity)
-    const projectRepoRepo = mgr.getRepository(
-      ProjectRepositoryEntity,
-    )
+    const wsRepo = mgr.getRepository(ProjectWorkspaceEntity)
 
     const projectEntity = await projectRepo.preload({
       uuid: projectUUID,
@@ -25,10 +24,9 @@ const add = (arg: unknown) => {
       })
     }
 
-    console.debug(projectEntity.repositories)
-    projectEntity.repositories = [
-      ...(projectEntity.repositories ?? []),
-      projectRepoRepo.create(dto),
+    projectEntity.workspaces = [
+      ...(projectEntity.workspaces ?? []),
+      wsRepo.create(dto),
     ]
 
     return projectRepo.save(projectEntity)
@@ -47,7 +45,7 @@ const update = async (arg: unknown) => {
   })
 }
 
-registerIpcMainServices("db$project-repository", {
+registerIpcMainServices("db$project-workspace", {
   add,
   update,
 })

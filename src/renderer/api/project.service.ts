@@ -33,13 +33,13 @@ export class ProjectService {
       .catch((err) => left(err))
   }
   static async upsert(dto: UpsertProjectDto) {
-    return this.provider.upsertProject(dto)
+    return this.provider.upsert(dto)
   }
   static async create(dto: CreateProjectDto) {
     return this.provider.create(dto)
   }
-  static async createManyFromPaths(paths: string[]) {
-    return this.provider.createManyFromPaths(paths)
+  static async createFromPaths(paths: string[]) {
+    return this.provider.createFromPaths(paths)
   }
 
   static async unpin(uuid: string) {

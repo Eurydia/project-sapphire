@@ -21,7 +21,7 @@ export const projectSchema = z.object({
       uuid: z.uuidv4(),
       name: nameString,
       root: z.string().trim().normalize().nonempty(),
-      createdAt: z.iso.datetime().nullable(),
+      createdAt: z.iso.datetime(),
     })
     .array(),
   repositories: z
