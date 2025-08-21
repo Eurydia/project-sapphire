@@ -1,6 +1,3 @@
-import type { ProjectRepository } from "#/models/project-repository/project-repository"
-import type { ProjectWorkspace } from "#/models/project-workspace/project-workspace"
-import type { Project } from "#/models/project/project"
 import { FileSystemService } from "@/api/file-system.service"
 import { ProjectRepositoryService } from "@/api/project-repository.service"
 import { ProjectWorkspaceService } from "@/api/project-workspace.service"
@@ -18,6 +15,11 @@ import {
   Grid,
   Paper,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material"
 import {
@@ -26,110 +28,9 @@ import {
   useRouter,
 } from "@tanstack/react-router"
 import { isLeft, isRight } from "fp-ts/lib/Either"
+import moment from "moment"
 import type { FC } from "react"
 import { Fragment, memo, useState } from "react"
-
-const RepoCard: FC<{
-  project: Project
-  repo: ProjectRepository
-}> = ({ repo, project }) => {
-  const [dialogOpen, setDialogVisible] = useState(false)
-  const router = useRouter()
-  return (
-    <Fragment key={repo.uuid}>
-      <Stack direction="row" justifyContent="space-between">
-        <TypographyButton
-          onClick={() => {
-            FileSystemService.openURL(repo.url)
-          }}
-          slotProps={{
-            typography: { variant: "h5" },
-          }}
-        >
-          {repo.name}
-        </TypographyButton>
-        <TypographyButton onClick={() => setDialogVisible(true)}>
-          [EDIT]
-        </TypographyButton>
-      </Stack>
-      <Dialog
-        open={dialogOpen}
-        maxWidth="md"
-        fullWidth
-        onClose={() => setDialogVisible(false)}
-      >
-        <DialogContent>
-          <ProjectRepositoryForm
-            init={repo}
-            onSubmit={async (formData) => {
-              const result =
-                await ProjectRepositoryService.update({
-                  projectUUID: project.uuid,
-                  uuid: repo.uuid,
-                  ...formData,
-                })
-              if (isRight(result)) {
-                setDialogVisible(false)
-                await router.invalidate()
-              }
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-    </Fragment>
-  )
-}
-
-const WsCard: FC<{
-  project: Project
-  ws: ProjectWorkspace
-}> = ({ ws, project }) => {
-  const [dialogOpen, setDialogVisible] = useState(false)
-  const router = useRouter()
-  return (
-    <Fragment key={ws.uuid}>
-      <Stack direction="row" justifyContent="space-between">
-        <TypographyButton
-          onClick={() => {
-            FileSystemService.openPath(ws.root)
-          }}
-          slotProps={{
-            typography: { variant: "h5" },
-          }}
-        >
-          {ws.name}
-        </TypographyButton>
-        <TypographyButton onClick={() => setDialogVisible(true)}>
-          [EDIT]
-        </TypographyButton>
-      </Stack>
-      <Dialog
-        open={dialogOpen}
-        maxWidth="md"
-        fullWidth
-        onClose={() => setDialogVisible(false)}
-      >
-        <DialogContent>
-          <ProjectWorkspaceForm
-            init={ws}
-            onSubmit={async (formData) => {
-              const result =
-                await ProjectWorkspaceService.update({
-                  projectUUID: project.uuid,
-                  uuid: ws.uuid,
-                  ...formData,
-                })
-              if (isRight(result)) {
-                setDialogVisible(false)
-                await router.invalidate()
-              }
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-    </Fragment>
-  )
-}
 
 export const RouteComponent: FC = memo(() => {
   const { project } = Route.useLoaderData()
@@ -185,18 +86,34 @@ export const RouteComponent: FC = memo(() => {
                 </TypographyButton>
                 <Divider flexItem />
                 <Typography variant="h4">WORKSPACES</Typography>
-                <Stack
-                  spacing={1}
-                  divider={<Divider flexItem />}
-                >
-                  {project.workspaces.map((ws) => (
-                    <WsCard
-                      key={ws.uuid}
-                      project={project}
-                      ws={ws}
-                    />
-                  ))}
-                </Stack>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>{`NAME`}</TableCell>
+                      <TableCell align="right">{`CREATED`}</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {project.workspaces.map((ws) => (
+                      <TableRow key={ws.uuid}>
+                        <TableCell>
+                          <TypographyButton
+                            onClick={() => {
+                              FileSystemService.openPath(ws.root)
+                            }}
+                          >
+                            {ws.name}
+                          </TypographyButton>
+                        </TableCell>
+                        <TableCell align="right">
+                          {moment(ws.createdAt)
+                            .toDate()
+                            .toDateString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </Stack>
             </Paper>
             <Paper>
@@ -210,18 +127,34 @@ export const RouteComponent: FC = memo(() => {
                 <Typography variant="h4">
                   REPOSITORIES
                 </Typography>
-                <Stack
-                  spacing={1}
-                  divider={<Divider flexItem />}
-                >
-                  {project.repositories.map((repo) => (
-                    <RepoCard
-                      key={repo.uuid}
-                      project={project}
-                      repo={repo}
-                    />
-                  ))}
-                </Stack>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>{`NAME`}</TableCell>
+                      <TableCell align="right">{`CREATED`}</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {project.repositories.map((repo) => (
+                      <TableRow key={repo.uuid}>
+                        <TableCell>
+                          <TypographyButton
+                            onClick={() => {
+                              FileSystemService.openURL(repo.url)
+                            }}
+                          >
+                            {repo.name}
+                          </TypographyButton>
+                        </TableCell>
+                        <TableCell align="right">
+                          {moment(repo.createdAt)
+                            .toDate()
+                            .toDateString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </Stack>
             </Paper>
           </Stack>
