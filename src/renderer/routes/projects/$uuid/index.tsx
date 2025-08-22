@@ -1,12 +1,11 @@
 import { FileSystemService } from "@/api/file-system.service"
 import { ProjectRepositoryService } from "@/api/project-repository.service"
-import { ProjectWorkspaceService } from "@/api/project-workspace.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
 import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
+import { ProjectWorkspaceTable } from "@/components/data-display/project-workspace-table"
 import { ProjectDeleteForm } from "@/components/form/project-form.delete"
 import { ProjectRepositoryForm } from "@/components/form/project-repository.form"
-import { ProjectWorkspaceForm } from "@/components/form/project-workspace.form"
 import { TypographyButton } from "@/components/input/typography-button"
 import { StyledLink } from "@/components/navigation/styled-link"
 import {
@@ -101,43 +100,7 @@ export const RouteComponent: FC = memo(() => {
         <Grid size={{ md: 12 }}>
           <Stack spacing={2}>
             <Paper>
-              <Stack spacing={2}>
-                <TypographyButton
-                  onClick={() => setWsDialogVisible(true)}
-                >
-                  [ADD]
-                </TypographyButton>
-                <Divider flexItem />
-                <Typography variant="h4">WORKSPACES</Typography>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>{`NAME`}</TableCell>
-                      <TableCell align="right">{`CREATED`}</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {project.workspaces.map((ws) => (
-                      <TableRow key={ws.uuid}>
-                        <TableCell>
-                          <TypographyButton
-                            onClick={() => {
-                              FileSystemService.openPath(ws.root)
-                            }}
-                          >
-                            {ws.name}
-                          </TypographyButton>
-                        </TableCell>
-                        <TableCell align="right">
-                          {moment(ws.createdAt)
-                            .toDate()
-                            .toDateString()}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Stack>
+              <ProjectWorkspaceTable project={project} />
             </Paper>
             <Paper>
               <Stack spacing={2}>
@@ -194,28 +157,6 @@ export const RouteComponent: FC = memo(() => {
             onSubmit={async (formData) => {
               const result =
                 await ProjectRepositoryService.create({
-                  projectUUID: project.uuid,
-                  ...formData,
-                })
-              if (isRight(result)) {
-                setRepoDialogVisible(false)
-                await router.invalidate()
-              }
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-      <Dialog
-        open={wsDialogVisible}
-        onClose={() => setWsDialogVisible(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogContent>
-          <ProjectWorkspaceForm
-            onSubmit={async (formData) => {
-              const result =
-                await ProjectWorkspaceService.create({
                   projectUUID: project.uuid,
                   ...formData,
                 })

@@ -22,10 +22,12 @@ export const ProjectWorkspaceForm: FC<Props> = ({
       root: "",
     },
     onSubmit: ({ value, formApi: { reset } }) => {
-      onSubmit(value)
       reset()
+      onSubmit(value)
     },
-    validators: { onChange: projectWorkspaceFormDataSchema },
+    validators: {
+      onChangeAsync: projectWorkspaceFormDataSchema,
+    },
   })
 
   return (
@@ -36,7 +38,7 @@ export const ProjectWorkspaceForm: FC<Props> = ({
           {({
             state: {
               value,
-              meta: { isDirty, errors },
+              meta: { errors },
             },
             handleBlur,
             handleChange,
@@ -45,7 +47,7 @@ export const ProjectWorkspaceForm: FC<Props> = ({
               value={value}
               onBlur={handleBlur}
               onChange={(e) => handleChange(e.target.value)}
-              error={isDirty && errors.length > 0}
+              error={errors.length > 0}
             />
           )}
         </Field>
@@ -56,7 +58,7 @@ export const ProjectWorkspaceForm: FC<Props> = ({
           {({
             state: {
               value,
-              meta: { isDirty, errors },
+              meta: { errors },
             },
             handleBlur,
             handleChange,
@@ -65,7 +67,7 @@ export const ProjectWorkspaceForm: FC<Props> = ({
               onBlur={handleBlur}
               onChange={handleChange}
               value={value}
-              error={isDirty && errors.length > 0}
+              error={errors.length > 0}
             />
           )}
         </Field>

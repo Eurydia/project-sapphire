@@ -18,4 +18,11 @@ export class ProjectWorkspaceService {
       .then((res) => right(res))
       .catch((err) => left(err))
   }
+
+  static async deleteByUUID(uuid: string) {
+    return this.provider
+      .deleteByUUID(uuid)
+      .then((res) => right(res))
+      .catch((err) => left(err))
+  }
 }

@@ -1,7 +1,7 @@
 import { projectRepositoryCreateDtoSchema } from "#/models/project-repository/dto/create"
 import { projectRepositoryUpdateDtoSchema } from "#/models/project-repository/dto/update"
 import { registerIpcMainServices } from "@/services/core"
-import { EntityNotFoundError } from "typeorm"
+import { z } from "zod/v4"
 import { AppDataSource } from "../data-source"
 import { ProjectRepositoryEntity } from "../entities/project-repository.entity"
 import { ProjectEntity } from "../entities/project.entity"
@@ -15,23 +15,23 @@ const add = (arg: unknown) => {
       ProjectRepositoryEntity,
     )
 
-    const projectEntity = await projectRepo.preload({
-      uuid: projectUUID,
+    const entity = await projectRepo.findOneOrFail({
+      where: { uuid: projectUUID },
     })
 
-    if (projectEntity === undefined) {
-      throw new EntityNotFoundError(ProjectEntity, {
-        uuid: projectUUID,
-      })
-    }
+    const repoEntity = await projectRepoRepo.save(
+      projectRepoRepo.create({
+        ...dto,
+        project: { uuid: projectUUID },
+      }),
+    )
 
-    console.debug(projectEntity.repositories)
-    projectEntity.repositories = [
-      ...(projectEntity.repositories ?? []),
-      projectRepoRepo.create(dto),
+    entity.repositories = [
+      ...(entity.repositories ?? []),
+      repoEntity,
     ]
 
-    return projectRepo.save(projectEntity)
+    return projectRepo.save(entity)
   })
 }
 
@@ -43,11 +43,20 @@ const update = async (arg: unknown) => {
     const entity = await repo.findOneOrFail({
       where: { uuid: uuid, project: { uuid: projectUUID } },
     })
-    return repo.save(repo.merge(entity, dto))
+    return repo.save({ ...entity, ...dto })
+  })
+}
+
+const deleteByUUID = async (arg: unknown) => {
+  const uuid = z.uuidv4().parse(arg)
+  return AppDataSource.transaction(async (mgr) => {
+    const repo = mgr.getRepository(ProjectRepositoryEntity)
+    return repo.delete({ uuid })
   })
 }
 
 registerIpcMainServices("db$project-repository", {
   add,
   update,
+  deleteByUUID,
 })

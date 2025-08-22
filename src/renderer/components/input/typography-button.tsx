@@ -1,4 +1,5 @@
 import {
+  alpha,
   ButtonBase,
   Typography,
   useTheme,
@@ -11,39 +12,45 @@ export const TypographyButton: FC<
   ButtonBaseProps & {
     slotProps?: { typography?: TypographyProps }
   }
-> = memo(
-  ({
-    sx,
-    children,
-    slotProps: { typography } = {},
-    ...rest
-  }) => {
-    const {
-      palette: { link },
-    } = useTheme()
-    return (
-      <ButtonBase
-        {...rest}
-        disableRipple
-        disableTouchRipple
-        tabIndex={-1}
-        sx={{ ...sx, width: "fit-content" }}
+> = memo(({ sx, disabled, children, slotProps, ...rest }) => {
+  const {
+    palette: { link },
+  } = useTheme()
+  const { sx: typoSx, ...typoRest } = slotProps?.typography ?? {
+    sx: {},
+  }
+  return (
+    <ButtonBase
+      {...rest}
+      disabled={disabled}
+      disableRipple
+      disableTouchRipple
+      tabIndex={0}
+      sx={{
+        ...sx,
+        width: "fit-content",
+      }}
+    >
+      <Typography
+        {...typoRest}
+        tabIndex={0}
+        component="span"
+        sx={{
+          textDecorationLine: disabled
+            ? "line-through"
+            : undefined,
+          userSelect: "none",
+          color: disabled
+            ? alpha(link.normal, 0.5)
+            : link.normal,
+          "&:hover": {
+            color: link.hover,
+          },
+          ...typoSx,
+        }}
       >
-        <Typography
-          {...(typography ?? {})}
-          tabIndex={0}
-          sx={{
-            ...typography?.sx,
-            userSelect: "none",
-            color: link.normal,
-            "&:hover": {
-              color: link.hover,
-            },
-          }}
-        >
-          {children}
-        </Typography>
-      </ButtonBase>
-    )
-  },
-)
+        {children}
+      </Typography>
+    </ButtonBase>
+  )
+})

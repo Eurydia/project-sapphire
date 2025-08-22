@@ -12,7 +12,7 @@ export const ProjectDeleteForm: FC<Props> = ({
   const { handleSubmit, Field, Subscribe } = useForm({
     defaultValues: { uuid: "" },
     validators: {
-      onChange: z.object({
+      onChangeAsync: z.object({
         uuid: z.uuidv4().refine((arg) => arg === uuid),
       }),
     },
