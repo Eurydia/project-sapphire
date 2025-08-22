@@ -10,15 +10,37 @@
   },
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true,
-    "**/*.gen.d.ts": true
+    "**/*.gen.d.ts": true,
+    "out/**": true,
+    "dist/**": true,
+    "build/**": true,
+    "node_modules/**": true,
+    ".tanstack/**": true
   },
   "search.exclude": {
     "**/routeTree.gen.ts": true,
-    "**/*.gen.d.ts": true
+    "**/*.gen.d.ts": true,
+    "out/**": true,
+    "dist/**": true,
+    "build/**": true,
+    "node_modules/**": true,
+    ".tanstack/**": true
   },
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true,
     "**/*.gen.d.ts": true
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "out/**": true,
+    "dist/**": true,
+    "build/**": true,
+    "node_modules/**": true,
+    ".tanstack/**": true
   },
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {

@@ -4,6 +4,7 @@ import { ProjectWorkspaceService } from "@/api/project-workspace.service"
 import { ProjectService } from "@/api/project.service"
 import { ProjectCardMetadata } from "@/components/data-display/project-card-metadata"
 import { ProjectCardTagList } from "@/components/data-display/project-card-tag-list"
+import { ProjectDeleteForm } from "@/components/form/project-form.delete"
 import { ProjectRepositoryForm } from "@/components/form/project-repository.form"
 import { ProjectWorkspaceForm } from "@/components/form/project-workspace.form"
 import { TypographyButton } from "@/components/input/typography-button"
@@ -35,33 +36,55 @@ import { Fragment, memo, useState } from "react"
 export const RouteComponent: FC = memo(() => {
   const { project } = Route.useLoaderData()
   const router = useRouter()
+  const navigate = Route.useNavigate()
   const [repoDialogVisible, setRepoDialogVisible] =
     useState(false)
   const [wsDialogVisible, setWsDialogVisible] = useState(false)
+  const [deleteDialogActive, setDeleteDialogActive] =
+    useState(false)
   return (
     <Fragment>
       <Grid container spacing={1} maxWidth="md" marginX="auto">
         <Grid size={{ md: 12 }}>
           <Paper variant="outlined">
             <Stack spacing={2}>
-              <Stack direction="row" spacing={2}>
+              <Stack
+                direction="row"
+                spacing={2}
+                justifyContent="space-between"
+              >
+                <Stack spacing={2} direction="row">
+                  <TypographyButton
+                    onClick={() => {
+                      if (project.pinned) {
+                        ProjectService.unpin(project.uuid)
+                      } else {
+                        ProjectService.pin(project.uuid)
+                      }
+                    }}
+                  >
+                    {project.pinned ? "[UNPIN]" : "[PIN]"}
+                  </TypographyButton>
+                  <StyledLink
+                    to="/projects/$uuid/edit"
+                    params={{ uuid: project.uuid }}
+                  >
+                    {`[EDIT]`}
+                  </StyledLink>
+                </Stack>
                 <TypographyButton
-                  onClick={() => {
-                    if (project.pinned) {
-                      ProjectService.unpin(project.uuid)
-                    } else {
-                      ProjectService.pin(project.uuid)
-                    }
+                  onClick={() => setDeleteDialogActive(true)}
+                  slotProps={{
+                    typography: {
+                      sx: {
+                        color: ({ palette: { error } }) =>
+                          error.light,
+                      },
+                    },
                   }}
                 >
-                  {project.pinned ? "[UNPIN]" : "[PIN]"}
+                  [DELETE]
                 </TypographyButton>
-                <StyledLink
-                  to="/projects/$uuid/edit"
-                  params={{ uuid: project.uuid }}
-                >
-                  {`[EDIT]`}
-                </StyledLink>
               </Stack>
               <Divider flexItem />
               <Typography variant="h3">
@@ -200,6 +223,28 @@ export const RouteComponent: FC = memo(() => {
                 setRepoDialogVisible(false)
                 await router.invalidate()
               }
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={deleteDialogActive}
+        onClose={() => setDeleteDialogActive(false)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogContent>
+          <ProjectDeleteForm
+            uuid={project.uuid}
+            onSubmit={async () => {
+              setDeleteDialogActive(false)
+              ProjectService.deleteByUUID(project.uuid).then(
+                async (resp) => {
+                  if (isRight(resp)) {
+                    await navigate({ to: "/projects" })
+                  }
+                },
+              )
             }}
           />
         </DialogContent>

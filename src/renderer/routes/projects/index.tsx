@@ -20,6 +20,7 @@ const RouteComponent: FC = () => {
   const { paginationResult, formOptions } = Route.useLoaderData()
   const search = Route.useSearch()
   const router = useRouter()
+
   return (
     <Grid container spacing={1}>
       <Grid size={12}>

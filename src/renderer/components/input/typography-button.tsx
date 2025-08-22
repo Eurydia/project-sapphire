@@ -15,7 +15,7 @@ export const TypographyButton: FC<
   ({
     sx,
     children,
-    slotProps: { typography } = { typography: {} },
+    slotProps: { typography } = {},
     ...rest
   }) => {
     const {
@@ -30,7 +30,7 @@ export const TypographyButton: FC<
         sx={{ ...sx, width: "fit-content" }}
       >
         <Typography
-          {...typography}
+          {...(typography ?? {})}
           tabIndex={0}
           sx={{
             ...typography?.sx,
