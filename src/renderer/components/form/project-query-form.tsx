@@ -1,18 +1,16 @@
-import type { ProjectPaginationQuery } from "#/models/project/dto/pagination-project.dto"
 import { Autocomplete, Stack, TextField } from "@mui/material"
 import { memo, useMemo, useRef, useState, type FC } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { StyledLink } from "../navigation/styled-link"
 
 type Props = {
-  search: ProjectPaginationQuery
   formOptions: {
     tags: string[]
     projects: string[]
   }
 }
 export const ProjectQueryForm: FC<Props> = memo(
-  ({ formOptions, search }) => {
+  ({ formOptions }) => {
     const options = useMemo(() => {
       return formOptions.tags
         .map((opt) => [
@@ -73,7 +71,6 @@ export const ProjectQueryForm: FC<Props> = memo(
           <StyledLink
             to="/projects"
             search={{
-              ...search,
               query: value.map(({ value }) => value),
             }}
           >

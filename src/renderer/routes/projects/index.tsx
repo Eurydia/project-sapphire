@@ -18,17 +18,13 @@ import { z } from "zod/v4"
 
 const RouteComponent: FC = () => {
   const { projects, formOptions } = Route.useLoaderData()
-  const search = Route.useSearch()
   const router = useRouter()
 
   return (
     <Grid container spacing={1}>
       <Grid size={12}>
         <Paper variant="outlined">
-          <ProjectQueryForm
-            search={search}
-            formOptions={formOptions}
-          />
+          <ProjectQueryForm formOptions={formOptions} />
         </Paper>
       </Grid>
       <Grid size={{ sm: 12, md: 4 }}>

@@ -21,15 +21,15 @@ export const Route = createFileRoute("/project-tags/$uuid/")({
     if (entry === null) {
       throw notFound()
     }
-    const pagination = await ProjectService.list({
-      query: [`tag:${entry.name}`],
-    })
-    return { entry, pagination }
+    const projects = await ProjectService.list([
+      `tag:${entry.name}`,
+    ])
+    return { entry, projects }
   },
 })
 
 function RouteComponent() {
-  const { entry, pagination } = Route.useLoaderData()
+  const { entry, projects } = Route.useLoaderData()
   return (
     <Grid spacing={1} container>
       <Grid size={{ md: 12 }}>
@@ -77,7 +77,7 @@ function RouteComponent() {
         </Paper>
       </Grid>
       <Grid size={{ md: 9 }}>
-        <ProjectList projects={pagination.items} />
+        <ProjectList projects={projects} />
       </Grid>
     </Grid>
   )

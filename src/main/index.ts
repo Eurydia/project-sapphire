@@ -53,6 +53,7 @@ function createWindow(): void {
 app.whenReady().then(async () => {
   const ds = await AppDataSource.initialize()
   await ds.runMigrations()
+
   // Set app user model id for windows
   electronApp.setAppUserModelId("io.github.eurydia")
 
