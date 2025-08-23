@@ -38,16 +38,19 @@ const WsTableRow: FC<TableRowProps> = ({
       <TableRow key={repo.uuid}>
         <TableCell>
           <Stack spacing={1}>
-            <TypographyButton
-              onClick={() => FileSystemService.openURL(repo.url)}
-            >
-              {`${repo.name}/`}
-            </TypographyButton>
+            <Typography textAlign="left">{repo.name}</Typography>
+            <Typography variant="subtitle2" textAlign="left">
+              {repo.url}
+            </Typography>
             <Stack spacing={2} direction="row">
               <TypographyButton
-                slotProps={{
-                  typography: { fontSize: "inherit" },
-                }}
+                onClick={() =>
+                  FileSystemService.openURL(repo.url)
+                }
+              >
+                [OPEN]
+              </TypographyButton>
+              <TypographyButton
                 onClick={() => {
                   setEditDialogActive(true)
                 }}
@@ -56,7 +59,12 @@ const WsTableRow: FC<TableRowProps> = ({
               </TypographyButton>
               <TypographyButton
                 slotProps={{
-                  typography: { fontSize: "inherit" },
+                  typography: {
+                    sx: {
+                      color: ({ palette: { error } }) =>
+                        error.light,
+                    },
+                  },
                 }}
                 onClick={() => {
                   setDeleteDialogActive(true)
