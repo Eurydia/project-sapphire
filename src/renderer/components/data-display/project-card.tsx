@@ -95,7 +95,7 @@ export const ProjectCard: FC<Props> = ({ project }) => {
               variant="subtitle2"
               color="textSecondary"
             >
-              {`${project.workspaces.length} ${project.workspaces.length <= 1 ? "work space" : "work spaces"}`}
+              {`${project.workspaces.length} ${project.workspaces.length <= 1 ? "workspace" : "workspaces"}`}
             </Typography>
             <Typography
               variant="subtitle2"
