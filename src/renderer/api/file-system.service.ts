@@ -20,4 +20,11 @@ export class FileSystemService {
       .then((resp) => right(resp))
       .catch((err) => left(err))
   }
+
+  static async openDbPath() {
+    return this.provider
+      .openDatabasePath()
+      .then((resp) => right(resp))
+      .catch((err) => left(err))
+  }
 }
