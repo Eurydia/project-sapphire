@@ -89,7 +89,12 @@ export const RouteComponent: FC = memo(() => {
               <Typography variant="h3">
                 {project.name}
               </Typography>
-              <Typography component="pre">
+              <Typography
+                sx={{
+                  wordWrap: "normal",
+                  whiteSpace: "normal",
+                }}
+              >
                 {project.description}
               </Typography>
               <ProjectCardMetadata project={project} />
