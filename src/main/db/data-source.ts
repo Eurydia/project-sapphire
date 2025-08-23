@@ -6,7 +6,7 @@ import { migrations } from "./migrations"
 export const AppDataSource = new DataSource({
   type: "better-sqlite3",
   database: app.isPackaged
-    ? `sapphire-database.${app.getVersion()}.sqlite`
+    ? `${app.getPath("userData")}/db/sapphire-database.${app.getVersion()}.sqlite`
     : `sapphire-database.sqlite`,
   entities,
   subscribers: [],

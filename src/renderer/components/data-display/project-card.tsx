@@ -91,14 +91,20 @@ export const ProjectCard: FC<Props> = ({ project }) => {
             >
               {project.uuid}
             </Typography>
-            {/* <Typography
+            <Typography
               variant="subtitle2"
               color="textSecondary"
             >
-              {project.root.path}
-            </Typography> */}
+              {`${project.workspaces.length} ${project.workspaces.length <= 1 ? "work space" : "work spaces"}`}
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              color="textSecondary"
+            >
+              {`${project.repositories.length} ${project.repositories.length <= 1 ? "repository" : "repositories"}`}
+            </Typography>
           </Stack>
-          <Stack>
+          <Stack spacing={1}>
             <Typography
               variant="h4"
               component="div"
