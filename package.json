@@ -1,7 +1,7 @@
 {
   "type": "commonjs",
   "name": "project-sapphire",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Project Sapphire",
   "main": "./out/main/index.js",
   "author": "https://github.com/eurydia",

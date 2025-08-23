@@ -12,7 +12,7 @@ import { ProjectRepositoryEntity } from "./project-repository.entity"
 import { ProjectTagEntity } from "./project-tag.entity"
 import { ProjectWorkspaceEntity } from "./project-workspace.entity"
 
-@Entity()
+@Entity({ orderBy: { pinned: "DESC", lastVisited: "DESC" } })
 export class ProjectEntity {
   @PrimaryGeneratedColumn("uuid")
   uuid: string

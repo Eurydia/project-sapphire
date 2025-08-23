@@ -1,8 +1,4 @@
 import { createProjectDtoSchema } from "#/models/project/dto/create-project.dto"
-import {
-  projectPaginationQuerySchema,
-  ProjectPaginationResult,
-} from "#/models/project/dto/pagination-project.dto"
 import { upsertProjectDtoSchema } from "#/models/project/dto/upsert-project.dto"
 import { Project } from "#/models/project/project"
 import { registerIpcMainServices } from "@/services/core"
@@ -22,47 +18,33 @@ import {
 const repo = AppDataSource.getRepository(ProjectEntity)
 
 const list = async (arg: unknown) => {
-  const { pageIndex, query, resultsPerPage, orderBy } =
-    projectPaginationQuerySchema.parse(arg)
+  const query = z
+    .string()
+    .trim()
+    .normalize()
+    .nonempty()
+    .array()
+    .parse(arg)
 
-  const { entities, totalCount } =
-    await AppDataSource.transaction(async (mgr) => {
+  const entities = await AppDataSource.transaction(
+    async (mgr) => {
       const { names, tagNames } = extractProjectQuery(query)
       const repo = mgr.getRepository(ProjectEntity)
       const entities = await repo.find({
-        skip: resultsPerPage * pageIndex,
-        take: resultsPerPage,
         where: {
           name: InOrUndefined(names),
           tags: { name: InOrUndefined(tagNames) },
-        },
-        order: {
-          pinned: "DESC",
-          lastVisited:
-            orderBy === "lastVisited" ? "DESC" : undefined,
-          name: orderBy === "name" ? "ASC" : undefined,
         },
         relationLoadStrategy: "query",
       })
-      const totalCount = await repo.count({
-        where: {
-          name: InOrUndefined(names),
-          tags: { name: InOrUndefined(tagNames) },
-        },
-      })
-      return { entities, totalCount }
-    })
+      return entities
+    },
+  )
   const items = <Project[]>[]
   for (const entity of entities) {
     items.push(await _fromTableEntity(entity))
   }
-  return {
-    items,
-    pageIndex,
-    resultsPerPage: resultsPerPage,
-    totalCount,
-    pageCount: Math.ceil(totalCount / resultsPerPage),
-  } satisfies ProjectPaginationResult
+  return items satisfies Project[]
 }
 
 const listNames = async () => {
@@ -78,10 +60,6 @@ const listByUuids = async (arg: unknown) => {
   return AppDataSource.transaction(async (mgr) => {
     const entities = await mgr.find(ProjectEntity, {
       where: { uuid: In(uuids) },
-      order: {
-        pinned: "DESC",
-        name: "ASC",
-      },
     })
     const items: Project[] = []
     for (const entity of entities) {
@@ -101,10 +79,6 @@ const listByNames = async (arg: unknown) => {
   return AppDataSource.transaction(async (mgr) => {
     const entities = await mgr.find(ProjectEntity, {
       where: { name: In(names) },
-      order: {
-        pinned: "DESC",
-        name: "ASC",
-      },
     })
     const items: Project[] = []
     for (const entity of entities) {

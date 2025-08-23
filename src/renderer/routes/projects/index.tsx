@@ -1,4 +1,3 @@
-import { projectPaginationQuerySchema } from "#/models/project/dto/pagination-project.dto"
 import { FileSystemService } from "@/api/file-system.service"
 import { ProjectTagService } from "@/api/project-tag.service"
 import { ProjectService } from "@/api/project.service"
@@ -15,9 +14,10 @@ import {
 import { zodValidator } from "@tanstack/zod-adapter"
 import { isLeft } from "fp-ts/lib/Either"
 import { type FC } from "react"
+import { z } from "zod/v4"
 
 const RouteComponent: FC = () => {
-  const { paginationResult, formOptions } = Route.useLoaderData()
+  const { projects, formOptions } = Route.useLoaderData()
   const search = Route.useSearch()
   const router = useRouter()
 
@@ -59,15 +59,12 @@ const RouteComponent: FC = () => {
               </TypographyButton>
               <StyledLink to="/projects/create">{`[ADD]`}</StyledLink>
             </Stack>
-            <ProjectListPaginationControl
-              search={search}
-              pagination={paginationResult}
-            />
+            <ProjectListPaginationControl projects={projects} />
           </Stack>
         </Paper>
       </Grid>
       <Grid size="grow">
-        <ProjectList projects={paginationResult.items} />
+        <ProjectList projects={projects} />
       </Grid>
     </Grid>
   )
@@ -75,11 +72,21 @@ const RouteComponent: FC = () => {
 
 export const Route = createFileRoute("/projects/")({
   component: RouteComponent,
-  validateSearch: zodValidator(projectPaginationQuerySchema),
+  validateSearch: zodValidator(
+    z.object({
+      query: z
+        .string()
+        .trim()
+        .normalize()
+        .nonempty()
+        .array()
+        .default([]),
+    }),
+  ),
   loaderDeps: ({ search }) => ({ search }),
   loader: async ({ deps: { search } }) => {
     return {
-      paginationResult: await ProjectService.list(search),
+      projects: await ProjectService.list(search.query),
       formOptions: {
         projects: await ProjectService.listNames(),
         tags: await ProjectTagService.listNames(),

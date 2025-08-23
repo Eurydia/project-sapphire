@@ -1,8 +1,4 @@
 import type { CreateProjectDto } from "#/models/project/dto/create-project.dto"
-import {
-  projectPaginationResultSchema,
-  type ProjectPaginationQueryRaw,
-} from "#/models/project/dto/pagination-project.dto"
 import type { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
 import { projectSchema } from "#/models/project/project"
 import { left, right } from "fp-ts/lib/Either"
@@ -11,12 +7,10 @@ import z from "zod"
 export class ProjectService {
   private static provider = window["db$project"]
 
-  static async list(query: ProjectPaginationQueryRaw) {
+  static async list(query: string[]) {
     return this.provider
       .list(query)
-      .then((resp) =>
-        projectPaginationResultSchema.parseAsync(resp),
-      )
+      .then((resp) => projectSchema.array().parseAsync(resp))
   }
 
   static async listNames() {
