@@ -2,6 +2,7 @@ import { app } from "electron"
 import { DataSource } from "typeorm"
 import { entities } from "./entities"
 import { migrations } from "./migrations"
+import { subscribers } from "./subscribers"
 
 export const AppDataSource = new DataSource({
   type: "better-sqlite3",
@@ -9,6 +10,6 @@ export const AppDataSource = new DataSource({
     ? `${app.getPath("userData")}/db/sapphire-database.${app.getVersion()}.sqlite`
     : `sapphire-database.sqlite`,
   entities,
-  subscribers: [],
+  subscribers,
   migrations,
 })
