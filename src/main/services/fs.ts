@@ -1,5 +1,5 @@
 import { OpenDirDialogResult } from "#/results/open-dir-dialog.result"
-import { dialog, shell } from "electron"
+import { app, dialog, shell } from "electron"
 import { existsSync } from "fs"
 import { join, normalize } from "path"
 import { z } from "zod/v4"
@@ -54,8 +54,13 @@ const openURL = async (arg: unknown) => {
   return shell.openExternal(url, {})
 }
 
+const openDatabasePath = async () => {
+  return shell.openPath(join(app.getPath("userData"), "db"))
+}
+
 registerIpcMainServices("fs", {
   openDirDialog,
   openPath,
   openURL,
+  openDatabasePath,
 })
