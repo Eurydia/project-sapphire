@@ -8,4 +8,5 @@ export default new DataSource({
   logging: false,
   entities: ["src/main/db/entities/**/*.entity.ts"],
   migrations: ["src/main/db/migrations/**/*-Auto.ts"],
+  subscribers: ["src/main/db/subscribers/**/*.subscriber.ts"],
 })
