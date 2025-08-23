@@ -33,20 +33,21 @@ const WsTableRow: FC<TableRowProps> = ({ projectUUID, ws }) => {
   return (
     <Fragment>
       <TableRow key={ws.uuid}>
-        <TableCell>
-          <Stack spacing={1}>
-            <TypographyButton
-              onClick={() => {
-                FileSystemService.openPath(ws.root)
-              }}
-            >
-              {`${ws.name}/`}
-            </TypographyButton>
+        <TableCell align="left">
+          <Stack spacing={1} alignItems="flex-start">
+            <Typography textAlign="left">{ws.name}</Typography>
+            <Typography variant="subtitle2" textAlign="left">
+              {ws.root}
+            </Typography>
             <Stack spacing={2} direction="row">
               <TypographyButton
-                slotProps={{
-                  typography: { fontSize: "inherit" },
+                onClick={() => {
+                  FileSystemService.openPath(ws.root)
                 }}
+              >
+                [OPEN]
+              </TypographyButton>
+              <TypographyButton
                 onClick={() => {
                   setEditDialogActive(true)
                 }}
@@ -55,7 +56,12 @@ const WsTableRow: FC<TableRowProps> = ({ projectUUID, ws }) => {
               </TypographyButton>
               <TypographyButton
                 slotProps={{
-                  typography: { fontSize: "inherit" },
+                  typography: {
+                    sx: {
+                      color: ({ palette: { error } }) =>
+                        error.light,
+                    },
+                  },
                 }}
                 onClick={() => {
                   setDeleteDialogActive(true)
