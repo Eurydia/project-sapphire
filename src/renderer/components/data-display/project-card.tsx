@@ -116,7 +116,13 @@ export const ProjectCard: FC<Props> = ({ project }) => {
               </StyledLink>
             </Typography>
             {project.description !== "" && (
-              <Typography component="pre">
+              <Typography
+                component="pre"
+                sx={{
+                  wordWrap: "normal",
+                  whiteSpace: "normal",
+                }}
+              >
                 {project.description}
               </Typography>
             )}
