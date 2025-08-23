@@ -18,6 +18,7 @@ import {
 import {
   createFileRoute,
   notFound,
+  useRouter,
 } from "@tanstack/react-router"
 import { isLeft, isRight } from "fp-ts/lib/Either"
 import type { FC } from "react"
@@ -26,6 +27,7 @@ import { Fragment, memo, useState } from "react"
 export const RouteComponent: FC = memo(() => {
   const { project } = Route.useLoaderData()
   const navigate = Route.useNavigate()
+  const router = useRouter()
   const [deleteDialogActive, setDeleteDialogActive] =
     useState(false)
   return (
@@ -41,11 +43,22 @@ export const RouteComponent: FC = memo(() => {
               >
                 <Stack spacing={2} direction="row">
                   <TypographyButton
-                    onClick={() => {
+                    onClick={async () => {
                       if (project.pinned) {
-                        ProjectService.unpin(project.uuid)
+                        const result =
+                          await ProjectService.unpin(
+                            project.uuid,
+                          )
+                        if (isRight(result)) {
+                          router.invalidate()
+                        }
                       } else {
-                        ProjectService.pin(project.uuid)
+                        const result = await ProjectService.pin(
+                          project.uuid,
+                        )
+                        if (isRight(result)) {
+                          router.invalidate()
+                        }
                       }
                     }}
                   >
