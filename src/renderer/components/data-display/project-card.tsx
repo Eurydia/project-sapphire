@@ -77,11 +77,6 @@ export const ProjectCard: FC<Props> = ({ project }) => {
           >
             {`[EDIT]`}
           </StyledLink>
-
-          {/* <TypographyButton onClick={handleOpenRoot}>
-            {`[OPEN IN EXPLORER]`}
-          </TypographyButton>
-           */}
         </Stack>
         <Stack spacing={2}>
           <Stack>
@@ -123,10 +118,9 @@ export const ProjectCard: FC<Props> = ({ project }) => {
             </Typography>
             {project.description !== "" && (
               <Typography
-                component="pre"
                 sx={{
                   wordWrap: "normal",
-                  whiteSpace: "normal",
+                  whiteSpace: "pre-line",
                 }}
               >
                 {project.description}

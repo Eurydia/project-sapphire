@@ -92,7 +92,7 @@ export const RouteComponent: FC = memo(() => {
               <Typography
                 sx={{
                   wordWrap: "normal",
-                  whiteSpace: "normal",
+                  whiteSpace: "pre-line",
                 }}
               >
                 {project.description}
