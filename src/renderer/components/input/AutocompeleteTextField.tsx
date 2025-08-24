@@ -9,9 +9,11 @@ type Props = {
   options: Array<string>
   disabledOptions: Array<string>
   onBlur: () => unknown
+  error?: boolean
 }
 export const AutocompleteTextField: FC<Props> = memo(
   ({
+    error,
     onBlur,
     onSelect,
     placeholder,
@@ -76,7 +78,11 @@ export const AutocompleteTextField: FC<Props> = memo(
         onInputChange={handleInputChange}
         fullWidth
         renderInput={(params) => (
-          <TextField {...params} placeholder={placeholder} />
+          <TextField
+            {...params}
+            placeholder={placeholder}
+            error={error}
+          />
         )}
         options={options}
         getOptionDisabled={getDisabledOptions}

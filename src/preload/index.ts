@@ -10,6 +10,5 @@ ipcRenderer
         registerIpcRendererServices(name),
       ),
     )
-    console.debug(providers)
   })
   .catch((err) => console.warn(err))
