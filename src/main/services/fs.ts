@@ -1,9 +1,36 @@
 import { OpenDirDialogResult } from "#/results/open-dir-dialog.result"
 import { app, dialog, shell } from "electron"
-import { existsSync } from "fs"
+import { existsSync, readFileSync, statSync } from "fs"
 import { join, normalize } from "path"
 import { z } from "zod/v4"
 import { registerIpcMainServices } from "./core"
+
+const readFileContent = async () => {
+  const result = await dialog.showOpenDialog({
+    properties: [
+      "dontAddToRecent",
+      "openFile",
+      "noResolveAliases",
+    ],
+  })
+
+  if (result.canceled) {
+    return null
+  }
+
+  const filePath = result.filePaths.at(0)
+  if (filePath === undefined) {
+    return null
+  }
+
+  const fileStat = statSync(filePath)
+  if (!fileStat.isFile()) {
+    return null
+  }
+
+  const content = readFileSync(filePath)
+  return String(content)
+}
 
 const openDirDialog = async (arg: unknown) => {
   const options = z
@@ -63,4 +90,5 @@ registerIpcMainServices("fs", {
   openPath,
   openURL,
   openDatabasePath,
+  readFileContent,
 })

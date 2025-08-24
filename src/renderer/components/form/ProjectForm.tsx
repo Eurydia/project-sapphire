@@ -10,6 +10,7 @@ import {
 import { useForm } from "@tanstack/react-form"
 import { memo, type FC } from "react"
 import { AutocompleteTextField } from "../input/AutocompeleteTextField"
+import { TextFieldFileContentInput } from "../input/text-field-file-content-input"
 
 type Props = {
   init?: ProjectFormData
@@ -46,15 +47,21 @@ export const ProjectForm: FC<Props> = memo(
           <Stack spacing={1}>
             <Typography>{`NAME`}</Typography>
             <Field name="name">
-              {({ state, handleChange, handleBlur }) => (
+              {({
+                state: { value, meta },
+                handleChange,
+                handleBlur,
+              }) => (
                 <TextField
+                  error={
+                    meta.errors.length > 0 && meta.isTouched
+                  }
                   fullWidth
                   multiline
-                  required
                   minRows={1}
                   onBlur={handleBlur}
                   onChange={(e) => handleChange(e.target.value)}
-                  value={state.value}
+                  value={value}
                 />
               )}
             </Field>
@@ -62,14 +69,20 @@ export const ProjectForm: FC<Props> = memo(
           <Stack spacing={1}>
             <Typography>{`DESCRIPTION`}</Typography>
             <Field name="description">
-              {({ state, handleChange, handleBlur }) => (
-                <TextField
-                  fullWidth
+              {({
+                state: { value, meta },
+                handleChange,
+                handleBlur,
+              }) => (
+                <TextFieldFileContentInput
+                  error={
+                    meta.isTouched && meta.errors.length > 0
+                  }
+                  value={value}
+                  onChange={handleChange}
+                  minRows={5}
                   multiline
-                  minRows={4}
                   onBlur={handleBlur}
-                  onChange={(e) => handleChange(e.target.value)}
-                  value={state.value}
                 />
               )}
             </Field>
@@ -78,16 +91,20 @@ export const ProjectForm: FC<Props> = memo(
             <Typography>{`TAGS`}</Typography>
             <Field name="tagNames" mode="array">
               {({
-                state,
+                state: { value, meta },
                 removeValue,
                 pushValue,
                 handleBlur,
               }) => (
                 <Stack spacing={0.5}>
                   <AutocompleteTextField
+                    error={
+                      meta.isTouched && meta.errors.length > 0
+                    }
+                    placeholder={`${value.length} SELECTED`}
                     onSelect={pushValue}
                     options={formOptions.tags}
-                    disabledOptions={state.value}
+                    disabledOptions={value}
                     onBlur={handleBlur}
                   />
                   <Stack
@@ -96,7 +113,7 @@ export const ProjectForm: FC<Props> = memo(
                     flexWrap="wrap"
                     useFlexGap
                   >
-                    {state.value.map((_, index) => (
+                    {value.map((_, index) => (
                       <Field
                         key={index}
                         name={`tagNames[${index}]`}
