@@ -1,5 +1,9 @@
-import type { AutocompleteChangeReason } from "@mui/material"
+import type {
+  AutocompleteChangeReason,
+  FilterOptionsState,
+} from "@mui/material"
 import { Autocomplete, TextField } from "@mui/material"
+import { matchSorter } from "match-sorter"
 import type { FC } from "react"
 import { memo, useCallback, useMemo, useState } from "react"
 
@@ -67,12 +71,24 @@ export const AutocompleteTextField: FC<Props> = memo(
       },
       [disabledOptionsSet],
     )
+    const filterOptions = useCallback(
+      (options: string[], state: FilterOptionsState<string>) => {
+        return state.inputValue
+          .split(" ")
+          .reduceRight(
+            (results, term) => matchSorter(results, term),
+            options,
+          )
+      },
+      [options],
+    )
 
     return (
       <Autocomplete
         freeSolo
         disableClearable
         value={value}
+        filterOptions={filterOptions}
         inputValue={inputValue}
         onChange={handleChange}
         onInputChange={handleInputChange}

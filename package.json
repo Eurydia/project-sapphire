@@ -41,7 +41,7 @@
     "fp-ts": "^2.16.10",
     "immer": "^10.1.1",
     "lodash": "^4.17.21",
-    "match-sorter": "^8.0.3",
+    "match-sorter": "^8.1.0",
     "pathe": "^2.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
