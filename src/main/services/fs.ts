@@ -7,11 +7,7 @@ import { registerIpcMainServices } from "./core"
 
 const readFileContent = async () => {
   const result = await dialog.showOpenDialog({
-    properties: [
-      "dontAddToRecent",
-      "openFile",
-      "noResolveAliases",
-    ],
+    properties: ["dontAddToRecent", "openFile"],
   })
 
   if (result.canceled) {
