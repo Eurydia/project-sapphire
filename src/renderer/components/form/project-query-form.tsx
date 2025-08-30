@@ -1,4 +1,5 @@
 import { Autocomplete, Stack, TextField } from "@mui/material"
+import { uniq } from "lodash"
 import { memo, useMemo, useRef, useState, type FC } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { StyledLink } from "../navigation/styled-link"
@@ -12,7 +13,7 @@ type Props = {
 export const ProjectQueryForm: FC<Props> = memo(
   ({ formOptions }) => {
     const options = useMemo(() => {
-      return formOptions.tags
+      return uniq(formOptions.tags)
         .map((opt) => [
           {
             label: `tag:"${opt}"`,
@@ -20,7 +21,7 @@ export const ProjectQueryForm: FC<Props> = memo(
           },
         ])
         .concat(
-          formOptions.projects.map((opt) => [
+          uniq(formOptions.projects).map((opt) => [
             {
               label: `name:"${opt}"`,
               value: `name:${opt}`,
