@@ -106,7 +106,6 @@ export const ProjectCard: FC<Props> = ({ project }) => {
               sx={{
                 width: "fit-content",
                 textWrap: "pretty",
-                wordBreak: "break-all",
               }}
             >
               <StyledLink
