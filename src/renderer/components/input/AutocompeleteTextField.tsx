@@ -3,6 +3,7 @@ import type {
   FilterOptionsState,
 } from "@mui/material"
 import { Autocomplete, TextField } from "@mui/material"
+import { uniq } from "lodash"
 import { matchSorter } from "match-sorter"
 import type { FC } from "react"
 import { memo, useCallback, useMemo, useState } from "react"
@@ -71,17 +72,19 @@ export const AutocompleteTextField: FC<Props> = memo(
       },
       [disabledOptionsSet],
     )
-    const filterOptions = useCallback(
-      (options: string[], state: FilterOptionsState<string>) => {
-        return state.inputValue
+    const filterOptions = (
+      options: string[],
+      state: FilterOptionsState<string>,
+    ) => {
+      return uniq(
+        state.inputValue
           .split(" ")
           .reduceRight(
             (results, term) => matchSorter(results, term),
             options,
-          )
-      },
-      [options],
-    )
+          ) satisfies string[],
+      )
+    }
 
     return (
       <Autocomplete
@@ -100,7 +103,7 @@ export const AutocompleteTextField: FC<Props> = memo(
             error={error}
           />
         )}
-        options={options}
+        options={uniq(options)}
         getOptionDisabled={getDisabledOptions}
         onBlur={onBlur}
       />
