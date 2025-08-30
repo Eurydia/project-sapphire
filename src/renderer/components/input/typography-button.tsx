@@ -1,8 +1,6 @@
 import {
-  alpha,
   ButtonBase,
   Typography,
-  useTheme,
   type ButtonBaseProps,
   type TypographyProps,
 } from "@mui/material"
@@ -13,9 +11,6 @@ export const TypographyButton: FC<
     slotProps?: { typography?: TypographyProps }
   }
 > = memo(({ sx, disabled, children, slotProps, ...rest }) => {
-  const {
-    palette: { link },
-  } = useTheme()
   const { sx: typoSx, ...typoRest } = slotProps?.typography ?? {
     sx: {},
   }
@@ -40,12 +35,6 @@ export const TypographyButton: FC<
             ? "line-through"
             : undefined,
           userSelect: "none",
-          color: disabled
-            ? alpha(link.normal, 0.5)
-            : link.normal,
-          "&:hover": {
-            color: link.hover,
-          },
           ...typoSx,
         }}
       >

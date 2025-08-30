@@ -1,6 +1,7 @@
 import { alpha, createTheme } from "@mui/material"
 
 export const theme = createTheme({
+  typography: { fontFamily: "monospace" },
   components: {
     MuiTypography: {
       styleOverrides: {

@@ -36,6 +36,11 @@ const list = async (arg: unknown) => {
           tags: { name: InOrUndefined(tagNames) },
         },
         relationLoadStrategy: "query",
+        relations: {
+          workspaces: true,
+          repositories: true,
+          tags: true,
+        },
       })
       return entities
     },
