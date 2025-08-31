@@ -1,6 +1,6 @@
 import type { CreateProjectDto } from "#/models/project/dto/create-project.dto"
 import type { UpsertProjectDto } from "#/models/project/dto/upsert-project.dto"
-import { projectSchema } from "#/models/project/project"
+import { ProjectSchema } from "#/models/project/project"
 import { left, right } from "fp-ts/lib/Either"
 import z from "zod"
 
@@ -10,7 +10,7 @@ export class ProjectService {
   static async list(query: string[]) {
     return this.provider
       .list(query)
-      .then((resp) => projectSchema.array().parseAsync(resp))
+      .then((resp) => ProjectSchema.array().parseAsync(resp))
   }
 
   static async listNames() {
@@ -22,7 +22,7 @@ export class ProjectService {
   static async findByUuid(uuid: string) {
     return this.provider
       .findByUuid(uuid)
-      .then((resp) => projectSchema.parseAsync(resp))
+      .then((resp) => ProjectSchema.parseAsync(resp))
       .then((resp) => right(resp))
       .catch((err) => left(err))
   }
@@ -30,7 +30,11 @@ export class ProjectService {
     return this.provider.upsert(dto)
   }
   static async create(dto: CreateProjectDto) {
-    return this.provider.create(dto)
+    return this.provider
+      .create(dto)
+      .then((resp) => ProjectSchema.parseAsync(resp))
+      .then((resp) => right(resp))
+      .catch((err) => left(err))
   }
   static async createFromPaths(paths: string[]) {
     return this.provider.createFromPaths(paths)

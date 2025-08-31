@@ -2,7 +2,7 @@ import { z } from "zod/v4"
 
 const nameString = z.string().trim().normalize().nonempty()
 const descString = z.string().trim().normalize().nullable()
-export const projectSchema = z.object({
+export const ProjectSchema = z.object({
   uuid: z.uuidv4(),
   name: nameString,
   pinned: z.boolean(),
@@ -34,4 +34,4 @@ export const projectSchema = z.object({
     .array(),
 })
 
-export type Project = z.infer<typeof projectSchema>
+export type Project = z.infer<typeof ProjectSchema>
