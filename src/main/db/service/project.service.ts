@@ -146,13 +146,17 @@ const unpin = async (arg: unknown) => {
 const create = async (arg: unknown) => {
   const dto = createProjectDtoSchema.parse(arg)
   return AppDataSource.transaction(async (mgr) => {
+    const repo = mgr.getRepository(ProjectEntity)
     const tags = await _fillTags(mgr, dto)
-    const project = mgr.create(ProjectEntity, {
+    const project = repo.create({
       ...dto,
       pinned: false,
       tags,
     })
-    return mgr.save(ProjectEntity, project)
+    const { uuid } = await repo.save(project)
+    return _fromTableEntity(
+      await repo.findOneOrFail({ where: { uuid } }),
+    )
   })
 }
 
