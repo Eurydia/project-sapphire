@@ -1,4 +1,4 @@
-import { alpha, createTheme } from "@mui/material"
+import { createTheme } from "@mui/material"
 
 export const theme = createTheme({
   typography: { fontFamily: "monospace" },
@@ -37,11 +37,11 @@ export const theme = createTheme({
     },
   },
   palette: {
-    mode: "dark",
-    text: {
-      primary: alpha("#fff", 0.8),
-      secondary: alpha("#fff", 0.7),
-      disabled: alpha("#fff", 0.6),
-    },
+    mode: "light",
+    // text: {
+    //   primary: alpha("#fff", 0.8),
+    //   secondary: alpha("#fff", 0.7),
+    //   disabled: alpha("#fff", 0.6),
+    // },
   },
 })

@@ -1,24 +1,10 @@
-import { Link, useTheme } from '@mui/material'
-import { memo } from 'react'
-import type { LinkProps } from '@mui/material'
-import type { FC } from 'react'
+import type { LinkProps } from "@mui/material"
+import { Link } from "@mui/material"
+import type { FC } from "react"
+import { memo } from "react"
 
-export const StyledHrefLink: FC<LinkProps> = memo(({ sx, ...rest }) => {
-  const {
-    palette: { link },
-  } = useTheme()
-  return (
-    <Link
-      {...rest}
-      sx={{
-        ...sx,
-        color: link.normal,
-        textDecorationColor: link.normal,
-        '&:visited': {
-          color: link.visited,
-          textDecorationColor: link.visited,
-        },
-      }}
-    />
-  )
-})
+export const StyledHrefLink: FC<LinkProps> = memo(
+  ({ sx, ...rest }) => {
+    return <Link {...rest} sx={sx} />
+  },
+)
